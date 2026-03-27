@@ -52,8 +52,12 @@ class Task {
   /// Full display text including all tags.
   String get displayText {
     final parts = [description];
-    for (final p in projects) parts.add('+$p');
-    for (final c in contexts) parts.add('@$c');
+    for (final p in projects) {
+      parts.add('+$p');
+    }
+    for (final c in contexts) {
+      parts.add('@$c');
+    }
     if (dueDate != null) {
       parts.add(
         'due:${dueDate!.year}-'
@@ -76,8 +80,12 @@ class Task {
     }
     if (creationDate != null) buf.write('${_fmtDate(creationDate!)} ');
     buf.write(description);
-    for (final p in projects) buf.write(' +$p');
-    for (final c in contexts) buf.write(' @$c');
+    for (final p in projects) {
+      buf.write(' +$p');
+    }
+    for (final c in contexts) {
+      buf.write(' @$c');
+    }
     if (dueDate != null) buf.write(' due:${_fmtDate(dueDate!)}');
     if (duration != null) buf.write(' =$duration');
     return buf.toString();
@@ -90,38 +98,37 @@ class Task {
   // ── Serialisation ─────────────────────────────────────────────────────────
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'completed': completed,
-        if (priority != null) 'priority': priority,
-        if (completionDate != null)
-          'completionDate': completionDate!.toIso8601String(),
-        if (creationDate != null)
-          'creationDate': creationDate!.toIso8601String(),
-        'description': description,
-        if (projects.isNotEmpty) 'projects': projects,
-        if (contexts.isNotEmpty) 'contexts': contexts,
-        if (duration != null) 'duration': duration,
-        if (dueDate != null) 'dueDate': dueDate!.toIso8601String(),
-      };
+    'id': id,
+    'completed': completed,
+    if (priority != null) 'priority': priority,
+    if (completionDate != null)
+      'completionDate': completionDate!.toIso8601String(),
+    if (creationDate != null) 'creationDate': creationDate!.toIso8601String(),
+    'description': description,
+    if (projects.isNotEmpty) 'projects': projects,
+    if (contexts.isNotEmpty) 'contexts': contexts,
+    if (duration != null) 'duration': duration,
+    if (dueDate != null) 'dueDate': dueDate!.toIso8601String(),
+  };
 
   factory Task.fromJson(Map<String, dynamic> j) => Task(
-        id: j['id'] as String,
-        completed: j['completed'] as bool? ?? false,
-        priority: j['priority'] as String?,
-        completionDate: j['completionDate'] != null
-            ? DateTime.parse(j['completionDate'] as String)
-            : null,
-        creationDate: j['creationDate'] != null
-            ? DateTime.parse(j['creationDate'] as String)
-            : null,
-        description: j['description'] as String,
-        projects: (j['projects'] as List?)?.cast<String>() ?? [],
-        contexts: (j['contexts'] as List?)?.cast<String>() ?? [],
-        duration: j['duration'] as String?,
-        dueDate: j['dueDate'] != null
-            ? DateTime.parse(j['dueDate'] as String)
-            : null,
-      );
+    id: j['id'] as String,
+    completed: j['completed'] as bool? ?? false,
+    priority: j['priority'] as String?,
+    completionDate: j['completionDate'] != null
+        ? DateTime.parse(j['completionDate'] as String)
+        : null,
+    creationDate: j['creationDate'] != null
+        ? DateTime.parse(j['creationDate'] as String)
+        : null,
+    description: j['description'] as String,
+    projects: (j['projects'] as List?)?.cast<String>() ?? [],
+    contexts: (j['contexts'] as List?)?.cast<String>() ?? [],
+    duration: j['duration'] as String?,
+    dueDate: j['dueDate'] != null
+        ? DateTime.parse(j['dueDate'] as String)
+        : null,
+  );
 
   Task copyWith({
     String? id,
@@ -134,26 +141,22 @@ class Task {
     List<String>? contexts,
     Object? duration = _sentinel,
     Object? dueDate = _sentinel,
-  }) =>
-      Task(
-        id: id ?? this.id,
-        completed: completed ?? this.completed,
-        priority: priority == _sentinel
-            ? this.priority
-            : priority as String?,
-        completionDate: completionDate == _sentinel
-            ? this.completionDate
-            : completionDate as DateTime?,
-        creationDate: creationDate == _sentinel
-            ? this.creationDate
-            : creationDate as DateTime?,
-        description: description ?? this.description,
-        projects: projects ?? this.projects,
-        contexts: contexts ?? this.contexts,
-        duration:
-            duration == _sentinel ? this.duration : duration as String?,
-        dueDate: dueDate == _sentinel ? this.dueDate : dueDate as DateTime?,
-      );
+  }) => Task(
+    id: id ?? this.id,
+    completed: completed ?? this.completed,
+    priority: priority == _sentinel ? this.priority : priority as String?,
+    completionDate: completionDate == _sentinel
+        ? this.completionDate
+        : completionDate as DateTime?,
+    creationDate: creationDate == _sentinel
+        ? this.creationDate
+        : creationDate as DateTime?,
+    description: description ?? this.description,
+    projects: projects ?? this.projects,
+    contexts: contexts ?? this.contexts,
+    duration: duration == _sentinel ? this.duration : duration as String?,
+    dueDate: dueDate == _sentinel ? this.dueDate : dueDate as DateTime?,
+  );
 }
 
 const _sentinel = Object();

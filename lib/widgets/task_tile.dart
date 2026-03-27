@@ -173,14 +173,14 @@ class _PriorityBadge extends StatelessWidget {
   }
 
   Color _priorityColor(String p, ColorScheme cs) => switch (p) {
-        'A' => Colors.red.shade600,
-        'B' => Colors.orange.shade600,
-        'C' => Colors.amber.shade700,
-        'D' => Colors.blue.shade600,
-        'E' => Colors.grey.shade500,
-        'F' => Colors.grey.shade400,
-        _ => cs.primary,
-      };
+    'A' => Colors.red.shade600,
+    'B' => Colors.orange.shade600,
+    'C' => Colors.amber.shade700,
+    'D' => Colors.blue.shade600,
+    'E' => Colors.grey.shade500,
+    'F' => Colors.grey.shade400,
+    _ => cs.primary,
+  };
 }
 
 // ── Tag chip ──────────────────────────────────────────────────────────────────
@@ -200,27 +200,27 @@ class _TagChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(10),
+    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+    decoration: BoxDecoration(
+      color: color,
+      borderRadius: BorderRadius.circular(10),
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (icon != null) ...[
+          Icon(icon, size: 11, color: textColor),
+          const Gap(2),
+        ],
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            color: textColor,
+            fontWeight: FontWeight.w500,
+          ),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (icon != null) ...[
-              Icon(icon, size: 11, color: textColor),
-              const Gap(2),
-            ],
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 11,
-                color: textColor,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      );
+      ],
+    ),
+  );
 }

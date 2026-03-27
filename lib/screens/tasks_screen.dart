@@ -81,8 +81,7 @@ class _TasksScreenState extends State<TasksScreen> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(24),
                       ),
-                      contentPadding:
-                          const EdgeInsets.symmetric(vertical: 8),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 8),
                     ),
                     onChanged: (v) => setState(() => _query = v),
                   ),
@@ -96,14 +95,11 @@ class _TasksScreenState extends State<TasksScreen> {
             ),
           ),
           // Active filter chips
-          if (_hasFilters(provider))
-            _FilterChips(provider: provider, cs: cs),
+          if (_hasFilters(provider)) _FilterChips(provider: provider, cs: cs),
           const Divider(height: 1),
           // ── Task list ─────────────────────────────────────────────────
           if (provider.loading)
-            const Expanded(
-              child: Center(child: CircularProgressIndicator()),
-            )
+            const Expanded(child: Center(child: CircularProgressIndicator()))
           else if (tasks.isEmpty)
             Expanded(
               child: _EmptyState(
@@ -116,7 +112,7 @@ class _TasksScreenState extends State<TasksScreen> {
             Expanded(
               child: ListView.separated(
                 itemCount: tasks.length,
-                separatorBuilder: (_, __) =>
+                separatorBuilder: (_, _) =>
                     const Divider(height: 1, indent: 52),
                 itemBuilder: (_, i) => TaskTile(
                   task: tasks[i],
@@ -151,9 +147,7 @@ class _TasksScreenState extends State<TasksScreen> {
       await provider.saveTodoToPod();
     }
     if (!context.mounted) return;
-    messenger.showSnackBar(
-      const SnackBar(content: Text('Task added')),
-    );
+    messenger.showSnackBar(const SnackBar(content: Text('Task added')));
   }
 
   Future<void> _editTask(
@@ -211,13 +205,13 @@ class _SortButton extends StatelessWidget {
   }
 
   String _sortLabel(SortOrder o) => switch (o) {
-        SortOrder.priority => 'Priority',
-        SortOrder.dueDate => 'Due Date',
-        SortOrder.project => 'Project',
-        SortOrder.context => 'Context',
-        SortOrder.creationDate => 'Creation Date',
-        SortOrder.added => 'Date Added',
-      };
+    SortOrder.priority => 'Priority',
+    SortOrder.dueDate => 'Due Date',
+    SortOrder.project => 'Project',
+    SortOrder.context => 'Context',
+    SortOrder.creationDate => 'Creation Date',
+    SortOrder.added => 'Date Added',
+  };
 }
 
 // ── Filter button ─────────────────────────────────────────────────────────────
@@ -230,7 +224,8 @@ class _FilterButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasFilter = provider.filterProject != null ||
+    final hasFilter =
+        provider.filterProject != null ||
         provider.filterContext != null ||
         provider.filterPriority != null;
 
@@ -366,31 +361,31 @@ class _FilterChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-        child: Wrap(
-          spacing: 8,
-          children: [
-            if (provider.filterPriority != null)
-              Chip(
-                label: Text(
-                  '${provider.filterPriority} — '
-                  '${priorityLabels[provider.filterPriority]}',
-                ),
-                onDeleted: () => provider.setFilterPriority(null),
-              ),
-            if (provider.filterProject != null)
-              Chip(
-                label: Text('+${provider.filterProject}'),
-                onDeleted: () => provider.setFilterProject(null),
-              ),
-            if (provider.filterContext != null)
-              Chip(
-                label: Text('@${provider.filterContext}'),
-                onDeleted: () => provider.setFilterContext(null),
-              ),
-          ],
-        ),
-      );
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+    child: Wrap(
+      spacing: 8,
+      children: [
+        if (provider.filterPriority != null)
+          Chip(
+            label: Text(
+              '${provider.filterPriority} — '
+              '${priorityLabels[provider.filterPriority]}',
+            ),
+            onDeleted: () => provider.setFilterPriority(null),
+          ),
+        if (provider.filterProject != null)
+          Chip(
+            label: Text('+${provider.filterProject}'),
+            onDeleted: () => provider.setFilterProject(null),
+          ),
+        if (provider.filterContext != null)
+          Chip(
+            label: Text('@${provider.filterContext}'),
+            onDeleted: () => provider.setFilterContext(null),
+          ),
+      ],
+    ),
+  );
 }
 
 // ── Empty state ───────────────────────────────────────────────────────────────
@@ -408,30 +403,28 @@ class _EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              hasFilters
-                  ? Icons.filter_list_off
-                  : Icons.check_circle_outline,
-              size: 64,
-              color: cs.onSurfaceVariant.withValues(alpha: 0.3),
-            ),
-            const Gap(16),
-            Text(
-              hasFilters ? 'No tasks match your filters' : 'No tasks yet',
-              style: const TextStyle(fontSize: 16),
-            ),
-            if (!hasFilters) ...[
-              const Gap(24),
-              FilledButton.icon(
-                icon: const Icon(Icons.add),
-                label: const Text('Add your first task'),
-                onPressed: onAdd,
-              ),
-            ],
-          ],
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          hasFilters ? Icons.filter_list_off : Icons.check_circle_outline,
+          size: 64,
+          color: cs.onSurfaceVariant.withValues(alpha: 0.3),
         ),
-      );
+        const Gap(16),
+        Text(
+          hasFilters ? 'No tasks match your filters' : 'No tasks yet',
+          style: const TextStyle(fontSize: 16),
+        ),
+        if (!hasFilters) ...[
+          const Gap(24),
+          FilledButton.icon(
+            icon: const Icon(Icons.add),
+            label: const Text('Add your first task'),
+            onPressed: onAdd,
+          ),
+        ],
+      ],
+    ),
+  );
 }

@@ -13,9 +13,10 @@ library;
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+
 import 'package:solidpod/solidpod.dart';
 
-import 'package:todopod/constants/app.dart';
+import 'package:todopod/constants/app.dart'; // todoFileName, doneFileName
 import 'package:todopod/models/task.dart';
 
 /// Handles reading and writing task lists to a Solid Pod.
@@ -25,7 +26,8 @@ import 'package:todopod/models/task.dart';
 /// [todoFileName] for active tasks and [doneFileName] for completed tasks.
 
 class PodService {
-  static const _prefixes = '@prefix todopod: <https://'
+  static const _prefixes =
+      '@prefix todopod: <https://'
       'todopod.solidcommunity.au/ont/> .\n'
       '@prefix xsd:     <http://'
       'www.w3.org/2001/XMLSchema#> .\n';
@@ -38,8 +40,10 @@ class PodService {
       '  todopod:tasks """$json""" .\n';
 
   static String? _extractJson(String ttl) {
-    final match = RegExp(r'todopod:tasks\s+"""(.*?)"""', dotAll: true)
-        .firstMatch(ttl);
+    final match = RegExp(
+      r'todopod:tasks\s+"""(.*?)"""',
+      dotAll: true,
+    ).firstMatch(ttl);
     return match?.group(1)?.trim();
   }
 
@@ -49,21 +53,15 @@ class PodService {
   ///
   /// Returns an error message on failure, or null on success.
 
-  static Future<String?> saveTasks(
-    String fileName,
-    List<Task> tasks,
-  ) async {
+  static Future<String?> saveTasks(String fileName, List<Task> tasks) async {
     try {
       final json = jsonEncode(tasks.map((t) => t.toJson()).toList());
       final ttl = _buildTtl(fileName, json);
-      final result = await writePod(
-        fileName: '$podDataPath/$fileName',
-        content: ttl,
-        encrypted: true,
+      await writePod(
+        fileName,
+        ttl,
+        overwrite: true,
       );
-      if (result != SolidFunctionCallStatus.success) {
-        return 'Pod write failed: $result';
-      }
       return null;
     } catch (e) {
       debugPrint('[PodService] saveTasks error: $e');
@@ -77,17 +75,12 @@ class PodService {
 
   static Future<List<Task>?> loadTasks(String fileName) async {
     try {
-      final ttl = await readPod(
-        fileName: '$podDataPath/$fileName',
-        encrypted: true,
-      );
+      final ttl = await readPod(fileName);
       if (ttl == null || ttl.isEmpty) return null;
       final json = _extractJson(ttl);
       if (json == null || json.isEmpty) return [];
       final list = jsonDecode(json) as List;
-      return list
-          .map((j) => Task.fromJson(j as Map<String, dynamic>))
-          .toList();
+      return list.map((j) => Task.fromJson(j as Map<String, dynamic>)).toList();
     } catch (e) {
       debugPrint('[PodService] loadTasks error ($fileName): $e');
       return null;

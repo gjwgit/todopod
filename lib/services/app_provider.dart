@@ -13,6 +13,7 @@ library;
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+
 import 'package:uuid/uuid.dart';
 
 import 'package:todopod/constants/app.dart';
@@ -163,9 +164,7 @@ class AppProvider extends ChangeNotifier {
   }
 
   void updateTask(Task updated) {
-    _tasks = [
-      for (final t in _tasks) t.id == updated.id ? updated : t,
-    ];
+    _tasks = [for (final t in _tasks) t.id == updated.id ? updated : t];
     notifyListeners();
   }
 
@@ -179,10 +178,7 @@ class AppProvider extends ChangeNotifier {
     final task = _tasks.firstWhere((t) => t.id == id);
     _tasks = _tasks.where((t) => t.id != id).toList();
     _done = [
-      task.copyWith(
-        completed: true,
-        completionDate: DateTime.now(),
-      ),
+      task.copyWith(completed: true, completionDate: DateTime.now()),
       ..._done,
     ];
     notifyListeners();
@@ -192,21 +188,13 @@ class AppProvider extends ChangeNotifier {
   void uncompleteTask(String id) {
     final task = _done.firstWhere((t) => t.id == id);
     _done = _done.where((t) => t.id != id).toList();
-    _tasks = [
-      task.copyWith(
-        completed: false,
-        completionDate: null,
-      ),
-      ..._tasks,
-    ];
+    _tasks = [task.copyWith(completed: false, completionDate: null), ..._tasks];
     notifyListeners();
   }
 
   void importTasks(List<Task> tasks) {
     // Assign fresh IDs on import to avoid collisions.
-    final stamped = tasks
-        .map((t) => t.copyWith(id: _uuid.v4()))
-        .toList();
+    final stamped = tasks.map((t) => t.copyWith(id: _uuid.v4())).toList();
     final (active, done) = (
       stamped.where((t) => !t.completed).toList(),
       stamped.where((t) => t.completed).toList(),
@@ -218,11 +206,9 @@ class AppProvider extends ChangeNotifier {
 
   // ── Serialisation ─────────────────────────────────────────────────────────
 
-  String serialiseTasks() =>
-      jsonEncode(_tasks.map((t) => t.toJson()).toList());
+  String serialiseTasks() => jsonEncode(_tasks.map((t) => t.toJson()).toList());
 
-  String serialiseDone() =>
-      jsonEncode(_done.map((t) => t.toJson()).toList());
+  String serialiseDone() => jsonEncode(_done.map((t) => t.toJson()).toList());
 
   // ── Pod sync ──────────────────────────────────────────────────────────────
 

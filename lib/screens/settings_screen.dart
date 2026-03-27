@@ -30,10 +30,7 @@ class SettingsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // ── Priority guide ─────────────────────────────────────────
-          Text(
-            'Priority Guide',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+          Text('Priority Guide', style: Theme.of(context).textTheme.titleLarge),
           const Gap(12),
           ...priorityLabels.entries.map(
             (e) => Padding(
@@ -58,10 +55,7 @@ class SettingsScreen extends StatelessWidget {
                     ),
                   ),
                   const Gap(12),
-                  Text(
-                    e.value,
-                    style: const TextStyle(fontSize: 14),
-                  ),
+                  Text(e.value, style: const TextStyle(fontSize: 14)),
                 ],
               ),
             ),
@@ -69,10 +63,7 @@ class SettingsScreen extends StatelessWidget {
 
           // ── Sharing ────────────────────────────────────────────────
           const Gap(32),
-          Text(
-            'Sharing',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+          Text('Sharing', style: Theme.of(context).textTheme.titleLarge),
           const Gap(8),
           Text(
             'Grant others access to your todo or done task lists '
@@ -114,9 +105,7 @@ class SettingsScreen extends StatelessWidget {
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute<void>(
-                builder: (_) => const SharedResourcesUi(
-                  child: _ReturnPage(),
-                ),
+                builder: (_) => const SharedResourcesUi(child: _ReturnPage()),
               ),
             ),
           ),
@@ -126,13 +115,13 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Color _priorityColor(String p, ColorScheme cs) => switch (p) {
-        'A' => Colors.red.shade600,
-        'B' => Colors.orange.shade600,
-        'C' => Colors.amber.shade700,
-        'D' => Colors.blue.shade600,
-        'E' => Colors.grey.shade500,
-        _ => Colors.grey.shade400,
-      };
+    'A' => Colors.red.shade600,
+    'B' => Colors.orange.shade600,
+    'C' => Colors.amber.shade700,
+    'D' => Colors.blue.shade600,
+    'E' => Colors.grey.shade500,
+    _ => Colors.grey.shade400,
+  };
 }
 
 class _ReturnPage extends StatelessWidget {
@@ -140,12 +129,12 @@ class _ReturnPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: const Text(appName)),
-        body: Center(
-          child: FilledButton.tonal(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Return to Settings'),
-          ),
-        ),
-      );
+    appBar: AppBar(title: const Text(appName)),
+    body: Center(
+      child: FilledButton.tonal(
+        onPressed: () => Navigator.of(context).pop(),
+        child: const Text('Return to Settings'),
+      ),
+    ),
+  );
 }

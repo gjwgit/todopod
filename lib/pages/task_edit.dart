@@ -60,28 +60,31 @@ class _TaskEditState extends State<TaskEdit> {
   void dispose() {
     _description.dispose();
     _duration.dispose();
-    for (final c in _projects) c.dispose();
-    for (final c in _contexts) c.dispose();
+    for (final c in _projects) {
+      c.dispose();
+    }
+    for (final c in _contexts) {
+      c.dispose();
+    }
     super.dispose();
   }
 
   Task _buildTask() => Task(
-        id: widget.task?.id ?? _uuid.v4(),
-        priority: _priority,
-        creationDate: widget.task?.creationDate ?? DateTime.now(),
-        description: _description.text.trim(),
-        projects: _projects
-            .map((c) => c.text.trim())
-            .where((s) => s.isNotEmpty)
-            .toList(),
-        contexts: _contexts
-            .map((c) => c.text.trim())
-            .where((s) => s.isNotEmpty)
-            .toList(),
-        duration:
-            _duration.text.trim().isEmpty ? null : _duration.text.trim(),
-        dueDate: _dueDate,
-      );
+    id: widget.task?.id ?? _uuid.v4(),
+    priority: _priority,
+    creationDate: widget.task?.creationDate ?? DateTime.now(),
+    description: _description.text.trim(),
+    projects: _projects
+        .map((c) => c.text.trim())
+        .where((s) => s.isNotEmpty)
+        .toList(),
+    contexts: _contexts
+        .map((c) => c.text.trim())
+        .where((s) => s.isNotEmpty)
+        .toList(),
+    duration: _duration.text.trim().isEmpty ? null : _duration.text.trim(),
+    dueDate: _dueDate,
+  );
 
   Future<void> _pickDueDate() async {
     final picked = await showDatePicker(
@@ -162,20 +165,15 @@ class _TaskEditState extends State<TaskEdit> {
                                   isDense: true,
                                 ),
                                 items: [
-                                  const DropdownMenuItem(
-                                    child: Text('None'),
-                                  ),
+                                  const DropdownMenuItem(child: Text('None')),
                                   ...priorities.map(
                                     (p) => DropdownMenuItem(
                                       value: p,
-                                      child: Text(
-                                        '$p — ${priorityLabels[p]}',
-                                      ),
+                                      child: Text('$p — ${priorityLabels[p]}'),
                                     ),
                                   ),
                                 ],
-                                onChanged: (v) =>
-                                    setState(() => _priority = v),
+                                onChanged: (v) => setState(() => _priority = v),
                               ),
                             ],
                           ),
@@ -194,14 +192,16 @@ class _TaskEditState extends State<TaskEdit> {
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     isDense: true,
-                                    suffixIcon:
-                                        Icon(Icons.event_outlined, size: 18),
+                                    suffixIcon: Icon(
+                                      Icons.event_outlined,
+                                      size: 18,
+                                    ),
                                   ),
                                   child: Text(
                                     _dueDate != null
                                         ? '${_dueDate!.day.toString().padLeft(2, '0')}/'
-                                            '${_dueDate!.month.toString().padLeft(2, '0')}/'
-                                            '${_dueDate!.year}'
+                                              '${_dueDate!.month.toString().padLeft(2, '0')}/'
+                                              '${_dueDate!.year}'
                                         : 'No due date',
                                     style: TextStyle(
                                       color: _dueDate != null
@@ -240,37 +240,36 @@ class _TaskEditState extends State<TaskEdit> {
                     _sectionLabel(context, 'Projects'),
                     const Gap(8),
                     ..._projects.asMap().entries.map(
-                          (e) => Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: Row(
-                              children: [
-                                const Text('+',
-                                    style: TextStyle(fontSize: 16)),
-                                const Gap(8),
-                                Expanded(
-                                  child: TextField(
-                                    controller: e.value,
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      isDense: true,
-                                      hintText: 'project name',
-                                    ),
-                                  ),
+                      (e) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Row(
+                          children: [
+                            const Text('+', style: TextStyle(fontSize: 16)),
+                            const Gap(8),
+                            Expanded(
+                              child: TextField(
+                                controller: e.value,
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  isDense: true,
+                                  hintText: 'project name',
                                 ),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.remove_circle_outline,
-                                    size: 18,
-                                  ),
-                                  onPressed: () => setState(() {
-                                    _projects[e.key].dispose();
-                                    _projects.removeAt(e.key);
-                                  }),
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
+                            IconButton(
+                              icon: const Icon(
+                                Icons.remove_circle_outline,
+                                size: 18,
+                              ),
+                              onPressed: () => setState(() {
+                                _projects[e.key].dispose();
+                                _projects.removeAt(e.key);
+                              }),
+                            ),
+                          ],
                         ),
+                      ),
+                    ),
                     TextButton.icon(
                       icon: const Icon(Icons.add, size: 16),
                       label: const Text('Add project'),
@@ -283,37 +282,36 @@ class _TaskEditState extends State<TaskEdit> {
                     _sectionLabel(context, 'Contexts'),
                     const Gap(8),
                     ..._contexts.asMap().entries.map(
-                          (e) => Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: Row(
-                              children: [
-                                const Text('@',
-                                    style: TextStyle(fontSize: 16)),
-                                const Gap(8),
-                                Expanded(
-                                  child: TextField(
-                                    controller: e.value,
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      isDense: true,
-                                      hintText: 'home, office, phone...',
-                                    ),
-                                  ),
+                      (e) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Row(
+                          children: [
+                            const Text('@', style: TextStyle(fontSize: 16)),
+                            const Gap(8),
+                            Expanded(
+                              child: TextField(
+                                controller: e.value,
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  isDense: true,
+                                  hintText: 'home, office, phone...',
                                 ),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.remove_circle_outline,
-                                    size: 18,
-                                  ),
-                                  onPressed: () => setState(() {
-                                    _contexts[e.key].dispose();
-                                    _contexts.removeAt(e.key);
-                                  }),
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
+                            IconButton(
+                              icon: const Icon(
+                                Icons.remove_circle_outline,
+                                size: 18,
+                              ),
+                              onPressed: () => setState(() {
+                                _contexts[e.key].dispose();
+                                _contexts.removeAt(e.key);
+                              }),
+                            ),
+                          ],
                         ),
+                      ),
+                    ),
                     TextButton.icon(
                       icon: const Icon(Icons.add, size: 16),
                       label: const Text('Add context'),
@@ -355,11 +353,11 @@ class _TaskEditState extends State<TaskEdit> {
 }
 
 Widget _sectionLabel(BuildContext context, String text) => Text(
-      text,
-      style: TextStyle(
-        color: Theme.of(context).colorScheme.primary,
-        fontWeight: FontWeight.w600,
-        fontSize: 13,
-        letterSpacing: 0.5,
-      ),
-    );
+  text,
+  style: TextStyle(
+    color: Theme.of(context).colorScheme.primary,
+    fontWeight: FontWeight.w600,
+    fontSize: 13,
+    letterSpacing: 0.5,
+  ),
+);

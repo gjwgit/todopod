@@ -28,15 +28,11 @@ const appDescription =
 
 const appDirectory = 'todopod';
 
-/// Pod path prefix for data files.
-
-const podDataPath = 'todopod/data';
-
-/// Pod filename for active tasks.
+/// Pod filename for active tasks (relative to app directory).
 
 const todoFileName = 'todo.ttl';
 
-/// Pod filename for completed tasks.
+/// Pod filename for completed tasks (relative to app directory).
 
 const doneFileName = 'done.ttl';
 

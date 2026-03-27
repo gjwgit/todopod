@@ -45,8 +45,9 @@ class _AppScaffoldState extends State<AppScaffold> {
       if (!mounted) return;
       setState(() => _isKeySaved = true);
       await context.read<AppProvider>().loadFromPod();
-    } catch (e) {
-      debugPrint('[AppScaffold] key error: $e');
+    } on Exception catch (e) {
+      debugPrint('[AppScaffold] key/load error: $e');
+      // Not fatal — user can retry by tapping the key icon.
     }
   }
 
@@ -73,26 +74,30 @@ class _AppScaffoldState extends State<AppScaffold> {
         SolidMenuItem(
           title: 'Import / Export',
           icon: Icons.import_export,
-          tooltip: '**Import / Export**\n\n'
+          tooltip:
+              '**Import / Export**\n\n'
               'Import from Todo.txt or export a backup.',
           child: ImportScreen(),
         ),
         SolidMenuItem(
           title: 'Settings',
           icon: Icons.settings,
-          tooltip: '**Settings**\n\n'
+          tooltip:
+              '**Settings**\n\n'
               'Priority guide, sharing and preferences.',
           child: SettingsScreen(),
         ),
       ],
       statusBar: SolidStatusBarConfig(
         loginStatus: const SolidLoginStatus(),
-        serverInfo:
-            const SolidServerInfo(serverUri: SolidConfig.defaultServerUrl),
+        serverInfo: const SolidServerInfo(
+          serverUri: SolidConfig.defaultServerUrl,
+        ),
         securityKeyStatus: SolidSecurityKeyStatus(
           isKeySaved: _isKeySaved,
           title: 'TodoPod Security Keys',
-          tooltip: '**Security Keys**\n\n'
+          tooltip:
+              '**Security Keys**\n\n'
               'Manage your Solid Pod encryption key.\n'
               'Tap to view, change or forget the key.',
           onKeyStatusChanged: (hasKey) {

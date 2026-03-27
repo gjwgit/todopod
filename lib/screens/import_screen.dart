@@ -53,10 +53,7 @@ class _ImportScreenState extends State<ImportScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // ── Import ──────────────────────────────────────────────────
-          Text(
-            'Import',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+          Text('Import', style: Theme.of(context).textTheme.titleLarge),
           const Gap(8),
           Text(
             'Import tasks from a todo.txt file. Imported tasks are '
@@ -74,9 +71,7 @@ class _ImportScreenState extends State<ImportScreen> {
               child: Row(
                 children: [
                   Icon(
-                    _isError
-                        ? Icons.error_outline
-                        : Icons.check_circle_outline,
+                    _isError ? Icons.error_outline : Icons.check_circle_outline,
                     color: _isError
                         ? cs.onErrorContainer
                         : cs.onSecondaryContainer,
@@ -121,7 +116,8 @@ class _ImportScreenState extends State<ImportScreen> {
           _ActionCard(
             icon: Icons.download_outlined,
             title: 'Export Todo.txt',
-            subtitle: 'Saves Todo_YYYYMMDD_HHMM.txt with '
+            subtitle:
+                'Saves Todo_YYYYMMDD_HHMM.txt with '
                 '${provider.tasks.length} active tasks.',
             loading: _loading,
             onTap: () => _exportTodoTxt(context),
@@ -130,7 +126,8 @@ class _ImportScreenState extends State<ImportScreen> {
           _ActionCard(
             icon: Icons.download_outlined,
             title: 'Export Done.txt',
-            subtitle: 'Saves Done_YYYYMMDD_HHMM.txt with '
+            subtitle:
+                'Saves Done_YYYYMMDD_HHMM.txt with '
                 '${provider.doneTasks.length} completed tasks.',
             loading: _loading,
             onTap: () => _exportDoneTxt(context),
@@ -180,8 +177,10 @@ class _ImportScreenState extends State<ImportScreen> {
 
       provider.importTasks(tasks);
       await provider.saveAllToPod();
-      _setMessage('Imported ${tasks.length} task${tasks.length == 1 ? '' : 's'} '
-          'from "${file.name}".');
+      _setMessage(
+        'Imported ${tasks.length} task${tasks.length == 1 ? '' : 's'} '
+        'from "${file.name}".',
+      );
     } catch (e, st) {
       debugPrint('[Import] error: $e\n$st');
       _setMessage('Import failed: $e', error: true);
@@ -194,24 +193,15 @@ class _ImportScreenState extends State<ImportScreen> {
 
   Future<void> _exportTodoTxt(BuildContext context) async {
     final provider = context.read<AppProvider>();
-    await _export(
-      tasks: provider.tasks,
-      prefix: 'Todo',
-    );
+    await _export(tasks: provider.tasks, prefix: 'Todo');
   }
 
   Future<void> _exportDoneTxt(BuildContext context) async {
     final provider = context.read<AppProvider>();
-    await _export(
-      tasks: provider.doneTasks,
-      prefix: 'Done',
-    );
+    await _export(tasks: provider.doneTasks, prefix: 'Done');
   }
 
-  Future<void> _export({
-    required List tasks,
-    required String prefix,
-  }) async {
+  Future<void> _export({required List tasks, required String prefix}) async {
     setState(() {
       _loading = true;
       _message = null;
@@ -231,7 +221,8 @@ class _ImportScreenState extends State<ImportScreen> {
         return;
       }
 
-      final home = Platform.environment['HOME'] ??
+      final home =
+          Platform.environment['HOME'] ??
           Platform.environment['USERPROFILE'] ??
           '.';
       final downloads = Directory('$home/Downloads');

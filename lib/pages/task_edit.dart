@@ -43,6 +43,16 @@ class _TaskEditState extends State<TaskEdit> {
 
   bool get _isNew => widget.task == null;
 
+  // ── Initial state snapshot for change detection ─────────────────────────
+
+  late final String _initDescription;
+  late final String _initNotes;
+  late final String _initDuration;
+  late final String? _initPriority;
+  late final DateTime? _initDueDate;
+  late final List<String> _initProjects;
+  late final List<String> _initContexts;
+
   @override
   void initState() {
     super.initState();
@@ -58,6 +68,16 @@ class _TaskEditState extends State<TaskEdit> {
     _contexts = (t?.contexts ?? [])
         .map((c) => TextEditingController(text: c))
         .toList();
+
+    // Snapshot for change detection.
+
+    _initDescription = _description.text;
+    _initNotes = _notes.text;
+    _initDuration = _duration.text;
+    _initPriority = _priority;
+    _initDueDate = _dueDate;
+    _initProjects = _projects.map((c) => c.text).toList();
+    _initContexts = _contexts.map((c) => c.text).toList();
   }
 
   @override
@@ -72,6 +92,60 @@ class _TaskEditState extends State<TaskEdit> {
       c.dispose();
     }
     super.dispose();
+  }
+
+  // ── Change detection ────────────────────────────────────────────────────
+
+  bool get _hasChanges {
+    if (_description.text != _initDescription) return true;
+    if (_notes.text != _initNotes) return true;
+    if (_duration.text != _initDuration) return true;
+    if (_priority != _initPriority) return true;
+    if (_dueDate != _initDueDate) return true;
+
+    final curProjects = _projects.map((c) => c.text).toList();
+    if (curProjects.length != _initProjects.length) return true;
+    for (var i = 0; i < curProjects.length; i++) {
+      if (curProjects[i] != _initProjects[i]) return true;
+    }
+
+    final curContexts = _contexts.map((c) => c.text).toList();
+    if (curContexts.length != _initContexts.length) return true;
+    for (var i = 0; i < curContexts.length; i++) {
+      if (curContexts[i] != _initContexts[i]) return true;
+    }
+
+    return false;
+  }
+
+  Future<void> _confirmDiscard() async {
+    if (!_hasChanges) {
+      Navigator.of(context).pop();
+
+      return;
+    }
+
+    final discard = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Discard changes?'),
+        content: const Text(
+          'You have unsaved changes. Are you sure you want to discard them?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Keep editing'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Discard'),
+          ),
+        ],
+      ),
+    );
+
+    if (discard == true && mounted) Navigator.of(context).pop();
   }
 
   Task _buildTask() => Task(
@@ -129,7 +203,7 @@ class _TaskEditState extends State<TaskEdit> {
                   const Spacer(),
                   IconButton(
                     icon: const Icon(Icons.close),
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: _confirmDiscard,
                   ),
                 ],
               ),
@@ -172,6 +246,7 @@ class _TaskEditState extends State<TaskEdit> {
                     const Gap(16),
                     // Priority + Due Date row
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
                           child: Column(
@@ -350,7 +425,7 @@ class _TaskEditState extends State<TaskEdit> {
               child: Row(
                 children: [
                   TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: _confirmDiscard,
                     child: const Text('Cancel'),
                   ),
                   const Spacer(),

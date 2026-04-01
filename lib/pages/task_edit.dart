@@ -13,10 +13,12 @@ library;
 import 'package:flutter/material.dart';
 
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:todopod/constants/app.dart';
 import 'package:todopod/models/task.dart';
+import 'package:todopod/services/app_provider.dart';
 
 const _uuid = Uuid();
 
@@ -247,13 +249,12 @@ class _TaskEditState extends State<TaskEdit> {
                             const Text('+', style: TextStyle(fontSize: 16)),
                             const Gap(8),
                             Expanded(
-                              child: TextField(
+                              child: _TagAutocomplete(
                                 controller: e.value,
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  isDense: true,
-                                  hintText: 'project name',
-                                ),
+                                options: context
+                                    .read<AppProvider>()
+                                    .allProjects,
+                                hintText: 'project name',
                               ),
                             ),
                             IconButton(
@@ -289,13 +290,12 @@ class _TaskEditState extends State<TaskEdit> {
                             const Text('@', style: TextStyle(fontSize: 16)),
                             const Gap(8),
                             Expanded(
-                              child: TextField(
+                              child: _TagAutocomplete(
                                 controller: e.value,
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  isDense: true,
-                                  hintText: 'home, office, phone...',
-                                ),
+                                options: context
+                                    .read<AppProvider>()
+                                    .allContexts,
+                                hintText: 'home, office, phone...',
                               ),
                             ),
                             IconButton(
@@ -361,3 +361,87 @@ Widget _sectionLabel(BuildContext context, String text) => Text(
     letterSpacing: 0.5,
   ),
 );
+
+// ── Autocomplete that suggests existing values but accepts free text ─────────
+
+class _TagAutocomplete extends StatelessWidget {
+  final TextEditingController controller;
+  final List<String> options;
+  final String hintText;
+
+  const _TagAutocomplete({
+    required this.controller,
+    required this.options,
+    required this.hintText,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
+    return Autocomplete<String>(
+      initialValue: controller.value,
+      optionsBuilder: (textEditingValue) {
+        final query = textEditingValue.text.toLowerCase();
+        if (query.isEmpty) return options;
+
+        return options
+            .where((o) => o.toLowerCase().contains(query))
+            .toList();
+      },
+      fieldViewBuilder: (context, fieldController, focusNode, onSubmitted) {
+        fieldController.addListener(
+          () => controller.text = fieldController.text,
+        );
+
+        return TextField(
+          controller: fieldController,
+          focusNode: focusNode,
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(),
+            isDense: true,
+            hintText: hintText,
+            suffixIcon: options.isNotEmpty
+                ? Icon(
+                    Icons.arrow_drop_down,
+                    size: 18,
+                    color: cs.onSurfaceVariant,
+                  )
+                : null,
+            suffixIconConstraints: const BoxConstraints(
+              minWidth: 24,
+              minHeight: 0,
+            ),
+          ),
+          onSubmitted: (_) => onSubmitted(),
+        );
+      },
+      optionsViewBuilder: (context, onSelected, options) => Align(
+        alignment: Alignment.topLeft,
+        child: Material(
+          elevation: 4,
+          borderRadius: BorderRadius.circular(8),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 200, maxWidth: 220),
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              shrinkWrap: true,
+              itemCount: options.length,
+              itemBuilder: (context, index) {
+                final option = options.elementAt(index);
+
+                return ListTile(
+                  dense: true,
+                  visualDensity: VisualDensity.compact,
+                  title: Text(option, style: const TextStyle(fontSize: 13)),
+                  onTap: () => onSelected(option),
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+      onSelected: (value) => controller.text = value,
+    );
+  }
+}

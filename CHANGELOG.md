@@ -39,6 +39,7 @@ Code](https://claude.com/product/claude-code).
 
 ## 0.2 Basic Functionality
 
++ Autocomplete ptoject/context [0.1.2 20260401 gjw]
 + Support basic import of Todo.txt [0.1.1 20260327 gjw]
 
 ## 0.1 Initial Shell App

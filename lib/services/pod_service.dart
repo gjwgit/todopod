@@ -57,11 +57,7 @@ class PodService {
     try {
       final json = jsonEncode(tasks.map((t) => t.toJson()).toList());
       final ttl = _buildTtl(fileName, json);
-      await writePod(
-        fileName,
-        ttl,
-        overwrite: true,
-      );
+      await writePod(fileName, ttl, overwrite: true);
       return null;
     } catch (e) {
       debugPrint('[PodService] saveTasks error: $e');
@@ -76,7 +72,7 @@ class PodService {
   static Future<List<Task>?> loadTasks(String fileName) async {
     try {
       final ttl = await readPod(fileName);
-      if (ttl == null || ttl.isEmpty) return null;
+      if (ttl.isEmpty) return null;
       final json = _extractJson(ttl);
       if (json == null || json.isEmpty) return [];
       final list = jsonDecode(json) as List;

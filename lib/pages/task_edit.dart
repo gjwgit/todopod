@@ -159,7 +159,7 @@ class _TaskEditState extends State<TaskEdit> {
                               _sectionLabel(context, 'Priority'),
                               const Gap(8),
                               DropdownButtonFormField<String?>(
-                                value: _priority,
+                                initialValue: _priority,
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
                                   isDense: true,

@@ -17,7 +17,6 @@ import 'package:provider/provider.dart';
 
 import 'package:todopod/models/task.dart';
 import 'package:todopod/services/app_provider.dart';
-import 'package:todopod/widgets/task_tile.dart';
 
 class DoneScreen extends StatefulWidget {
   const DoneScreen({super.key});
@@ -78,8 +77,7 @@ class _DoneScreenState extends State<DoneScreen> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(24),
                       ),
-                      contentPadding:
-                          const EdgeInsets.symmetric(vertical: 8),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 8),
                     ),
                     onChanged: (v) => setState(() => _query = v),
                   ),
@@ -89,10 +87,7 @@ class _DoneScreenState extends State<DoneScreen> {
                   Tooltip(
                     message: 'Clear all completed tasks',
                     child: IconButton(
-                      icon: Icon(
-                        Icons.delete_sweep_outlined,
-                        color: cs.error,
-                      ),
+                      icon: Icon(Icons.delete_sweep_outlined, color: cs.error),
                       onPressed: () => _confirmClearAll(context, provider),
                     ),
                   ),
@@ -106,10 +101,7 @@ class _DoneScreenState extends State<DoneScreen> {
               children: [
                 Text(
                   '${tasks.length} completed task${tasks.length == 1 ? '' : 's'}',
-                  style: TextStyle(
-                    color: cs.onSurfaceVariant,
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: cs.onSurfaceVariant, fontSize: 12),
                 ),
               ],
             ),
@@ -117,9 +109,7 @@ class _DoneScreenState extends State<DoneScreen> {
           const Divider(height: 1),
           // ── Done task list ────────────────────────────────────────────
           if (provider.loading)
-            const Expanded(
-              child: Center(child: CircularProgressIndicator()),
-            )
+            const Expanded(child: Center(child: CircularProgressIndicator()))
           else if (tasks.isEmpty)
             Expanded(
               child: Center(
@@ -146,7 +136,7 @@ class _DoneScreenState extends State<DoneScreen> {
             Expanded(
               child: ListView.separated(
                 itemCount: tasks.length,
-                separatorBuilder: (_, __) =>
+                separatorBuilder: (_, _) =>
                     const Divider(height: 1, indent: 52),
                 itemBuilder: (_, i) => _DoneTile(
                   task: tasks[i],
@@ -281,10 +271,7 @@ class _DoneTile extends StatelessWidget {
                 if (task.completionDate != null)
                   Text(
                     'Completed ${_fmtDate(task.completionDate!)}',
-                    style: TextStyle(
-                      color: cs.onSurfaceVariant,
-                      fontSize: 11,
-                    ),
+                    style: TextStyle(color: cs.onSurfaceVariant, fontSize: 11),
                   ),
                 const Gap(2),
                 Text(
@@ -322,8 +309,7 @@ class _DoneTile extends StatelessWidget {
     );
   }
 
-  bool _hasTags(Task t) =>
-      t.projects.isNotEmpty || t.contexts.isNotEmpty;
+  bool _hasTags(Task t) => t.projects.isNotEmpty || t.contexts.isNotEmpty;
 
   String _fmtDate(DateTime d) =>
       '${d.day.toString().padLeft(2, '0')}/'
@@ -339,17 +325,14 @@ class _SmallChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
-        decoration: BoxDecoration(
-          color: cs.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 11,
-            color: cs.onSurfaceVariant,
-          ),
-        ),
-      );
+    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+    decoration: BoxDecoration(
+      color: cs.surfaceContainerHighest,
+      borderRadius: BorderRadius.circular(10),
+    ),
+    child: Text(
+      label,
+      style: TextStyle(fontSize: 11, color: cs.onSurfaceVariant),
+    ),
+  );
 }

@@ -1,6 +1,6 @@
 /// TaskParser — parse and serialise todo.txt format files.
 ///
-// Time-stamp: <Friday 2026-03-27 10:00:00 +1100 Graham Williams>
+// Time-stamp: <Wednesday 2026-04-01 12:42:37 +1100 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -30,11 +30,6 @@ List<Task> parseTodoTxt(String content) {
   }
   return tasks;
 }
-
-/// Serialise a list of tasks back to todo.txt format.
-
-String serialiseTodoTxt(List<Task> tasks) =>
-    tasks.map((t) => t.toTodoTxt()).join('\n');
 
 // ── Line parser ───────────────────────────────────────────────────────────────
 

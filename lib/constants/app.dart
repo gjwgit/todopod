@@ -1,6 +1,6 @@
 /// App-wide constants for TodoPod.
 ///
-// Time-stamp: <Friday 2026-03-27 10:00:00 +1100 Graham Williams>
+// Time-stamp: <Wednesday 2026-04-01 12:42:01 +1100 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -18,13 +18,13 @@ const appName = 'TodoPod';
 
 /// Application version.
 
-const appVersion = '0.1.0';
+// const appVersion = '0.1.0';
 
 /// Application description.
 
-const appDescription =
-    'A privacy-first todo list using the todo.txt format, '
-    'stored encrypted on your Solid Pod.';
+// const appDescription =
+//    'A privacy-first todo list using the todo.txt format, '
+//    'stored encrypted on your Solid Pod.';
 
 /// App directory name used by solidpod for storage paths.
 

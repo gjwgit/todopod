@@ -7,20 +7,17 @@ environment:
   sdk: ^3.11.3
 
 dependencies:
+  file_picker: any
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.8
   gap: any
   provider: any
-  solidui: 0.3.8
+  solidui: ^0.3.8
+  solidpod: ^0.12.2
   uuid: any
-  solidpod: any
-  file_picker: any
 
 dev_dependencies:
   flutter_launcher_icons: ^0.14.3
-  flutter_test:
-    sdk: flutter
   flutter_lints: ^6.0.0
 
 flutter:

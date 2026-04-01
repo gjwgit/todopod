@@ -1,6 +1,6 @@
 /// TasksScreen — the main task list with sort, filter and search.
 ///
-// Time-stamp: <Friday 2026-03-27 10:00:00 +1100 Graham Williams>
+// Time-stamp: <Wednesday 2026-04-01 12:40:18 +1100 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -256,8 +256,6 @@ class _FilterSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(

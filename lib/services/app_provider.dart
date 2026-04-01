@@ -192,6 +192,18 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Permanently delete a completed task.
+  void deleteDoneTask(String id) {
+    _done = _done.where((t) => t.id != id).toList();
+    notifyListeners();
+  }
+
+  /// Permanently delete all completed tasks.
+  void clearDone() {
+    _done = [];
+    notifyListeners();
+  }
+
   void importTasks(List<Task> tasks) {
     // Assign fresh IDs on import to avoid collisions.
     final stamped = tasks.map((t) => t.copyWith(id: _uuid.v4())).toList();

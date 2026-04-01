@@ -7,13 +7,15 @@ if [ $# -ne 0 ]; then
     exit 1
 fi
 
+appname=$(basename $PWD)
+
 # Find the latest zip file to run meld across.
 
-FIND_CLAUDE=$(find ~/Downloads -name "todopod_lib*.zip" 2>/dev/null | head -1)
+FIND_CLAUDE=$(find ~/Downloads -name "${appname}_lib*.zip" 2>/dev/null | head -1)
 echo "Found ${FIND_CLAUDE}"
 
 if [ -z "$FIND_CLAUDE" ]; then
-    echo "Error: can not find the Claude zip file in Downloads"
+    echo "Error: can not find the Claude zip file in Downloads ${appname}_lib.zip"
     exit 1
 fi
 

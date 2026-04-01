@@ -10,6 +10,8 @@
 
 library;
 
+import 'package:flutter/material.dart';
+
 /// Application name displayed in the UI.
 
 const appName = 'TodoPod';
@@ -50,3 +52,21 @@ const priorityLabels = {
 /// All valid priority letters.
 
 const priorities = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+/// Colours for each priority badge.
+///
+/// A = Red        — Now (urgent)
+/// B = DeepOrange — Today
+/// C = Teal       — This Week
+/// D = Blue       — Next Week
+/// E = Purple     — Later
+/// F = BlueGrey   — Parked
+
+const priorityColors = {
+  'A': Color(0xFFC62828), // red.shade800     — Now (urgent, deep red)
+  'B': Color(0xFFF57C00), // orange.shade700   — Today (bright orange)
+  'C': Color(0xFF00796B), // teal.shade700     — This Week
+  'D': Color(0xFF1976D2), // blue.shade700     — Next Week
+  'E': Color(0xFF7B1FA2), // purple.shade700   — Later
+  'F': Color(0xFF546E7A), // blueGrey.shade600 — Parked
+};

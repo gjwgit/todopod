@@ -114,14 +114,8 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Color _priorityColor(String p, ColorScheme cs) => switch (p) {
-    'A' => Colors.red.shade600,
-    'B' => Colors.orange.shade600,
-    'C' => Colors.amber.shade700,
-    'D' => Colors.blue.shade600,
-    'E' => Colors.grey.shade500,
-    _ => Colors.grey.shade400,
-  };
+  Color _priorityColor(String p, ColorScheme cs) =>
+      priorityColors[p] ?? cs.primary;
 }
 
 class _ReturnPage extends StatelessWidget {

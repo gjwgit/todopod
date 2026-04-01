@@ -17,6 +17,7 @@ import 'package:solidpod/solidpod.dart';
 import 'package:solidui/solidui.dart';
 
 import 'package:todopod/constants/app.dart';
+import 'package:todopod/screens/done_screen.dart';
 import 'package:todopod/screens/import_screen.dart';
 import 'package:todopod/screens/settings_screen.dart';
 import 'package:todopod/screens/tasks_screen.dart';
@@ -41,13 +42,17 @@ class _AppScaffoldState extends State<AppScaffold> {
 
   Future<void> _initKeys() async {
     try {
+      // Only proceed if actually logged in to a pod.
+      final webId = await getWebId();
+      if (webId == null || webId.isEmpty) return;
+      if (!mounted) return;
+
       await getKeyFromUserIfRequired(context, widget);
       if (!mounted) return;
       setState(() => _isKeySaved = true);
       await context.read<AppProvider>().loadFromPod();
     } on Exception catch (e) {
       debugPrint('[AppScaffold] key/load error: $e');
-      // Not fatal — user can retry by tapping the key icon.
     }
   }
 
@@ -70,6 +75,12 @@ class _AppScaffoldState extends State<AppScaffold> {
           icon: Icons.checklist,
           tooltip: '**Tasks**\n\nYour todo list.',
           child: TasksScreen(),
+        ),
+        SolidMenuItem(
+          title: 'Done',
+          icon: Icons.check_circle_outline,
+          tooltip: '**Done**\n\nCompleted tasks. Tap the checkbox to restore.',
+          child: DoneScreen(),
         ),
         SolidMenuItem(
           title: 'Import / Export',

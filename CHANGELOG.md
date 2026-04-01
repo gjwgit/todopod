@@ -4,8 +4,8 @@ Noted here are the high level changes for the app.  Each update
 includes a short user-oriented description.  The next release is 0.2
 following incremental updates through the 0.1.n series.
 
-You can run the app in your browser from the
-[**web**](https://todopod.solidcommunity.au) or else download and
+You can run the app in your
+[**browser**](https://todopod.solidcommunity.au) or else download and
 install locally the latest version from the [Solid Community
 AU](https://solidcommunity.au) or directly: for **Android** as
 [aab](https://solidcommunity.au/installers/todopod.aab) or

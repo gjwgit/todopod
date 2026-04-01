@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# 20260331 gjw When interacting with Claude Code we download the zip
+# file for the code updates from Claude and then run this script to
+# compare and merge.
+
 # Check if a filename was provided
 
 if [ $# -ne 0 ]; then

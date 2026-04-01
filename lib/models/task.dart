@@ -25,6 +25,7 @@ class Task {
   final DateTime? completionDate;
   final DateTime? creationDate;
   final String description;
+  final String? notes;
   final List<String> projects;
   final List<String> contexts;
   final String? duration;
@@ -37,6 +38,7 @@ class Task {
     this.completionDate,
     this.creationDate,
     required this.description,
+    this.notes,
     this.projects = const [],
     this.contexts = const [],
     this.duration,
@@ -105,6 +107,7 @@ class Task {
       'completionDate': completionDate!.toIso8601String(),
     if (creationDate != null) 'creationDate': creationDate!.toIso8601String(),
     'description': description,
+    if (notes != null) 'notes': notes,
     if (projects.isNotEmpty) 'projects': projects,
     if (contexts.isNotEmpty) 'contexts': contexts,
     if (duration != null) 'duration': duration,
@@ -122,6 +125,7 @@ class Task {
         ? DateTime.parse(j['creationDate'] as String)
         : null,
     description: j['description'] as String,
+    notes: j['notes'] as String?,
     projects: (j['projects'] as List?)?.cast<String>() ?? [],
     contexts: (j['contexts'] as List?)?.cast<String>() ?? [],
     duration: j['duration'] as String?,
@@ -137,6 +141,7 @@ class Task {
     Object? completionDate = _sentinel,
     Object? creationDate = _sentinel,
     String? description,
+    Object? notes = _sentinel,
     List<String>? projects,
     List<String>? contexts,
     Object? duration = _sentinel,
@@ -152,6 +157,7 @@ class Task {
         ? this.creationDate
         : creationDate as DateTime?,
     description: description ?? this.description,
+    notes: notes == _sentinel ? this.notes : notes as String?,
     projects: projects ?? this.projects,
     contexts: contexts ?? this.contexts,
     duration: duration == _sentinel ? this.duration : duration as String?,

@@ -34,6 +34,7 @@ class TaskEdit extends StatefulWidget {
 
 class _TaskEditState extends State<TaskEdit> {
   late final TextEditingController _description;
+  late final TextEditingController _notes;
   late final TextEditingController _duration;
   late String? _priority;
   late DateTime? _dueDate;
@@ -47,6 +48,7 @@ class _TaskEditState extends State<TaskEdit> {
     super.initState();
     final t = widget.task;
     _description = TextEditingController(text: t?.description ?? '');
+    _notes = TextEditingController(text: t?.notes ?? '');
     _duration = TextEditingController(text: t?.duration ?? '');
     _priority = t?.priority;
     _dueDate = t?.dueDate;
@@ -61,6 +63,7 @@ class _TaskEditState extends State<TaskEdit> {
   @override
   void dispose() {
     _description.dispose();
+    _notes.dispose();
     _duration.dispose();
     for (final c in _projects) {
       c.dispose();
@@ -76,6 +79,7 @@ class _TaskEditState extends State<TaskEdit> {
     priority: _priority,
     creationDate: widget.task?.creationDate ?? DateTime.now(),
     description: _description.text.trim(),
+    notes: _notes.text.trim().isEmpty ? null : _notes.text.trim(),
     projects: _projects
         .map((c) => c.text.trim())
         .where((s) => s.isNotEmpty)
@@ -137,17 +141,32 @@ class _TaskEditState extends State<TaskEdit> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Description
-                    _sectionLabel(context, 'Description'),
+                    // Title
+                    _sectionLabel(context, 'Title'),
                     const Gap(8),
                     TextField(
                       controller: _description,
-                      maxLines: 3,
                       autofocus: _isNew,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         isDense: true,
                         hintText: 'What needs to be done?',
+                      ),
+                    ),
+                    const Gap(16),
+                    // Notes
+                    _sectionLabel(context, 'Notes'),
+                    const Gap(8),
+                    TextField(
+                      controller: _notes,
+                      maxLines: null,
+                      minLines: 3,
+                      keyboardType: TextInputType.multiline,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        isDense: true,
+                        alignLabelWithHint: true,
+                        hintText: 'Details, links, markdown…',
                       ),
                     ),
                     const Gap(16),

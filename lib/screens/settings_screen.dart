@@ -77,9 +77,9 @@ class SettingsScreen extends StatelessWidget {
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute<void>(
-                builder: (_) => GrantPermissionUi(
+                builder: (_) => const GrantPermissionUi(
                   resourceName: todoFileName,
-                  child: const _ReturnPage(),
+                  child: _ReturnPage(),
                 ),
               ),
             ),
@@ -91,9 +91,9 @@ class SettingsScreen extends StatelessWidget {
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute<void>(
-                builder: (_) => GrantPermissionUi(
+                builder: (_) => const GrantPermissionUi(
                   resourceName: doneFileName,
-                  child: const _ReturnPage(),
+                  child: _ReturnPage(),
                 ),
               ),
             ),

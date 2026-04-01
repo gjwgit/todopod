@@ -39,6 +39,7 @@ Code](https://claude.com/product/claude-code).
 
 ## 0.2 Basic Functionality
 
++ Support a NOTE field for entries [0.1.3 20260401 gjw]
 + Autocomplete ptoject/context [0.1.2 20260401 gjw]
 + Support basic import of Todo.txt [0.1.1 20260327 gjw]
 

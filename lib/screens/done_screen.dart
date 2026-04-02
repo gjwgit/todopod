@@ -16,6 +16,7 @@ import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 import 'package:todopod/models/task.dart';
+import 'package:todopod/screens/done_screen_widgets.dart';
 import 'package:todopod/services/app_provider.dart';
 
 class DoneScreen extends StatefulWidget {
@@ -138,8 +139,9 @@ class _DoneScreenState extends State<DoneScreen> {
                 itemCount: tasks.length,
                 separatorBuilder: (_, _) =>
                     const Divider(height: 1, indent: 52),
-                itemBuilder: (_, i) => _DoneTile(
+                itemBuilder: (_, i) => DoneTile(
                   task: tasks[i],
+                  onTap: () => showDoneTaskDetail(context, tasks[i]),
                   onUncomplete: () => _uncomplete(tasks[i], provider),
                   onDelete: () => _delete(tasks[i], provider),
                 ),
@@ -228,111 +230,4 @@ class _DoneScreenState extends State<DoneScreen> {
       }
     });
   }
-}
-
-// ── Done task tile ────────────────────────────────────────────────────────────
-
-class _DoneTile extends StatelessWidget {
-  final Task task;
-  final VoidCallback onUncomplete;
-  final VoidCallback onDelete;
-
-  const _DoneTile({
-    required this.task,
-    required this.onUncomplete,
-    required this.onDelete,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Checked checkbox — tapping undoes completion.
-          Tooltip(
-            message: 'Mark as active again',
-            child: Checkbox(
-              value: true,
-              onChanged: (_) => onUncomplete(),
-              shape: const CircleBorder(),
-              activeColor: cs.primary,
-            ),
-          ),
-          const Gap(4),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Completion date
-                if (task.completionDate != null)
-                  Text(
-                    'Completed ${_fmtDate(task.completionDate!)}',
-                    style: TextStyle(color: cs.onSurfaceVariant, fontSize: 11),
-                  ),
-                const Gap(2),
-                Text(
-                  task.description,
-                  style: TextStyle(
-                    fontSize: 14,
-                    decoration: TextDecoration.lineThrough,
-                    color: cs.onSurfaceVariant,
-                  ),
-                ),
-                // Tags
-                if (_hasTags(task)) ...[
-                  const Gap(4),
-                  Wrap(
-                    spacing: 4,
-                    children: [
-                      for (final p in task.projects)
-                        _SmallChip(label: '+$p', cs: cs),
-                      for (final c in task.contexts)
-                        _SmallChip(label: '@$c', cs: cs),
-                    ],
-                  ),
-                ],
-              ],
-            ),
-          ),
-          // Delete button
-          IconButton(
-            icon: Icon(Icons.delete_outline, size: 18, color: cs.error),
-            tooltip: 'Delete permanently',
-            onPressed: onDelete,
-          ),
-        ],
-      ),
-    );
-  }
-
-  bool _hasTags(Task t) => t.projects.isNotEmpty || t.contexts.isNotEmpty;
-
-  String _fmtDate(DateTime d) =>
-      '${d.day.toString().padLeft(2, '0')}/'
-      '${d.month.toString().padLeft(2, '0')}/'
-      '${d.year}';
-}
-
-class _SmallChip extends StatelessWidget {
-  final String label;
-  final ColorScheme cs;
-
-  const _SmallChip({required this.label, required this.cs});
-
-  @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
-    decoration: BoxDecoration(
-      color: cs.surfaceContainerHighest,
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: Text(
-      label,
-      style: TextStyle(fontSize: 11, color: cs.onSurfaceVariant),
-    ),
-  );
 }

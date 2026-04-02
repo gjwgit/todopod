@@ -39,6 +39,7 @@ Code](https://claude.com/product/claude-code).
 
 ## 0.2 Basic Functionality
 
++ Tap on a DONE item to view it [0.1.7 20260402 gjw]
 + Support delete task with a swipe [0.1.6 20260402 gjw]
 + Allow items to be ordered/moved [0.1.5 20260402 gjw]
 + Catch unsaved edits [0.1.4 20260401 gjw]

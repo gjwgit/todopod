@@ -156,6 +156,60 @@ class AppProvider extends ChangeNotifier {
     return copy;
   }
 
+  // ── Reordering ──────────────────────────────────────────────────────────
+
+  /// Reorder a task within the visible (sorted + filtered) list.
+  ///
+  /// When sorted by priority, dragging a task into a different priority
+  /// section automatically changes the task's priority to match.
+
+  void reorderTask(int oldIndex, int newIndex) {
+    if (oldIndex < newIndex) newIndex--;
+    if (oldIndex == newIndex) return;
+
+    final visible = tasks; // sorted + filtered snapshot
+    final task = visible[oldIndex];
+
+    // Determine new priority from the drop target's neighbours.
+
+    String? newPriority = task.priority;
+    if (_sortOrder == SortOrder.priority) {
+      // Build the list as it will look after removing the dragged item.
+
+      final without = List<Task>.from(visible)..removeAt(oldIndex);
+      final dropIdx = newIndex.clamp(0, without.length);
+      if (dropIdx < without.length) {
+        newPriority = without[dropIdx].priority;
+      } else if (without.isNotEmpty) {
+        newPriority = without.last.priority;
+      }
+    }
+
+    // Apply new priority if it changed.
+
+    final updated = newPriority != task.priority
+        ? task.copyWith(priority: newPriority)
+        : task;
+
+    // Rebuild _tasks: remove the moved task, then insert at the correct
+    // position relative to the other visible tasks.
+
+    final visibleIds = visible.map((t) => t.id).toList();
+    final reordered = List<String>.from(visibleIds)..removeAt(oldIndex);
+    reordered.insert(newIndex, updated.id);
+
+    // Partition _tasks into visible (respecting new order) and hidden.
+
+    final taskMap = {for (final t in _tasks) t.id: t};
+    taskMap[updated.id] = updated;
+
+    final orderedVisible = reordered.map((id) => taskMap[id]!).toList();
+    final hidden = _tasks.where((t) => !reordered.contains(t.id)).toList();
+
+    _tasks = [...orderedVisible, ...hidden];
+    notifyListeners();
+  }
+
   // ── CRUD ──────────────────────────────────────────────────────────────────
 
   void addTask(Task task) {

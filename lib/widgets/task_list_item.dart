@@ -1,0 +1,121 @@
+/// Task list item — reorderable task row with priority group headers.
+///
+// Time-stamp: <Wednesday 2026-04-01 12:40:18 +1100 Graham Williams>
+///
+/// Copyright (C) 2026, Togaware Pty Ltd
+///
+/// Licensed under the GNU General Public License, Version 3 (the "License");
+///
+/// License: https://opensource.org/license/gpl-3-0
+
+library;
+
+import 'package:flutter/material.dart';
+
+import 'package:todopod/constants/app.dart';
+import 'package:todopod/models/task.dart';
+import 'package:todopod/widgets/task_tile.dart';
+
+// ── Reorderable task item with optional group header ─────────────────────────
+
+class ReorderableTaskItem extends StatelessWidget {
+  final int index;
+  final Task task;
+  final bool showHeader;
+  final bool isFirstHeader;
+  final VoidCallback onTap;
+  final ValueChanged<bool?> onComplete;
+
+  const ReorderableTaskItem({
+    super.key,
+    required this.index,
+    required this.task,
+    required this.showHeader,
+    this.isFirstHeader = false,
+    required this.onTap,
+    required this.onComplete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (showHeader)
+          PriorityHeader(
+            priority: task.priority,
+            cs: cs,
+            showDivider: !isFirstHeader,
+          ),
+        Row(
+          children: [
+            Expanded(
+              child: TaskTile(task: task, onTap: onTap, onComplete: onComplete),
+            ),
+            ReorderableDragStartListener(
+              index: index,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 12,
+                ),
+                child: Icon(
+                  Icons.drag_handle,
+                  size: 20,
+                  color: cs.onSurfaceVariant.withValues(alpha: 0.4),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+// ── Priority group header ────────────────────────────────────────────────────
+
+class PriorityHeader extends StatelessWidget {
+  final String? priority;
+  final ColorScheme cs;
+  final bool showDivider;
+
+  const PriorityHeader({
+    super.key,
+    required this.priority,
+    required this.cs,
+    this.showDivider = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final label = priority != null
+        ? '$priority — ${priorityLabels[priority] ?? priority}'
+        : 'No Priority';
+    final color = priority != null
+        ? (priorityColors[priority] ?? cs.primary)
+        : cs.onSurfaceVariant;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (showDivider) const Divider(height: 1),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.5,
+              color: color,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}

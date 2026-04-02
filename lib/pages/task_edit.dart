@@ -16,9 +16,10 @@ import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:todopod/constants/app.dart';
 import 'package:todopod/models/task.dart';
+import 'package:todopod/pages/task_edit_form_fields.dart';
 import 'package:todopod/services/app_provider.dart';
+import 'package:todopod/widgets/tag_autocomplete.dart';
 
 const _uuid = Uuid();
 
@@ -85,10 +86,7 @@ class _TaskEditState extends State<TaskEdit> {
     _description.dispose();
     _notes.dispose();
     _duration.dispose();
-    for (final c in _projects) {
-      c.dispose();
-    }
-    for (final c in _contexts) {
+    for (final c in [..._projects, ..._contexts]) {
       c.dispose();
     }
     super.dispose();
@@ -102,20 +100,19 @@ class _TaskEditState extends State<TaskEdit> {
     if (_duration.text != _initDuration) return true;
     if (_priority != _initPriority) return true;
     if (_dueDate != _initDueDate) return true;
-
-    final curProjects = _projects.map((c) => c.text).toList();
-    if (curProjects.length != _initProjects.length) return true;
-    for (var i = 0; i < curProjects.length; i++) {
-      if (curProjects[i] != _initProjects[i]) return true;
-    }
-
-    final curContexts = _contexts.map((c) => c.text).toList();
-    if (curContexts.length != _initContexts.length) return true;
-    for (var i = 0; i < curContexts.length; i++) {
-      if (curContexts[i] != _initContexts[i]) return true;
-    }
+    if (!_listEquals(_projects, _initProjects)) return true;
+    if (!_listEquals(_contexts, _initContexts)) return true;
 
     return false;
+  }
+
+  bool _listEquals(List<TextEditingController> ctrls, List<String> init) {
+    if (ctrls.length != init.length) return false;
+    for (var i = 0; i < ctrls.length; i++) {
+      if (ctrls[i].text != init[i]) return false;
+    }
+
+    return true;
   }
 
   Future<void> _confirmDiscard() async {
@@ -176,9 +173,10 @@ class _TaskEditState extends State<TaskEdit> {
     if (picked != null) setState(() => _dueDate = picked);
   }
 
+  // ── Build ───────────────────────────────────────────────────────────────
+
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     final isWide = MediaQuery.of(context).size.width > 600;
 
     return Dialog(
@@ -191,349 +189,132 @@ class _TaskEditState extends State<TaskEdit> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 12, 0),
-              child: Row(
-                children: [
-                  Text(
-                    _isNew ? 'New Task' : 'Edit Task',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: _confirmDiscard,
-                  ),
-                ],
-              ),
-            ),
-            // Form
-            Flexible(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Title
-                    _sectionLabel(context, 'Title'),
-                    const Gap(8),
-                    TextField(
-                      controller: _description,
-                      autofocus: _isNew,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        isDense: true,
-                        hintText: 'What needs to be done?',
-                      ),
-                    ),
-                    const Gap(16),
-                    // Notes
-                    _sectionLabel(context, 'Notes'),
-                    const Gap(8),
-                    TextField(
-                      controller: _notes,
-                      maxLines: null,
-                      minLines: 3,
-                      keyboardType: TextInputType.multiline,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        isDense: true,
-                        alignLabelWithHint: true,
-                        hintText: 'Details, links, markdown…',
-                      ),
-                    ),
-                    const Gap(16),
-                    // Priority + Due Date row
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _sectionLabel(context, 'Priority'),
-                              const Gap(8),
-                              DropdownButtonFormField<String?>(
-                                initialValue: _priority,
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  isDense: true,
-                                ),
-                                items: [
-                                  const DropdownMenuItem(child: Text('None')),
-                                  ...priorities.map(
-                                    (p) => DropdownMenuItem(
-                                      value: p,
-                                      child: Text('$p — ${priorityLabels[p]}'),
-                                    ),
-                                  ),
-                                ],
-                                onChanged: (v) => setState(() => _priority = v),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Gap(12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _sectionLabel(context, 'Due Date'),
-                              const Gap(8),
-                              InkWell(
-                                onTap: _pickDueDate,
-                                borderRadius: BorderRadius.circular(4),
-                                child: InputDecorator(
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    isDense: true,
-                                    suffixIcon: Icon(
-                                      Icons.event_outlined,
-                                      size: 18,
-                                    ),
-                                  ),
-                                  child: Text(
-                                    _dueDate != null
-                                        ? '${_dueDate!.day.toString().padLeft(2, '0')}/'
-                                              '${_dueDate!.month.toString().padLeft(2, '0')}/'
-                                              '${_dueDate!.year}'
-                                        : 'No due date',
-                                    style: TextStyle(
-                                      color: _dueDate != null
-                                          ? null
-                                          : cs.onSurfaceVariant,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              if (_dueDate != null)
-                                TextButton(
-                                  onPressed: () =>
-                                      setState(() => _dueDate = null),
-                                  child: const Text('Clear'),
-                                ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Gap(16),
-                    // Duration
-                    _sectionLabel(context, 'Duration'),
-                    const Gap(8),
-                    TextField(
-                      controller: _duration,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        isDense: true,
-                        hintText: 'e.g. 30m, 1h, 2h30m',
-                        prefixText: '= ',
-                      ),
-                    ),
-                    const Gap(16),
-                    // Projects
-                    _sectionLabel(context, 'Projects'),
-                    const Gap(8),
-                    ..._projects.asMap().entries.map(
-                      (e) => Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Row(
-                          children: [
-                            const Text('+', style: TextStyle(fontSize: 16)),
-                            const Gap(8),
-                            Expanded(
-                              child: _TagAutocomplete(
-                                controller: e.value,
-                                options: context
-                                    .read<AppProvider>()
-                                    .allProjects,
-                                hintText: 'project name',
-                              ),
-                            ),
-                            IconButton(
-                              icon: const Icon(
-                                Icons.remove_circle_outline,
-                                size: 18,
-                              ),
-                              onPressed: () => setState(() {
-                                _projects[e.key].dispose();
-                                _projects.removeAt(e.key);
-                              }),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    TextButton.icon(
-                      icon: const Icon(Icons.add, size: 16),
-                      label: const Text('Add project'),
-                      onPressed: () => setState(
-                        () => _projects.add(TextEditingController()),
-                      ),
-                    ),
-                    const Gap(16),
-                    // Contexts
-                    _sectionLabel(context, 'Contexts'),
-                    const Gap(8),
-                    ..._contexts.asMap().entries.map(
-                      (e) => Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Row(
-                          children: [
-                            const Text('@', style: TextStyle(fontSize: 16)),
-                            const Gap(8),
-                            Expanded(
-                              child: _TagAutocomplete(
-                                controller: e.value,
-                                options: context
-                                    .read<AppProvider>()
-                                    .allContexts,
-                                hintText: 'home, office, phone...',
-                              ),
-                            ),
-                            IconButton(
-                              icon: const Icon(
-                                Icons.remove_circle_outline,
-                                size: 18,
-                              ),
-                              onPressed: () => setState(() {
-                                _contexts[e.key].dispose();
-                                _contexts.removeAt(e.key);
-                              }),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    TextButton.icon(
-                      icon: const Icon(Icons.add, size: 16),
-                      label: const Text('Add context'),
-                      onPressed: () => setState(
-                        () => _contexts.add(TextEditingController()),
-                      ),
-                    ),
-                    const Gap(8),
-                  ],
-                ),
-              ),
-            ),
-            // Actions
-            const Divider(height: 1),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-              child: Row(
-                children: [
-                  TextButton(
-                    onPressed: _confirmDiscard,
-                    child: const Text('Cancel'),
-                  ),
-                  const Spacer(),
-                  FilledButton(
-                    onPressed: () {
-                      if (_description.text.trim().isEmpty) return;
-                      Navigator.of(context).pop(_buildTask());
-                    },
-                    child: Text(_isNew ? 'Add Task' : 'Save'),
-                  ),
-                ],
-              ),
-            ),
+            _buildHeader(context),
+            _buildForm(context),
+            _buildActions(context),
           ],
         ),
       ),
     );
   }
-}
 
-Widget _sectionLabel(BuildContext context, String text) => Text(
-  text,
-  style: TextStyle(
-    color: Theme.of(context).colorScheme.primary,
-    fontWeight: FontWeight.w600,
-    fontSize: 13,
-    letterSpacing: 0.5,
-  ),
-);
+  Widget _buildHeader(BuildContext context) => Padding(
+    padding: const EdgeInsets.fromLTRB(20, 16, 12, 0),
+    child: Row(
+      children: [
+        Text(
+          _isNew ? 'New Task' : 'Edit Task',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const Spacer(),
+        IconButton(icon: const Icon(Icons.close), onPressed: _confirmDiscard),
+      ],
+    ),
+  );
 
-// ── Autocomplete that suggests existing values but accepts free text ─────────
-
-class _TagAutocomplete extends StatelessWidget {
-  final TextEditingController controller;
-  final List<String> options;
-  final String hintText;
-
-  const _TagAutocomplete({
-    required this.controller,
-    required this.options,
-    required this.hintText,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-
-    return Autocomplete<String>(
-      initialValue: controller.value,
-      optionsBuilder: (textEditingValue) {
-        final query = textEditingValue.text.toLowerCase();
-        if (query.isEmpty) return options;
-
-        return options.where((o) => o.toLowerCase().contains(query)).toList();
-      },
-      fieldViewBuilder: (context, fieldController, focusNode, onSubmitted) {
-        fieldController.addListener(
-          () => controller.text = fieldController.text,
-        );
-
-        return TextField(
-          controller: fieldController,
-          focusNode: focusNode,
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            isDense: true,
-            hintText: hintText,
-            suffixIcon: options.isNotEmpty
-                ? Icon(
-                    Icons.arrow_drop_down,
-                    size: 18,
-                    color: cs.onSurfaceVariant,
-                  )
-                : null,
-            suffixIconConstraints: const BoxConstraints(
-              minWidth: 24,
-              minHeight: 0,
+  Widget _buildForm(BuildContext context) => Flexible(
+    child: SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          editSectionLabel(context, 'Title'),
+          const Gap(8),
+          TextField(
+            controller: _description,
+            autofocus: _isNew,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              isDense: true,
+              hintText: 'What needs to be done?',
             ),
           ),
-          onSubmitted: (_) => onSubmitted(),
-        );
-      },
-      optionsViewBuilder: (context, onSelected, options) => Align(
-        alignment: Alignment.topLeft,
-        child: Material(
-          elevation: 4,
-          borderRadius: BorderRadius.circular(8),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxHeight: 200, maxWidth: 220),
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              shrinkWrap: true,
-              itemCount: options.length,
-              itemBuilder: (context, index) {
-                final option = options.elementAt(index);
+          const Gap(16),
+          editSectionLabel(context, 'Notes'),
+          const Gap(8),
+          TextField(
+            controller: _notes,
+            maxLines: null,
+            minLines: 3,
+            keyboardType: TextInputType.multiline,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              isDense: true,
+              alignLabelWithHint: true,
+              hintText: 'Details, links, markdown…',
+            ),
+          ),
+          const Gap(16),
+          PriorityDueDateRow(
+            priority: _priority,
+            dueDate: _dueDate,
+            onPriorityChanged: (v) => setState(() => _priority = v),
+            onPickDueDate: _pickDueDate,
+            onClearDueDate: () => setState(() => _dueDate = null),
+          ),
+          const Gap(16),
+          editSectionLabel(context, 'Duration'),
+          const Gap(8),
+          TextField(
+            controller: _duration,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              isDense: true,
+              hintText: 'e.g. 30m, 1h, 2h30m',
+              prefixText: '= ',
+            ),
+          ),
+          const Gap(16),
+          TagListEditor(
+            label: 'Projects',
+            prefix: '+',
+            controllers: _projects,
+            options: context.read<AppProvider>().allProjects,
+            hintText: 'project name',
+            onAdd: () => setState(() => _projects.add(TextEditingController())),
+            onRemove: (i) => setState(() {
+              _projects[i].dispose();
+              _projects.removeAt(i);
+            }),
+          ),
+          const Gap(16),
+          TagListEditor(
+            label: 'Contexts',
+            prefix: '@',
+            controllers: _contexts,
+            options: context.read<AppProvider>().allContexts,
+            hintText: 'home, office, phone...',
+            onAdd: () => setState(() => _contexts.add(TextEditingController())),
+            onRemove: (i) => setState(() {
+              _contexts[i].dispose();
+              _contexts.removeAt(i);
+            }),
+          ),
+          const Gap(8),
+        ],
+      ),
+    ),
+  );
 
-                return ListTile(
-                  dense: true,
-                  visualDensity: VisualDensity.compact,
-                  title: Text(option, style: const TextStyle(fontSize: 13)),
-                  onTap: () => onSelected(option),
-                );
+  Widget _buildActions(BuildContext context) => Column(
+    children: [
+      const Divider(height: 1),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+        child: Row(
+          children: [
+            TextButton(onPressed: _confirmDiscard, child: const Text('Cancel')),
+            const Spacer(),
+            FilledButton(
+              onPressed: () {
+                if (_description.text.trim().isEmpty) return;
+                Navigator.of(context).pop(_buildTask());
               },
+              child: Text(_isNew ? 'Add Task' : 'Save'),
             ),
-          ),
+          ],
         ),
       ),
-      onSelected: (value) => controller.text = value,
-    );
-  }
+    ],
+  );
 }

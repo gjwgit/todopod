@@ -54,7 +54,11 @@ void showDoneTaskDetail(BuildContext context, Task task) {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (task.completionDate != null)
-                      _detailRow(cs, 'Completed', fmtDate(task.completionDate!)),
+                      _detailRow(
+                        cs,
+                        'Completed',
+                        fmtDate(task.completionDate!),
+                      ),
                     if (task.creationDate != null)
                       _detailRow(cs, 'Created', fmtDate(task.creationDate!)),
                     if (task.priority != null)

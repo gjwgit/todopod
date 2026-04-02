@@ -131,6 +131,7 @@ class _TasksScreenState extends State<TasksScreen> {
                     isFirstHeader: showHeader && i == 0,
                     onTap: () => _editTask(context, task, provider),
                     onComplete: (_) => _complete(task, provider),
+                    onDelete: () => _deleteTask(task, provider),
                   );
                 },
               ),
@@ -182,5 +183,10 @@ class _TasksScreenState extends State<TasksScreen> {
   void _complete(Task task, AppProvider provider) {
     provider.completeTask(task.id);
     provider.saveAllToPod();
+  }
+
+  void _deleteTask(Task task, AppProvider provider) {
+    provider.deleteTask(task.id);
+    provider.saveTodoToPod();
   }
 }

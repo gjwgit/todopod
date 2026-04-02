@@ -25,6 +25,7 @@ class ReorderableTaskItem extends StatelessWidget {
   final bool isFirstHeader;
   final VoidCallback onTap;
   final ValueChanged<bool?> onComplete;
+  final VoidCallback? onDelete;
 
   const ReorderableTaskItem({
     super.key,
@@ -34,6 +35,7 @@ class ReorderableTaskItem extends StatelessWidget {
     this.isFirstHeader = false,
     required this.onTap,
     required this.onComplete,
+    this.onDelete,
   });
 
   @override
@@ -50,29 +52,73 @@ class ReorderableTaskItem extends StatelessWidget {
             cs: cs,
             showDivider: !isFirstHeader,
           ),
-        Row(
-          children: [
-            Expanded(
-              child: TaskTile(task: task, onTap: onTap, onComplete: onComplete),
-            ),
-            ReorderableDragStartListener(
-              index: index,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 12,
-                ),
-                child: Icon(
-                  Icons.drag_handle,
-                  size: 20,
-                  color: cs.onSurfaceVariant.withValues(alpha: 0.4),
+        Dismissible(
+          key: ValueKey('dismiss-${task.id}'),
+          direction: DismissDirection.endToStart,
+          confirmDismiss: (_) => _confirmDelete(context),
+          background: Container(
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.only(right: 20),
+            color: cs.error,
+            child: Icon(Icons.delete_forever, color: cs.onError),
+          ),
+          onDismissed: (_) => onDelete?.call(),
+          child: Row(
+            children: [
+              Expanded(
+                child: TaskTile(
+                  task: task,
+                  onTap: onTap,
+                  onComplete: onComplete,
                 ),
               ),
-            ),
-          ],
+              ReorderableDragStartListener(
+                index: index,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 12,
+                  ),
+                  child: Icon(
+                    Icons.drag_handle,
+                    size: 20,
+                    color: cs.onSurfaceVariant.withValues(alpha: 0.4),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );
+  }
+
+  Future<bool> _confirmDelete(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete permanently?'),
+        content: Text(
+          'This will permanently remove "${task.description}" '
+          'without recording it in Done.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(ctx).colorScheme.error,
+            ),
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    return confirmed ?? false;
   }
 }
 

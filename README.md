@@ -14,9 +14,9 @@
 Hyundai vehicle data together in one secure and private place. You can
 selectively share any parts of your data with others. The app itself
 presents the data and analyses of the data. It is being developed by
-[Togaware](https://togaware.com) and pair programmed by [Graham
-Williams](https://togaware.com/Graham.Williams.html) and [Claude
-Code](https://claude.com/product/claude-code).
+[Togaware](https://togaware.com) by [Graham
+Williams](https://togaware.com/Graham.Williams.html) with coding by
+[Claude Code](https://claude.com/product/claude-code).
 
 We make this project available for free so if you appreciate the app
 then please show some ❤️ and tap on the star at
@@ -56,11 +56,30 @@ a Pull Request. The app is implemented in
 [Flutter](https://flutter.dev) using
 [solidui](https://pub.dev/packages/solidui). Thanks.
 
----
-
 ## Introduction
 
-A Flutter app to manage todo lists.
+A Flutter app to manage todo lists based on the todo.txt format for
+lists. Lists in the format of todo.txt can be imported and
+exported. Each item has a title, notes, priority (A=now, B=today,
+C=this week, D=next week, E=later, and F=parked), due date, duration,
+project (to collect together related tasks), and a context (where the
+task is to be undertaken).
+
+New tasks are added by a tap of the floating `+` button or the `+` in
+the SEARCH bar or by typing ENTER in the SEARCH bar whereby the text
+typed there becomes the title of the new task.
+
+![Add a new task](./assets/screenshots/add_task_compuvault.png)
+
+After we save the task it is added to our TASK LIST.
+
+![Add a new task](./assets/screenshots/task_list_compuvault_only.png)
+
+Hover over a task to view the task details.
+
+Tap on a task to edit the task.
+
+Drag the right hand clasp to reorder a task.
 
 ## Android Network Config
 

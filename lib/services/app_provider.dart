@@ -171,6 +171,10 @@ class AppProvider extends ChangeNotifier {
     final task = visible[oldIndex];
 
     // Determine new priority from the drop target's neighbours.
+    //
+    // Use the item ABOVE the insertion point — this is the tail of the group
+    // the user is dragging into.  When dropping at the very top (no item
+    // above), fall back to the item below.
 
     String? newPriority = task.priority;
     if (_sortOrder == SortOrder.priority) {
@@ -178,10 +182,11 @@ class AppProvider extends ChangeNotifier {
 
       final without = List<Task>.from(visible)..removeAt(oldIndex);
       final dropIdx = newIndex.clamp(0, without.length);
-      if (dropIdx < without.length) {
-        newPriority = without[dropIdx].priority;
+
+      if (dropIdx > 0) {
+        newPriority = without[dropIdx - 1].priority;
       } else if (without.isNotEmpty) {
-        newPriority = without.last.priority;
+        newPriority = without.first.priority;
       }
     }
 

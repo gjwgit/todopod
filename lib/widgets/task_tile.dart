@@ -140,11 +140,15 @@ class TaskTile extends StatelessWidget {
     }
 
     if (task.projects.isNotEmpty) {
-      buf.writeln('**Projects:** ${task.projects.map((p) => '+$p').join(', ')}\n');
+      buf.writeln(
+        '**Projects:** ${task.projects.map((p) => '+$p').join(', ')}\n',
+      );
     }
 
     if (task.contexts.isNotEmpty) {
-      buf.writeln('**Contexts:** ${task.contexts.map((c) => '@$c').join(', ')}\n');
+      buf.writeln(
+        '**Contexts:** ${task.contexts.map((c) => '@$c').join(', ')}\n',
+      );
     }
 
     if (task.notes != null && task.notes!.isNotEmpty) {

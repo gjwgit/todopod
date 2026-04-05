@@ -226,7 +226,8 @@ class _TaskEditState extends State<TaskEdit> {
           editSectionLabel(
             context,
             'Title',
-            tooltip: '**Title**\n\n'
+            tooltip:
+                '**Title**\n\n'
                 'A short summary of the task — what needs to be done.\n\n'
                 'This is the main text that appears in the task list.',
           ),
@@ -244,7 +245,8 @@ class _TaskEditState extends State<TaskEdit> {
           editSectionLabel(
             context,
             'Notes',
-            tooltip: '**Notes**\n\n'
+            tooltip:
+                '**Notes**\n\n'
                 'Additional details, links, or context for the task.\n\n'
                 'Supports **markdown** formatting — bold, italic, '
                 'links, lists, and code blocks will render when viewing '
@@ -275,7 +277,8 @@ class _TaskEditState extends State<TaskEdit> {
           editSectionLabel(
             context,
             'Duration',
-            tooltip: '**Duration**\n\n'
+            tooltip:
+                '**Duration**\n\n'
                 'Estimated time to complete the task.\n\n'
                 'Free-text — common formats include '
                 '*30m*, *1h*, *2h30m*, *15min*.',
@@ -297,7 +300,8 @@ class _TaskEditState extends State<TaskEdit> {
             controllers: _projects,
             options: context.read<AppProvider>().allProjects,
             hintText: 'project name',
-            tooltip: '**Projects**\n\n'
+            tooltip:
+                '**Projects**\n\n'
                 'Group related tasks under a project tag (prefixed with **+**).\n\n'
                 'Examples: +home, +work, +garden.\n'
                 'Autocomplete suggests existing project names.',
@@ -314,7 +318,8 @@ class _TaskEditState extends State<TaskEdit> {
             controllers: _contexts,
             options: context.read<AppProvider>().allContexts,
             hintText: 'home, office, phone...',
-            tooltip: '**Contexts**\n\n'
+            tooltip:
+                '**Contexts**\n\n'
                 'Where or how the task should be done (prefixed with **@**).\n\n'
                 'Examples: @home, @office, @phone, @computer.\n'
                 'Useful for filtering tasks by location or tool.',

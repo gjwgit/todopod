@@ -441,7 +441,7 @@ packages:
     source: hosted
     version: "7.3.1"
   markdown_tooltip:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: markdown_tooltip
       sha256: a2a47673d24c921be25fc04341bf3a865a1b6c5c6356dff0bee3f1fa122757ca

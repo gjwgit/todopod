@@ -49,7 +49,8 @@ class PriorityDueDateRow extends StatelessWidget {
               editSectionLabel(
                 context,
                 'Priority',
-                tooltip: '**Priority**\n\n'
+                tooltip:
+                    '**Priority**\n\n'
                     'Task importance level from A (Critical) to F (Later).\n\n'
                     'Tasks are grouped by priority when sorted. '
                     'Drag a task between groups to change its priority.',
@@ -83,7 +84,8 @@ class PriorityDueDateRow extends StatelessWidget {
               editSectionLabel(
                 context,
                 'Due Date',
-                tooltip: '**Due Date**\n\n'
+                tooltip:
+                    '**Due Date**\n\n'
                     'When the task should be completed by.\n\n'
                     'Overdue tasks show a red date chip in the task list. '
                     'Tasks due today or tomorrow show amber.',

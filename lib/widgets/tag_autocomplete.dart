@@ -18,11 +18,7 @@ import 'package:markdown_tooltip/markdown_tooltip.dart';
 
 /// A section label styled for edit forms, with optional tooltip.
 
-Widget editSectionLabel(
-  BuildContext context,
-  String text, {
-  String? tooltip,
-}) {
+Widget editSectionLabel(BuildContext context, String text, {String? tooltip}) {
   final label = Text(
     text,
     style: TextStyle(
@@ -43,10 +39,9 @@ Widget editSectionLabel(
         child: Icon(
           Icons.info_outline,
           size: 13,
-          color: Theme.of(context)
-              .colorScheme
-              .onSurfaceVariant
-              .withValues(alpha: 0.5),
+          color: Theme.of(
+            context,
+          ).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
         ),
       ),
     ],

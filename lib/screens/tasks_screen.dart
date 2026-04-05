@@ -66,17 +66,27 @@ class _TasksScreenState extends State<TasksScreen> {
                   child: TextField(
                     controller: _search,
                     decoration: InputDecoration(
-                      hintText: 'Search tasks...',
+                      hintText: 'Search or add task...',
                       prefixIcon: const Icon(Icons.search, size: 18),
-                      suffixIcon: _query.isNotEmpty
-                          ? IconButton(
+                      suffixIcon: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (_query.isNotEmpty)
+                            IconButton(
                               icon: const Icon(Icons.clear, size: 18),
                               onPressed: () {
                                 _search.clear();
                                 setState(() => _query = '');
                               },
-                            )
-                          : null,
+                            ),
+                          IconButton(
+                            icon: const Icon(Icons.add, size: 20),
+                            tooltip: 'Create task from search text',
+                            onPressed: () =>
+                                _addTaskFromSearch(context, provider),
+                          ),
+                        ],
+                      ),
                       isDense: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(24),
@@ -84,6 +94,7 @@ class _TasksScreenState extends State<TasksScreen> {
                       contentPadding: const EdgeInsets.symmetric(vertical: 8),
                     ),
                     onChanged: (v) => setState(() => _query = v),
+                    onSubmitted: (_) => _addTaskFromSearch(context, provider),
                   ),
                 ),
                 const Gap(8),
@@ -163,6 +174,27 @@ class _TasksScreenState extends State<TasksScreen> {
     }
     if (!context.mounted) return;
     messenger.showSnackBar(const SnackBar(content: Text('Task added')));
+  }
+
+  Future<void> _addTaskFromSearch(
+    BuildContext context,
+    AppProvider provider,
+  ) async {
+    final title = _search.text.trim();
+    _search.clear();
+    setState(() => _query = '');
+
+    final messenger = ScaffoldMessenger.of(context);
+    final task = await showDialog<Task>(
+      context: context,
+      builder: (_) => TaskEdit(initialTitle: title),
+    );
+    if (task != null) {
+      provider.addTask(task);
+      await provider.saveTodoToPod();
+      if (!context.mounted) return;
+      messenger.showSnackBar(const SnackBar(content: Text('Task added')));
+    }
   }
 
   Future<void> _editTask(

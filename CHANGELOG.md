@@ -39,6 +39,7 @@ Code](https://claude.com/product/claude-code).
 
 ## 0.2 Basic Functionality
 
++ All search bar text as new task title [1.8 20260406 gjw]
 + Tap on a DONE item to view it [0.1.7 20260402 gjw]
 + Support delete task with a swipe [0.1.6 20260402 gjw]
 + Allow items to be ordered/moved [0.1.5 20260402 gjw]

@@ -27,7 +27,10 @@ class TaskEdit extends StatefulWidget {
   /// The task to edit, or null to create a new task.
   final Task? task;
 
-  const TaskEdit({super.key, this.task});
+  /// Pre-fill the title when creating a new task (ignored when editing).
+  final String? initialTitle;
+
+  const TaskEdit({super.key, this.task, this.initialTitle});
 
   @override
   State<TaskEdit> createState() => _TaskEditState();
@@ -58,7 +61,9 @@ class _TaskEditState extends State<TaskEdit> {
   void initState() {
     super.initState();
     final t = widget.task;
-    _description = TextEditingController(text: t?.description ?? '');
+    _description = TextEditingController(
+      text: t?.description ?? widget.initialTitle ?? '',
+    );
     _notes = TextEditingController(text: t?.notes ?? '');
     _duration = TextEditingController(text: t?.duration ?? '');
     _priority = t?.priority;

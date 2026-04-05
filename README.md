@@ -63,7 +63,8 @@ lists. Lists in the format of todo.txt can be imported and
 exported. Each item has a title, notes, priority (A=now, B=today,
 C=this week, D=next week, E=later, and F=parked), due date, duration,
 project (to collect together related tasks), and a context (where the
-task is to be undertaken).
+task is to be undertaken). The app supports extensive MarkdownTooltips
+for documentation.
 
 New tasks are added by a tap of the floating `+` button or the `+` in
 the SEARCH bar or by typing ENTER in the SEARCH bar whereby the text

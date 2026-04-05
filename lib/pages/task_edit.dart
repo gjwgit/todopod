@@ -223,7 +223,13 @@ class _TaskEditState extends State<TaskEdit> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          editSectionLabel(context, 'Title'),
+          editSectionLabel(
+            context,
+            'Title',
+            tooltip: '**Title**\n\n'
+                'A short summary of the task — what needs to be done.\n\n'
+                'This is the main text that appears in the task list.',
+          ),
           const Gap(8),
           TextField(
             controller: _description,
@@ -235,7 +241,15 @@ class _TaskEditState extends State<TaskEdit> {
             ),
           ),
           const Gap(16),
-          editSectionLabel(context, 'Notes'),
+          editSectionLabel(
+            context,
+            'Notes',
+            tooltip: '**Notes**\n\n'
+                'Additional details, links, or context for the task.\n\n'
+                'Supports **markdown** formatting — bold, italic, '
+                'links, lists, and code blocks will render when viewing '
+                'the task.',
+          ),
           const Gap(8),
           TextField(
             controller: _notes,
@@ -258,7 +272,14 @@ class _TaskEditState extends State<TaskEdit> {
             onClearDueDate: () => setState(() => _dueDate = null),
           ),
           const Gap(16),
-          editSectionLabel(context, 'Duration'),
+          editSectionLabel(
+            context,
+            'Duration',
+            tooltip: '**Duration**\n\n'
+                'Estimated time to complete the task.\n\n'
+                'Free-text — common formats include '
+                '*30m*, *1h*, *2h30m*, *15min*.',
+          ),
           const Gap(8),
           TextField(
             controller: _duration,
@@ -276,6 +297,10 @@ class _TaskEditState extends State<TaskEdit> {
             controllers: _projects,
             options: context.read<AppProvider>().allProjects,
             hintText: 'project name',
+            tooltip: '**Projects**\n\n'
+                'Group related tasks under a project tag (prefixed with **+**).\n\n'
+                'Examples: +home, +work, +garden.\n'
+                'Autocomplete suggests existing project names.',
             onAdd: () => setState(() => _projects.add(TextEditingController())),
             onRemove: (i) => setState(() {
               _projects[i].dispose();
@@ -289,6 +314,10 @@ class _TaskEditState extends State<TaskEdit> {
             controllers: _contexts,
             options: context.read<AppProvider>().allContexts,
             hintText: 'home, office, phone...',
+            tooltip: '**Contexts**\n\n'
+                'Where or how the task should be done (prefixed with **@**).\n\n'
+                'Examples: @home, @office, @phone, @computer.\n'
+                'Useful for filtering tasks by location or tool.',
             onAdd: () => setState(() => _contexts.add(TextEditingController())),
             onRemove: (i) => setState(() {
               _contexts[i].dispose();

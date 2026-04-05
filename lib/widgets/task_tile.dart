@@ -13,6 +13,7 @@ library;
 import 'package:flutter/material.dart';
 
 import 'package:gap/gap.dart';
+import 'package:markdown_tooltip/markdown_tooltip.dart';
 
 import 'package:todopod/constants/app.dart';
 import 'package:todopod/models/task.dart';
@@ -34,89 +35,124 @@ class TaskTile extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final isDone = task.completed;
 
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Checkbox
-            Checkbox(
-              value: isDone,
-              onChanged: isDone ? null : onComplete,
-              shape: const CircleBorder(),
-            ),
-            const Gap(4),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Priority + description row
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (task.priority != null) ...[
-                        _PriorityBadge(priority: task.priority!, cs: cs),
-                        const Gap(8),
-                      ],
-                      Expanded(
-                        child: Text(
-                          task.description,
-                          style: TextStyle(
-                            fontSize: 14,
-                            decoration: isDone
-                                ? TextDecoration.lineThrough
-                                : TextDecoration.none,
-                            color: isDone ? cs.onSurfaceVariant : null,
+    return MarkdownTooltip(
+      message: _buildTooltip(),
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Checkbox
+              Checkbox(
+                value: isDone,
+                onChanged: isDone ? null : onComplete,
+                shape: const CircleBorder(),
+              ),
+              const Gap(4),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Priority + description row
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (task.priority != null) ...[
+                          _PriorityBadge(priority: task.priority!, cs: cs),
+                          const Gap(8),
+                        ],
+                        Expanded(
+                          child: Text(
+                            task.description,
+                            style: TextStyle(
+                              fontSize: 14,
+                              decoration: isDone
+                                  ? TextDecoration.lineThrough
+                                  : TextDecoration.none,
+                              color: isDone ? cs.onSurfaceVariant : null,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  // Tags row
-                  if (_hasTags(task)) ...[
-                    const Gap(4),
-                    Wrap(
-                      spacing: 4,
-                      runSpacing: 2,
-                      children: [
-                        for (final p in task.projects)
-                          _TagChip(
-                            label: '+$p',
-                            color: cs.primaryContainer,
-                            textColor: cs.onPrimaryContainer,
-                          ),
-                        for (final c in task.contexts)
-                          _TagChip(
-                            label: '@$c',
-                            color: cs.secondaryContainer,
-                            textColor: cs.onSecondaryContainer,
-                          ),
-                        if (task.dueDate != null)
-                          _TagChip(
-                            label: _fmtDue(task.dueDate!),
-                            color: _dueDateColor(task.dueDate!, cs),
-                            textColor: cs.onErrorContainer,
-                            icon: Icons.event_outlined,
-                          ),
-                        if (task.duration != null)
-                          _TagChip(
-                            label: task.duration!,
-                            color: cs.surfaceContainerHighest,
-                            textColor: cs.onSurfaceVariant,
-                            icon: Icons.timer_outlined,
-                          ),
                       ],
                     ),
+                    // Tags row
+                    if (_hasTags(task)) ...[
+                      const Gap(4),
+                      Wrap(
+                        spacing: 4,
+                        runSpacing: 2,
+                        children: [
+                          for (final p in task.projects)
+                            _TagChip(
+                              label: '+$p',
+                              color: cs.primaryContainer,
+                              textColor: cs.onPrimaryContainer,
+                            ),
+                          for (final c in task.contexts)
+                            _TagChip(
+                              label: '@$c',
+                              color: cs.secondaryContainer,
+                              textColor: cs.onSecondaryContainer,
+                            ),
+                          if (task.dueDate != null)
+                            _TagChip(
+                              label: _fmtDue(task.dueDate!),
+                              color: _dueDateColor(task.dueDate!, cs),
+                              textColor: cs.onErrorContainer,
+                              icon: Icons.event_outlined,
+                            ),
+                          if (task.duration != null)
+                            _TagChip(
+                              label: task.duration!,
+                              color: cs.surfaceContainerHighest,
+                              textColor: cs.onSurfaceVariant,
+                              icon: Icons.timer_outlined,
+                            ),
+                        ],
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  String _buildTooltip() {
+    final buf = StringBuffer('**${task.description}**\n\n');
+
+    if (task.priority != null) {
+      final label = priorityLabels[task.priority] ?? task.priority!;
+      buf.writeln('**Priority:** ${task.priority} — $label\n');
+    }
+
+    if (task.dueDate != null) {
+      buf.writeln('**Due:** ${_fmtDue(task.dueDate!)}\n');
+    }
+
+    if (task.duration != null) {
+      buf.writeln('**Duration:** ${task.duration}\n');
+    }
+
+    if (task.projects.isNotEmpty) {
+      buf.writeln('**Projects:** ${task.projects.map((p) => '+$p').join(', ')}\n');
+    }
+
+    if (task.contexts.isNotEmpty) {
+      buf.writeln('**Contexts:** ${task.contexts.map((c) => '@$c').join(', ')}\n');
+    }
+
+    if (task.notes != null && task.notes!.isNotEmpty) {
+      buf.writeln('---\n');
+      buf.writeln(task.notes);
+    }
+
+    return buf.toString().trimRight();
   }
 
   bool _hasTags(Task t) =>
@@ -152,8 +188,8 @@ class _PriorityBadge extends StatelessWidget {
     final color = _priorityColor(priority, cs);
     final label = priorityLabels[priority] ?? priority;
 
-    return Tooltip(
-      message: '$priority — $label',
+    return MarkdownTooltip(
+      message: '**Priority $priority** — $label',
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         decoration: BoxDecoration(

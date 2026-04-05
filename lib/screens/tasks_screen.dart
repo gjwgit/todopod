@@ -82,8 +82,10 @@ class _TasksScreenState extends State<TasksScreen> {
                           IconButton(
                             icon: const Icon(Icons.add, size: 20),
                             tooltip: 'Create task from search text',
-                            onPressed: () =>
-                                _addTaskFromSearch(context, provider),
+                            onPressed: () => _addTaskFromSearch(
+                              context,
+                              provider,
+                            ),
                           ),
                         ],
                       ),
@@ -94,7 +96,8 @@ class _TasksScreenState extends State<TasksScreen> {
                       contentPadding: const EdgeInsets.symmetric(vertical: 8),
                     ),
                     onChanged: (v) => setState(() => _query = v),
-                    onSubmitted: (_) => _addTaskFromSearch(context, provider),
+                    onSubmitted: (_) =>
+                        _addTaskFromSearch(context, provider),
                   ),
                 ),
                 const Gap(8),

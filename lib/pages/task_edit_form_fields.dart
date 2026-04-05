@@ -46,7 +46,14 @@ class PriorityDueDateRow extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              editSectionLabel(context, 'Priority'),
+              editSectionLabel(
+                context,
+                'Priority',
+                tooltip: '**Priority**\n\n'
+                    'Task importance level from A (Critical) to F (Later).\n\n'
+                    'Tasks are grouped by priority when sorted. '
+                    'Drag a task between groups to change its priority.',
+              ),
               const Gap(8),
               DropdownButtonFormField<String?>(
                 initialValue: priority,
@@ -73,7 +80,14 @@ class PriorityDueDateRow extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              editSectionLabel(context, 'Due Date'),
+              editSectionLabel(
+                context,
+                'Due Date',
+                tooltip: '**Due Date**\n\n'
+                    'When the task should be completed by.\n\n'
+                    'Overdue tasks show a red date chip in the task list. '
+                    'Tasks due today or tomorrow show amber.',
+              ),
               const Gap(8),
               InkWell(
                 onTap: onPickDueDate,
@@ -117,6 +131,7 @@ class TagListEditor extends StatelessWidget {
   final List<TextEditingController> controllers;
   final List<String> options;
   final String hintText;
+  final String? tooltip;
   final VoidCallback onAdd;
   final ValueChanged<int> onRemove;
 
@@ -127,6 +142,7 @@ class TagListEditor extends StatelessWidget {
     required this.controllers,
     required this.options,
     required this.hintText,
+    this.tooltip,
     required this.onAdd,
     required this.onRemove,
   });
@@ -135,7 +151,7 @@ class TagListEditor extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      editSectionLabel(context, label),
+      editSectionLabel(context, label, tooltip: tooltip),
       const Gap(8),
       ...controllers.asMap().entries.map(
         (e) => Padding(

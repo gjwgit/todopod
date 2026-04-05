@@ -13,17 +13,45 @@ library;
 
 import 'package:flutter/material.dart';
 
-/// A section label styled for edit forms.
+import 'package:gap/gap.dart';
+import 'package:markdown_tooltip/markdown_tooltip.dart';
 
-Widget editSectionLabel(BuildContext context, String text) => Text(
-  text,
-  style: TextStyle(
-    color: Theme.of(context).colorScheme.primary,
-    fontWeight: FontWeight.w600,
-    fontSize: 13,
-    letterSpacing: 0.5,
-  ),
-);
+/// A section label styled for edit forms, with optional tooltip.
+
+Widget editSectionLabel(
+  BuildContext context,
+  String text, {
+  String? tooltip,
+}) {
+  final label = Text(
+    text,
+    style: TextStyle(
+      color: Theme.of(context).colorScheme.primary,
+      fontWeight: FontWeight.w600,
+      fontSize: 13,
+      letterSpacing: 0.5,
+    ),
+  );
+  if (tooltip == null) return label;
+
+  return Row(
+    children: [
+      label,
+      const Gap(4),
+      MarkdownTooltip(
+        message: tooltip,
+        child: Icon(
+          Icons.info_outline,
+          size: 13,
+          color: Theme.of(context)
+              .colorScheme
+              .onSurfaceVariant
+              .withValues(alpha: 0.5),
+        ),
+      ),
+    ],
+  );
+}
 
 /// An autocomplete field that suggests [options] but accepts any typed value.
 

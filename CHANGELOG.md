@@ -39,6 +39,7 @@ Code](https://claude.com/product/claude-code).
 
 ## 0.2 Basic Functionality
 
++ Secondary sort by due date then alphabetic [0.1.11 20260407 gjw]
 + Add tooltips [0.1.10 20260406 gjw]
 + Bug fix reorder function [01.9 20260406 gjw]
 + All search bar text as new task title [0.1.8 20260406 gjw]

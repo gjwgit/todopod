@@ -116,44 +116,60 @@ class AppProvider extends ChangeNotifier {
 
   List<Task> _sorted(List<Task> tasks) {
     final copy = List<Task>.from(tasks);
+    if (_sortOrder == SortOrder.added) return copy;
+
+    copy.sort((a, b) {
+      // Primary sort based on selected order.
+
+      final primary = _primaryCompare(a, b);
+      if (primary != 0) return primary;
+
+      // Secondary: due date (earliest first, null last).
+
+      final dueCmp = _compareDueDate(a, b);
+      if (dueCmp != 0) return dueCmp;
+
+      // Tertiary: alphabetic by description.
+
+      return a.description.toLowerCase().compareTo(b.description.toLowerCase());
+    });
+
+    return copy;
+  }
+
+  int _primaryCompare(Task a, Task b) {
     switch (_sortOrder) {
       case SortOrder.priority:
-        copy.sort((a, b) {
-          if (a.priority == null && b.priority == null) return 0;
-          if (a.priority == null) return 1;
-          if (b.priority == null) return -1;
-          return a.priority!.compareTo(b.priority!);
-        });
+        if (a.priority == null && b.priority == null) return 0;
+        if (a.priority == null) return 1;
+        if (b.priority == null) return -1;
+        return a.priority!.compareTo(b.priority!);
       case SortOrder.dueDate:
-        copy.sort((a, b) {
-          if (a.dueDate == null && b.dueDate == null) return 0;
-          if (a.dueDate == null) return 1;
-          if (b.dueDate == null) return -1;
-          return a.dueDate!.compareTo(b.dueDate!);
-        });
+        return _compareDueDate(a, b);
       case SortOrder.project:
-        copy.sort((a, b) {
-          final ap = a.projects.isNotEmpty ? a.projects.first : '';
-          final bp = b.projects.isNotEmpty ? b.projects.first : '';
-          return ap.compareTo(bp);
-        });
+        final ap = a.projects.isNotEmpty ? a.projects.first : '';
+        final bp = b.projects.isNotEmpty ? b.projects.first : '';
+        return ap.compareTo(bp);
       case SortOrder.context:
-        copy.sort((a, b) {
-          final ac = a.contexts.isNotEmpty ? a.contexts.first : '';
-          final bc = b.contexts.isNotEmpty ? b.contexts.first : '';
-          return ac.compareTo(bc);
-        });
+        final ac = a.contexts.isNotEmpty ? a.contexts.first : '';
+        final bc = b.contexts.isNotEmpty ? b.contexts.first : '';
+        return ac.compareTo(bc);
       case SortOrder.creationDate:
-        copy.sort((a, b) {
-          if (a.creationDate == null && b.creationDate == null) return 0;
-          if (a.creationDate == null) return 1;
-          if (b.creationDate == null) return -1;
-          return a.creationDate!.compareTo(b.creationDate!);
-        });
+        if (a.creationDate == null && b.creationDate == null) return 0;
+        if (a.creationDate == null) return 1;
+        if (b.creationDate == null) return -1;
+        return a.creationDate!.compareTo(b.creationDate!);
       case SortOrder.added:
-        break; // keep insertion order
+        return 0;
     }
-    return copy;
+  }
+
+  static int _compareDueDate(Task a, Task b) {
+    if (a.dueDate == null && b.dueDate == null) return 0;
+    if (a.dueDate == null) return 1;
+    if (b.dueDate == null) return -1;
+
+    return a.dueDate!.compareTo(b.dueDate!);
   }
 
   // ── Reordering ──────────────────────────────────────────────────────────

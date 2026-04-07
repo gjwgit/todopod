@@ -34,6 +34,7 @@ mkdir tmp
 # Run meld with the file and find result
 
 meld tmp/lib lib
+meld tmp/pubspec.yaml pubspec.yaml
 
 # Remove the file after meld closes
 

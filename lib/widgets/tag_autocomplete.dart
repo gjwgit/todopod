@@ -54,12 +54,14 @@ class TagAutocomplete extends StatelessWidget {
   final TextEditingController controller;
   final List<String> options;
   final String hintText;
+  final bool autofocus;
 
   const TagAutocomplete({
     super.key,
     required this.controller,
     required this.options,
     required this.hintText,
+    this.autofocus = false,
   });
 
   @override
@@ -82,6 +84,7 @@ class TagAutocomplete extends StatelessWidget {
         return TextField(
           controller: fieldController,
           focusNode: focusNode,
+          autofocus: autofocus,
           decoration: InputDecoration(
             border: const OutlineInputBorder(),
             isDense: true,

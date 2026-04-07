@@ -134,6 +134,8 @@ class TagListEditor extends StatelessWidget {
   final List<String> options;
   final String hintText;
   final String? tooltip;
+  final bool focusLast;
+  final VoidCallback? onFocusConsumed;
   final VoidCallback onAdd;
   final ValueChanged<int> onRemove;
 
@@ -145,43 +147,57 @@ class TagListEditor extends StatelessWidget {
     required this.options,
     required this.hintText,
     this.tooltip,
+    this.focusLast = false,
+    this.onFocusConsumed,
     required this.onAdd,
     required this.onRemove,
   });
 
   @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      editSectionLabel(context, label, tooltip: tooltip),
-      const Gap(8),
-      ...controllers.asMap().entries.map(
-        (e) => Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: Row(
-            children: [
-              Text(prefix, style: const TextStyle(fontSize: 16)),
-              const Gap(8),
-              Expanded(
-                child: TagAutocomplete(
-                  controller: e.value,
-                  options: options,
-                  hintText: hintText,
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        editSectionLabel(context, label, tooltip: tooltip),
+        const Gap(8),
+        ...controllers.asMap().entries.map((e) {
+          final isNewLast = focusLast && e.key == controllers.length - 1;
+          if (isNewLast) {
+            // Consume the flag after this build frame.
+            WidgetsBinding.instance.addPostFrameCallback(
+              (_) => onFocusConsumed?.call(),
+            );
+          }
+
+          return Padding(
+            key: ObjectKey(e.value),
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              children: [
+                Text(prefix, style: const TextStyle(fontSize: 16)),
+                const Gap(8),
+                Expanded(
+                  child: TagAutocomplete(
+                    controller: e.value,
+                    options: options,
+                    hintText: hintText,
+                    autofocus: isNewLast,
+                  ),
                 ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.remove_circle_outline, size: 18),
-                onPressed: () => onRemove(e.key),
-              ),
-            ],
-          ),
+                IconButton(
+                  icon: const Icon(Icons.remove_circle_outline, size: 18),
+                  onPressed: () => onRemove(e.key),
+                ),
+              ],
+            ),
+          );
+        }),
+        TextButton.icon(
+          icon: const Icon(Icons.add, size: 16),
+          label: Text('Add ${label.toLowerCase()}'),
+          onPressed: onAdd,
         ),
-      ),
-      TextButton.icon(
-        icon: const Icon(Icons.add, size: 16),
-        label: Text('Add ${label.toLowerCase()}'),
-        onPressed: onAdd,
-      ),
-    ],
-  );
+      ],
+    );
+  }
 }

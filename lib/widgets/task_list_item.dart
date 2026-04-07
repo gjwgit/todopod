@@ -26,6 +26,7 @@ class ReorderableTaskItem extends StatelessWidget {
   final VoidCallback onTap;
   final ValueChanged<bool?> onComplete;
   final VoidCallback? onDelete;
+  final ValueChanged<String>? onEditField;
 
   const ReorderableTaskItem({
     super.key,
@@ -36,6 +37,7 @@ class ReorderableTaskItem extends StatelessWidget {
     required this.onTap,
     required this.onComplete,
     this.onDelete,
+    this.onEditField,
   });
 
   @override
@@ -70,6 +72,7 @@ class ReorderableTaskItem extends StatelessWidget {
                   task: task,
                   onTap: onTap,
                   onComplete: onComplete,
+                  onEditField: onEditField,
                 ),
               ),
               ReorderableDragStartListener(

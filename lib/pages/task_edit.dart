@@ -30,7 +30,10 @@ class TaskEdit extends StatefulWidget {
   /// Pre-fill the title when creating a new task (ignored when editing).
   final String? initialTitle;
 
-  const TaskEdit({super.key, this.task, this.initialTitle});
+  /// Field to focus on open: 'projects', 'contexts', etc.
+  final String? focusField;
+
+  const TaskEdit({super.key, this.task, this.initialTitle, this.focusField});
 
   @override
   State<TaskEdit> createState() => _TaskEditState();
@@ -44,6 +47,9 @@ class _TaskEditState extends State<TaskEdit> {
   late DateTime? _dueDate;
   late List<TextEditingController> _projects;
   late List<TextEditingController> _contexts;
+
+  bool _focusNewProject = false;
+  bool _focusNewContext = false;
 
   bool get _isNew => widget.task == null;
 
@@ -74,6 +80,16 @@ class _TaskEditState extends State<TaskEdit> {
     _contexts = (t?.contexts ?? [])
         .map((c) => TextEditingController(text: c))
         .toList();
+
+    // When opening with a focusField, add an empty entry to focus into.
+
+    if (widget.focusField == 'projects') {
+      _projects.add(TextEditingController());
+      _focusNewProject = true;
+    } else if (widget.focusField == 'contexts') {
+      _contexts.add(TextEditingController());
+      _focusNewContext = true;
+    }
 
     // Snapshot for change detection.
 
@@ -234,7 +250,7 @@ class _TaskEditState extends State<TaskEdit> {
           const Gap(8),
           TextField(
             controller: _description,
-            autofocus: _isNew,
+            autofocus: _isNew && widget.focusField == null,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
               isDense: true,
@@ -305,7 +321,12 @@ class _TaskEditState extends State<TaskEdit> {
                 'Group related tasks under a project tag (prefixed with **+**).\n\n'
                 'Examples: +home, +work, +garden.\n'
                 'Autocomplete suggests existing project names.',
-            onAdd: () => setState(() => _projects.add(TextEditingController())),
+            focusLast: _focusNewProject,
+            onFocusConsumed: () => _focusNewProject = false,
+            onAdd: () => setState(() {
+              _projects.add(TextEditingController());
+              _focusNewProject = true;
+            }),
             onRemove: (i) => setState(() {
               _projects[i].dispose();
               _projects.removeAt(i);
@@ -323,7 +344,12 @@ class _TaskEditState extends State<TaskEdit> {
                 'Where or how the task should be done (prefixed with **@**).\n\n'
                 'Examples: @home, @office, @phone, @computer.\n'
                 'Useful for filtering tasks by location or tool.',
-            onAdd: () => setState(() => _contexts.add(TextEditingController())),
+            focusLast: _focusNewContext,
+            onFocusConsumed: () => _focusNewContext = false,
+            onAdd: () => setState(() {
+              _contexts.add(TextEditingController());
+              _focusNewContext = true;
+            }),
             onRemove: (i) => setState(() {
               _contexts[i].dispose();
               _contexts.removeAt(i);

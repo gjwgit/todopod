@@ -22,12 +22,14 @@ class TaskTile extends StatelessWidget {
   final Task task;
   final VoidCallback onTap;
   final ValueChanged<bool?> onComplete;
+  final ValueChanged<String>? onEditField;
 
   const TaskTile({
     super.key,
     required this.task,
     required this.onTap,
     required this.onComplete,
+    this.onEditField,
   });
 
   @override
@@ -89,12 +91,18 @@ class TaskTile extends StatelessWidget {
                               label: '+$p',
                               color: cs.primaryContainer,
                               textColor: cs.onPrimaryContainer,
+                              onTap: onEditField != null
+                                  ? () => onEditField!('projects')
+                                  : null,
                             ),
                           for (final c in task.contexts)
                             _TagChip(
                               label: '@$c',
                               color: cs.secondaryContainer,
                               textColor: cs.onSecondaryContainer,
+                              onTap: onEditField != null
+                                  ? () => onEditField!('contexts')
+                                  : null,
                             ),
                           if (task.dueDate != null)
                             _TagChip(
@@ -223,37 +231,44 @@ class _TagChip extends StatelessWidget {
   final Color color;
   final Color textColor;
   final IconData? icon;
+  final VoidCallback? onTap;
 
   const _TagChip({
     required this.label,
     required this.color,
     required this.textColor,
     this.icon,
+    this.onTap,
   });
 
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-    decoration: BoxDecoration(
-      color: color,
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (icon != null) ...[
-          Icon(icon, size: 11, color: textColor),
-          const Gap(2),
-        ],
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 11,
-            color: textColor,
-            fontWeight: FontWeight.w500,
+  Widget build(BuildContext context) {
+    final chip = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, size: 11, color: textColor),
+            const Gap(2),
+          ],
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              color: textColor,
+              fontWeight: FontWeight.w500,
+            ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+    if (onTap == null) return chip;
+
+    return GestureDetector(onTap: onTap, child: chip);
+  }
 }

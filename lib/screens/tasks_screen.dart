@@ -143,6 +143,8 @@ class _TasksScreenState extends State<TasksScreen> {
                     onTap: () => _editTask(context, task, provider),
                     onComplete: (_) => _complete(task, provider),
                     onDelete: () => _deleteTask(task, provider),
+                    onEditField: (field) =>
+                        _editTaskField(context, task, provider, field),
                   );
                 },
               ),
@@ -205,6 +207,22 @@ class _TasksScreenState extends State<TasksScreen> {
     final updated = await showDialog<Task>(
       context: context,
       builder: (_) => TaskEdit(task: task),
+    );
+    if (updated != null) {
+      provider.updateTask(updated);
+      await provider.saveTodoToPod();
+    }
+  }
+
+  Future<void> _editTaskField(
+    BuildContext context,
+    Task task,
+    AppProvider provider,
+    String field,
+  ) async {
+    final updated = await showDialog<Task>(
+      context: context,
+      builder: (_) => TaskEdit(task: task, focusField: field),
     );
     if (updated != null) {
       provider.updateTask(updated);

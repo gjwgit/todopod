@@ -39,6 +39,7 @@ Code](https://claude.com/product/claude-code).
 
 ## 0.2 Basic Functionality
 
++ Project and context default focus to the text field [0.1.12 20260407 gjw]
 + Secondary sort by due date then alphabetic [0.1.11 20260407 gjw]
 + Add tooltips [0.1.10 20260406 gjw]
 + Bug fix reorder function [01.9 20260406 gjw]

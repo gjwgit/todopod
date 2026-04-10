@@ -35,8 +35,25 @@ void main() {
   );
 }
 
-class TodoPodApp extends StatelessWidget {
+class TodoPodApp extends StatefulWidget {
   const TodoPodApp({super.key});
+
+  @override
+  State<TodoPodApp> createState() => _TodoPodAppState();
+}
+
+class _TodoPodAppState extends State<TodoPodApp> {
+  @override
+  void initState() {
+    super.initState();
+    _initTheme();
+    solidThemeNotifier.addListener(() => setState(() {}));
+  }
+
+  Future<void> _initTheme() async {
+    await solidThemeNotifier.initialize();
+    if (mounted) setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +63,14 @@ class TodoPodApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF3A6B3A)),
         useMaterial3: true,
       ),
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF3A6B3A),
+          brightness: Brightness.dark,
+        ),
+        useMaterial3: true,
+      ),
+      themeMode: solidThemeNotifier.themeMode,
       home: SolidLogin(
         required: false,
         appDirectory: appDirectory,

@@ -62,6 +62,8 @@ class _AppScaffoldState extends State<AppScaffold> {
 
     return SolidScaffold(
       showLogout: false,
+      showLogin: false,
+      themeToggle: const SolidThemeToggleConfig(enabled: true),
       appBar: const SolidAppBarConfig(
         title: appName,
         versionConfig: SolidVersionConfig(

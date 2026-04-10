@@ -39,6 +39,7 @@ Code](https://claude.com/product/claude-code).
 
 ## 0.2 Basic Functionality
 
++ Support dark/light theme [0.1.13 20260410 gjw]
 + Project and context default focus to the text field [0.1.12 20260407 gjw]
 + Secondary sort by due date then alphabetic [0.1.11 20260407 gjw]
 + Add tooltips [0.1.10 20260406 gjw]

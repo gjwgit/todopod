@@ -588,10 +588,10 @@ packages:
     dependency: transitive
     description:
       name: path_provider_android
-      sha256: "914a07484c4380e572998d30486e77e0d9cd2faec72fee268086d07bf7f302c9"
+      sha256: "69cbd515a62b94d32a7944f086b2f82b4ac40a1d45bebfc00813a430ab2dabcd"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.0"
+    version: "2.3.1"
   path_provider_foundation:
     dependency: transitive
     description:
@@ -809,10 +809,10 @@ packages:
     dependency: "direct main"
     description:
       name: solidui
-      sha256: d6e024aa822db2b2a6c0653f6a71e96db962f22413e5b8ac90911f36d82f6101
+      sha256: "2f2ce47290eadc98f3b49dd20bf69e2927f4f72c6ce591a9f19f7e174f557ccb"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.9"
+    version: "0.3.16"
   source_span:
     dependency: transitive
     description:

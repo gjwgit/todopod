@@ -13,8 +13,8 @@ dependencies:
   gap: any
   markdown_tooltip: any
   provider: any
-  solidui: ^0.3.8
   solidpod: ^0.12.2
+  solidui: ^0.3.17
   uuid: any
 
 dev_dependencies:

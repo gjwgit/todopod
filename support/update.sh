@@ -76,7 +76,7 @@ for ((i=0; i < length; i+=2)); do
 	# Name= and Comment= to differ so ignore those lines.
 
 	elif [[ "$f1" == "installers/deb.sh" ]]; then
-	    if diff <(grep -v '^Name=' "$f1" | grep -v '^Comment=') <(grep -v '^Name=' "$f2" | grep -v '^Comment=') >/dev/null; then
+	    if diff <(grep -v '^Name=' "$f1" | grep -v '^Comment=' | sed '/^Description: /,/^EOL$/d') <(grep -v '^Name=' "$f2" | grep -v '^Comment=' | sed '/^Description: /,/^EOL$/d') >/dev/null; then
 		echo "IDENTICAL $f1 $f2"
 	    else
 		echo "MELD      $f1 $f2"

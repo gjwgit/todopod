@@ -73,7 +73,9 @@ class TaskTile extends StatelessWidget {
                               decoration: isDone
                                   ? TextDecoration.lineThrough
                                   : TextDecoration.none,
-                              color: isDone ? cs.onSurfaceVariant : null,
+                              color: isDone
+                                  ? cs.onSurfaceVariant
+                                  : _titleColor(task.dueDate, cs),
                             ),
                           ),
                         ),
@@ -184,6 +186,21 @@ class TaskTile extends StatelessWidget {
     if (diff.isNegative) return cs.errorContainer;
     if (diff.inDays <= 1) return cs.errorContainer;
     return cs.tertiaryContainer;
+  }
+
+  /// Returns a title colour based on the due date:
+  /// - Past due → red (error colour)
+  /// - Due today → green
+  /// - No due date or future → default (null = theme default)
+
+  Color? _titleColor(DateTime? due, ColorScheme cs) {
+    if (due == null) return null;
+    final today = DateTime.now();
+    final todayDate = DateTime(today.year, today.month, today.day);
+    final dueDate = DateTime(due.year, due.month, due.day);
+    if (dueDate.isBefore(todayDate)) return cs.error;
+    if (dueDate.isAtSameMomentAs(todayDate)) return Colors.green;
+    return null;
   }
 }
 

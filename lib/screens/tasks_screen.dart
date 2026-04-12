@@ -13,6 +13,7 @@ library;
 import 'package:flutter/material.dart';
 
 import 'package:gap/gap.dart';
+import 'package:markdown_tooltip/markdown_tooltip.dart';
 import 'package:provider/provider.dart';
 
 import 'package:todopod/models/task.dart';
@@ -38,20 +39,81 @@ class _TasksScreenState extends State<TasksScreen> {
     super.dispose();
   }
 
+  /// Filters tasks by query. Supports:
+  ///   context:xxx  — tasks with that context tag
+  ///   project:yyy  — tasks with that project tag
+  ///   due:today    — tasks due today
+  ///   due:past     — tasks overdue
+  ///   due:tomorrow — tasks due tomorrow
+  ///   due:week     — tasks due within the next 7 days
+  ///   anything else — searches description, contexts, projects
+
+  List<Task> _filterTasks(List<Task> all, String query) {
+    if (query.isEmpty) return all;
+    final q = query.trim().toLowerCase();
+    final today = DateTime.now();
+    final todayDate = DateTime(today.year, today.month, today.day);
+    final tomorrowDate = todayDate.add(const Duration(days: 1));
+    final weekDate = todayDate.add(const Duration(days: 7));
+
+    if (q.startsWith('context:')) {
+      final tag = q.substring('context:'.length).trim();
+      return all
+          .where((t) => t.contexts.any((c) => c.toLowerCase().contains(tag)))
+          .toList();
+    }
+    if (q.startsWith('project:')) {
+      final tag = q.substring('project:'.length).trim();
+      return all
+          .where((t) => t.projects.any((p) => p.toLowerCase().contains(tag)))
+          .toList();
+    }
+    if (q == 'due:today') {
+      return all.where((t) {
+        if (t.dueDate == null) return false;
+        final d = DateTime(t.dueDate!.year, t.dueDate!.month, t.dueDate!.day);
+        return d.isAtSameMomentAs(todayDate);
+      }).toList();
+    }
+    if (q == 'due:past') {
+      return all.where((t) {
+        if (t.dueDate == null) return false;
+        final d = DateTime(t.dueDate!.year, t.dueDate!.month, t.dueDate!.day);
+        return d.isBefore(todayDate);
+      }).toList();
+    }
+    if (q == 'due:tomorrow') {
+      return all.where((t) {
+        if (t.dueDate == null) return false;
+        final d = DateTime(t.dueDate!.year, t.dueDate!.month, t.dueDate!.day);
+        return d.isAtSameMomentAs(tomorrowDate);
+      }).toList();
+    }
+    if (q == 'due:week') {
+      return all.where((t) {
+        if (t.dueDate == null) return false;
+        final d = DateTime(t.dueDate!.year, t.dueDate!.month, t.dueDate!.day);
+        return !d.isBefore(todayDate) && !d.isAfter(weekDate);
+      }).toList();
+    }
+    // Default: full-text search across description, contexts, projects.
+    return all
+        .where(
+          (t) =>
+              t.description.toLowerCase().contains(q) ||
+              t.projects.any((p) => p.toLowerCase().contains(q)) ||
+              t.contexts.any((c) => c.toLowerCase().contains(q)),
+        )
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<AppProvider>();
     final cs = Theme.of(context).colorScheme;
 
     final allTasks = provider.tasks;
-    final tasks = _query.isEmpty
-        ? allTasks
-        : allTasks.where((t) {
-            final q = _query.toLowerCase();
-            return t.description.toLowerCase().contains(q) ||
-                t.projects.any((p) => p.toLowerCase().contains(q)) ||
-                t.contexts.any((c) => c.toLowerCase().contains(q));
-          }).toList();
+    final tasks = _filterTasks(allTasks, _query);
 
     return Scaffold(
       body: Column(
@@ -96,6 +158,22 @@ class _TasksScreenState extends State<TasksScreen> {
                     onChanged: (v) => setState(() => _query = v),
                     onSubmitted: (_) => _addTaskFromSearch(context, provider),
                   ),
+                ),
+                const MarkdownTooltip(
+                  message: '''
+
+**Search tips**
+
+- Plain text — searches description, contexts and projects
+- `context:xxx` — tasks tagged `@xxx`
+- `project:yyy` — tasks tagged `+yyy`
+- `due:today` — tasks due today
+- `due:past` — overdue tasks
+- `due:tomorrow` — tasks due tomorrow
+- `due:week` — tasks due within 7 days
+
+''',
+                  child: Icon(Icons.help_outline, size: 18),
                 ),
                 const Gap(8),
                 // Sort

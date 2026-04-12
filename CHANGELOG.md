@@ -39,6 +39,7 @@ Code](https://claude.com/product/claude-code).
 
 ## 0.2 Basic Functionality
 
++ Search allows tags and project/context [0.1.16 20260413 gjw]
 + Avoid dismissing editable popups [0.1.15 20260412 gjw]
 + Colour code late entries [0.1.14 20260412 gjw]
 + Support dark/light theme [0.1.13 20260410 gjw]

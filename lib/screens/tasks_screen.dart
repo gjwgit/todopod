@@ -168,6 +168,7 @@ class _TasksScreenState extends State<TasksScreen> {
     final messenger = ScaffoldMessenger.of(context);
     final task = await showDialog<Task>(
       context: context,
+      barrierDismissible: false,
       builder: (_) => const TaskEdit(),
     );
     if (task != null) {
@@ -189,6 +190,7 @@ class _TasksScreenState extends State<TasksScreen> {
     final messenger = ScaffoldMessenger.of(context);
     final task = await showDialog<Task>(
       context: context,
+      barrierDismissible: false,
       builder: (_) => TaskEdit(initialTitle: title),
     );
     if (task != null) {
@@ -206,6 +208,7 @@ class _TasksScreenState extends State<TasksScreen> {
   ) async {
     final updated = await showDialog<Task>(
       context: context,
+      barrierDismissible: false,
       builder: (_) => TaskEdit(task: task),
     );
     if (updated != null) {
@@ -222,6 +225,7 @@ class _TasksScreenState extends State<TasksScreen> {
   ) async {
     final updated = await showDialog<Task>(
       context: context,
+      barrierDismissible: false,
       builder: (_) => TaskEdit(task: task, focusField: field),
     );
     if (updated != null) {

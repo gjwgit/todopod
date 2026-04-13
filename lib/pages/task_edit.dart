@@ -43,6 +43,7 @@ class _TaskEditState extends State<TaskEdit> {
   late final TextEditingController _description;
   late final TextEditingController _notes;
   late final TextEditingController _duration;
+  late bool _completed;
   late String? _priority;
   late DateTime? _dueDate;
   late List<TextEditingController> _projects;
@@ -58,6 +59,7 @@ class _TaskEditState extends State<TaskEdit> {
   late final String _initDescription;
   late final String _initNotes;
   late final String _initDuration;
+  late bool _initCompleted;
   late final String? _initPriority;
   late final DateTime? _initDueDate;
   late final List<String> _initProjects;
@@ -72,6 +74,7 @@ class _TaskEditState extends State<TaskEdit> {
     );
     _notes = TextEditingController(text: t?.notes ?? '');
     _duration = TextEditingController(text: t?.duration ?? '');
+    _completed = t?.completed ?? false;
     _priority = t?.priority;
     _dueDate = t?.dueDate;
     _projects = (t?.projects ?? [])
@@ -96,6 +99,7 @@ class _TaskEditState extends State<TaskEdit> {
     _initDescription = _description.text;
     _initNotes = _notes.text;
     _initDuration = _duration.text;
+    _initCompleted = _completed;
     _initPriority = _priority;
     _initDueDate = _dueDate;
     _initProjects = _projects.map((c) => c.text).toList();
@@ -119,6 +123,7 @@ class _TaskEditState extends State<TaskEdit> {
     if (_description.text != _initDescription) return true;
     if (_notes.text != _initNotes) return true;
     if (_duration.text != _initDuration) return true;
+    if (_completed != _initCompleted) return true;
     if (_priority != _initPriority) return true;
     if (_dueDate != _initDueDate) return true;
     if (!_listEquals(_projects, _initProjects)) return true;
@@ -168,6 +173,7 @@ class _TaskEditState extends State<TaskEdit> {
 
   Task _buildTask() => Task(
     id: widget.task?.id ?? _uuid.v4(),
+    completed: _completed,
     priority: _priority,
     creationDate: widget.task?.creationDate ?? DateTime.now(),
     description: _description.text.trim(),
@@ -288,6 +294,15 @@ class _TaskEditState extends State<TaskEdit> {
             onPriorityChanged: (v) => setState(() => _priority = v),
             onPickDueDate: _pickDueDate,
             onClearDueDate: () => setState(() => _dueDate = null),
+          ),
+          const Gap(8),
+          CheckboxListTile(
+            value: _completed,
+            onChanged: (v) => setState(() => _completed = v ?? false),
+            title: const Text('Mark as done'),
+            controlAffinity: ListTileControlAffinity.leading,
+            contentPadding: EdgeInsets.zero,
+            dense: true,
           ),
           const Gap(16),
           editSectionLabel(

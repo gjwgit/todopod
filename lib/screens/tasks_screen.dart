@@ -290,7 +290,13 @@ class _TasksScreenState extends State<TasksScreen> {
       builder: (_) => TaskEdit(task: task),
     );
     if (updated != null) {
-      provider.updateTask(updated);
+      if (!task.completed && updated.completed) {
+        // Save any edits first, then move to done (preserving all changes).
+        provider.updateTask(updated.copyWith(completed: false));
+        provider.completeTask(task.id);
+      } else {
+        provider.updateTask(updated);
+      }
       await provider.saveTodoToPod();
     }
   }
@@ -307,7 +313,12 @@ class _TasksScreenState extends State<TasksScreen> {
       builder: (_) => TaskEdit(task: task, focusField: field),
     );
     if (updated != null) {
-      provider.updateTask(updated);
+      if (!task.completed && updated.completed) {
+        provider.updateTask(updated.copyWith(completed: false));
+        provider.completeTask(task.id);
+      } else {
+        provider.updateTask(updated);
+      }
       await provider.saveTodoToPod();
     }
   }

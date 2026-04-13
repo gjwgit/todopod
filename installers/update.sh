@@ -107,7 +107,7 @@ if [[ "${status}" == "completed" ]]; then
 	echo  "Archive as installers/ARCHIVE/${fname}"
 	mv -f ${fname} ARCHIVE/
 	echo  "Install locally from installers/ARCHIVE/${fname}"
-	wajig install ARCHIVE/$(APP)_$(VER)_amd64.deb
+	wajig install ARCHIVE/${fname}
     fi
 
     echo ""
@@ -165,7 +165,6 @@ if [[ "${status}" == "completed" ]]; then
 
     artifactId=$(gh api -H "Accept: application/vnd.github+json" /repos/${REP}/${APP}/actions/artifacts \
 		    --jq '.artifacts[] | select(.name | endswith("-macos-zip")) | .id' | head -n 1)
-    echo "artifact id: $artifactId"
 
     if [[ -z "${artifactId}" ]]; then
 	echo "No artifact found."
@@ -353,6 +352,9 @@ if [[ "${status}" == "completed" ]]; then
     fi
 
     echo ""
+
+    echo '******************** FINISHED.'
+
 
 else
 

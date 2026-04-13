@@ -1,5 +1,5 @@
 name: todopod
-version: 0.1.16
+version: 0.1.17
 summary: Privacy preserving to do list manager.
 description: |
   ToDoPod collects your task items and securely stores them in your

@@ -1,6 +1,6 @@
 /// ImportScreen — import from todo.txt and export backups.
 ///
-// Time-stamp: <Friday 2026-03-27 10:00:00 +1100 Graham Williams>
+// Time-stamp: <Monday 2026-04-13 12:08:45 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -18,9 +18,14 @@ import 'package:flutter/material.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:gap/gap.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
 
+import 'package:todopod/models/task.dart';
 import 'package:todopod/models/task_parser.dart';
+import 'package:todopod/screens/import_screen_widgets.dart';
 import 'package:todopod/services/app_provider.dart';
 
 class ImportScreen extends StatefulWidget {
@@ -32,13 +37,22 @@ class ImportScreen extends StatefulWidget {
 
 class _ImportScreenState extends State<ImportScreen> {
   bool _loading = false;
-  String? _message;
-  bool _isError = false;
+  String? _importMessage;
+  bool _importError = false;
+  String? _exportMessage;
+  bool _exportError = false;
+
+  void _setImportMessage(String msg, {bool error = false}) {
+    setState(() {
+      _importMessage = msg;
+      _importError = error;
+    });
+  }
 
   void _setMessage(String msg, {bool error = false}) {
     setState(() {
-      _message = msg;
-      _isError = error;
+      _exportMessage = msg;
+      _exportError = error;
     });
   }
 
@@ -60,39 +74,16 @@ class _ImportScreenState extends State<ImportScreen> {
             'merged with your existing task list.',
             style: TextStyle(color: cs.onSurfaceVariant),
           ),
-          if (_message != null) ...[
+          if (_importMessage != null) ...[
             const Gap(12),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: _isError ? cs.errorContainer : cs.secondaryContainer,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    _isError ? Icons.error_outline : Icons.check_circle_outline,
-                    color: _isError
-                        ? cs.onErrorContainer
-                        : cs.onSecondaryContainer,
-                  ),
-                  const Gap(8),
-                  Expanded(
-                    child: Text(
-                      _message!,
-                      style: TextStyle(
-                        color: _isError
-                            ? cs.onErrorContainer
-                            : cs.onSecondaryContainer,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            ImportMessageBanner(
+              message: _importMessage!,
+              isError: _importError,
+              cs: cs,
             ),
           ],
           const Gap(16),
-          _ActionCard(
+          ImportActionCard(
             icon: Icons.upload_file_outlined,
             title: 'Import Todo.txt',
             subtitle: 'Select a Todo.txt file to import active tasks.',
@@ -106,6 +97,14 @@ class _ImportScreenState extends State<ImportScreen> {
             'Export / Backup',
             style: Theme.of(context).textTheme.titleLarge,
           ),
+          if (_exportMessage != null) ...[
+            const Gap(12),
+            ImportMessageBanner(
+              message: _exportMessage!,
+              isError: _exportError,
+              cs: cs,
+            ),
+          ],
           const Gap(8),
           Text(
             'Save a timestamped copy of your tasks to your '
@@ -113,7 +112,7 @@ class _ImportScreenState extends State<ImportScreen> {
             style: TextStyle(color: cs.onSurfaceVariant),
           ),
           const Gap(16),
-          _ActionCard(
+          ImportActionCard(
             icon: Icons.download_outlined,
             title: 'Export Todo.txt',
             subtitle:
@@ -123,7 +122,7 @@ class _ImportScreenState extends State<ImportScreen> {
             onTap: () => _exportTodoTxt(context),
           ),
           const Gap(12),
-          _ActionCard(
+          ImportActionCard(
             icon: Icons.download_outlined,
             title: 'Export Done.txt',
             subtitle:
@@ -131,6 +130,36 @@ class _ImportScreenState extends State<ImportScreen> {
                 '${provider.doneTasks.length} completed tasks.',
             loading: _loading,
             onTap: () => _exportDoneTxt(context),
+          ),
+          const Gap(12),
+          ImportActionCard(
+            icon: Icons.picture_as_pdf_outlined,
+            title: 'Export Todo.txt as PDF',
+            subtitle:
+                'Choose tasks to save or print from '
+                '${provider.tasks.length} active tasks.',
+            loading: _loading,
+            onTap: () => _showFilterAndExportPdf(
+              context,
+              allTasks: provider.tasks,
+              title: 'Active Tasks',
+              prefix: 'Todo',
+            ),
+          ),
+          const Gap(12),
+          ImportActionCard(
+            icon: Icons.picture_as_pdf_outlined,
+            title: 'Export Done.txt as PDF',
+            subtitle:
+                'Choose tasks to save or print from '
+                '${provider.doneTasks.length} completed tasks.',
+            loading: _loading,
+            onTap: () => _showFilterAndExportPdf(
+              context,
+              allTasks: provider.doneTasks,
+              title: 'Completed Tasks',
+              prefix: 'Done',
+            ),
           ),
         ],
       ),
@@ -143,7 +172,7 @@ class _ImportScreenState extends State<ImportScreen> {
     final provider = context.read<AppProvider>();
     setState(() {
       _loading = true;
-      _message = null;
+      _importMessage = null;
     });
 
     try {
@@ -170,20 +199,20 @@ class _ImportScreenState extends State<ImportScreen> {
       final tasks = parseTodoTxt(content);
 
       if (tasks.isEmpty) {
-        _setMessage('No tasks found in "${file.name}".', error: true);
+        _setImportMessage('No tasks found in "${file.name}".', error: true);
         setState(() => _loading = false);
         return;
       }
 
       provider.importTasks(tasks);
       await provider.saveAllToPod();
-      _setMessage(
+      _setImportMessage(
         'Imported ${tasks.length} task${tasks.length == 1 ? '' : 's'} '
         'from "${file.name}".',
       );
     } catch (e, st) {
       debugPrint('[Import] error: $e\n$st');
-      _setMessage('Import failed: $e', error: true);
+      _setImportMessage('Import failed: $e', error: true);
     } finally {
       setState(() => _loading = false);
     }
@@ -204,7 +233,7 @@ class _ImportScreenState extends State<ImportScreen> {
   Future<void> _export({required List tasks, required String prefix}) async {
     setState(() {
       _loading = true;
-      _message = null;
+      _exportMessage = null;
     });
 
     try {
@@ -237,46 +266,157 @@ class _ImportScreenState extends State<ImportScreen> {
       setState(() => _loading = false);
     }
   }
+
+  // ── Filter chooser + PDF export ──────────────────────────────────────────
+
+  Future<void> _showFilterAndExportPdf(
+    BuildContext context, {
+    required List<Task> allTasks,
+    required String title,
+    required String prefix,
+  }) async {
+    final today = DateTime.now();
+    final todayDate = DateTime(today.year, today.month, today.day);
+
+    // Collect available projects and contexts from the task list.
+    final projects = <String>{};
+    final contexts = <String>{};
+    for (final t in allTasks) {
+      projects.addAll(t.projects);
+      contexts.addAll(t.contexts);
+    }
+
+    // Show the filter bottom sheet and wait for the user's selection.
+    // Returns (filteredTasks, filterLabel) so the filename can reflect filters.
+    final result = await showModalBottomSheet<(List<Task>, String)>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => ExportFilterSheet(
+        allTasks: allTasks,
+        projects: projects.toList()..sort(),
+        contexts: contexts.toList()..sort(),
+        todayDate: todayDate,
+        title: title,
+      ),
+    );
+
+    if (result == null || !mounted) return;
+    final (filtered, filterLabel) = result;
+    await _exportPdf(
+      // ignore: use_build_context_synchronously — mounted checked immediately above.
+      context,
+      tasks: filtered,
+      title: title,
+      prefix: prefix,
+      filterLabel: filterLabel,
+    );
+  }
+
+  // ── PDF Export ───────────────────────────────────────────────────────────
+
+  Future<void> _exportPdf(
+    BuildContext context, {
+    required List tasks,
+    required String title,
+    required String prefix,
+    String filterLabel = '',
+  }) async {
+    setState(() {
+      _loading = true;
+      _exportMessage = null;
+    });
+
+    try {
+      final doc = pw.Document();
+      final now = DateTime.now();
+      final dateStr =
+          '${now.day.toString().padLeft(2, '0')}/'
+          '${now.month.toString().padLeft(2, '0')}/'
+          '${now.year}';
+
+      doc.addPage(
+        pw.MultiPage(
+          pageFormat: PdfPageFormat.a4,
+          margin: const pw.EdgeInsets.all(40),
+          header: (ctx) => pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text(
+                title,
+                style: pw.TextStyle(
+                  fontSize: 20,
+                  fontWeight: pw.FontWeight.bold,
+                ),
+              ),
+              pw.Text(
+                'Generated $dateStr  ·  ${tasks.length} task${tasks.length == 1 ? '' : 's'}',
+                style: const pw.TextStyle(
+                  fontSize: 10,
+                  color: PdfColors.grey600,
+                ),
+              ),
+              pw.Divider(),
+              pw.SizedBox(height: 4),
+            ],
+          ),
+          build: (ctx) => [
+            pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: tasks.map<pw.Widget>((t) {
+                final line = t.toTodoTxt();
+                return pw.Padding(
+                  padding: const pw.EdgeInsets.only(bottom: 6),
+                  child: pw.Text(line, style: const pw.TextStyle(fontSize: 11)),
+                );
+              }).toList(),
+            ),
+          ],
+        ),
+      );
+
+      // Build the suggested filename from active filters.
+      final datePart =
+          '${now.year}'
+          '${now.month.toString().padLeft(2, '0')}'
+          '${now.day.toString().padLeft(2, '0')}';
+      final labelPart = filterLabel.isNotEmpty ? '_$filterLabel' : '';
+      final pdfName =
+          'todopod_${prefix.toLowerCase()}${labelPart}_$datePart.pdf';
+      final pdfBytes = await doc.save();
+
+      if (kIsWeb) {
+        // On web fall back to the printing dialog.
+        await Printing.layoutPdf(
+          onLayout: (_) async => pdfBytes,
+          name: pdfName,
+        );
+      } else {
+        // On desktop/mobile use FilePicker so the filename is pre-filled.
+        final savePath = await FilePicker.platform.saveFile(
+          dialogTitle: 'Save PDF',
+          fileName: pdfName,
+          type: FileType.custom,
+          allowedExtensions: ['pdf'],
+        );
+        if (savePath != null) {
+          await File(savePath).writeAsBytes(pdfBytes);
+          _setMessage('Saved to $savePath');
+        }
+        return;
+      }
+      _setMessage('PDF ready — use the dialog to save or print.');
+    } catch (e, st) {
+      debugPrint('[PDF Export] error: $e\n$st');
+      _setMessage('PDF export failed: $e', error: true);
+    } finally {
+      setState(() => _loading = false);
+    }
+  }
 }
 
 // ── Action card ───────────────────────────────────────────────────────────────
 
-class _ActionCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final bool loading;
-  final VoidCallback onTap;
-
-  const _ActionCard({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.loading,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-
-    return Card(
-      child: ListTile(
-        leading: Icon(icon, color: cs.primary),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
-        subtitle: Text(
-          subtitle,
-          style: TextStyle(color: cs.onSurfaceVariant, fontSize: 12),
-        ),
-        trailing: loading
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-            : Icon(Icons.chevron_right, color: cs.onSurfaceVariant),
-        onTap: loading ? null : onTap,
-      ),
-    );
-  }
-}
+// Widgets in import_screen_widgets.dart.

@@ -1,7 +1,7 @@
 name: todopod
 description: "ToDo List Management with Secure and Private Storage"
 publish_to: 'none'
-version: 0.1.16+3
+version: 0.1.17+3
 
 environment:
   sdk: ^3.11.3
@@ -12,6 +12,8 @@ dependencies:
     sdk: flutter
   gap: ^3.0.1
   markdown_tooltip: ^0.0.10
+  pdf: ^3.11.1
+  printing: ^5.13.1
   provider: ^6.1.5
   solidpod: ^0.12.2
   solidui: ^0.3.18

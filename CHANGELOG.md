@@ -39,6 +39,7 @@ Code](https://claude.com/product/claude-code).
 
 ## 0.2 Basic Functionality
 
++ Support export to PDF [0.1.17 20260413 gjw]
 + Search allows tags and project/context [0.1.16 20260413 gjw]
 + Avoid dismissing editable popups [0.1.15 20260412 gjw]
 + Colour code late entries [0.1.14 20260412 gjw]

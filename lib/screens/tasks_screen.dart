@@ -291,13 +291,15 @@ class _TasksScreenState extends State<TasksScreen> {
     );
     if (updated != null) {
       if (!task.completed && updated.completed) {
-        // Save any edits first, then move to done (preserving all changes).
+        // Save edits first, then move to done — must save both lists since
+        // completeTask moves the entry from _tasks to _done.
         provider.updateTask(updated.copyWith(completed: false));
         provider.completeTask(task.id);
+        await provider.saveAllToPod();
       } else {
         provider.updateTask(updated);
+        await provider.saveTodoToPod();
       }
-      await provider.saveTodoToPod();
     }
   }
 
@@ -316,10 +318,11 @@ class _TasksScreenState extends State<TasksScreen> {
       if (!task.completed && updated.completed) {
         provider.updateTask(updated.copyWith(completed: false));
         provider.completeTask(task.id);
+        await provider.saveAllToPod();
       } else {
         provider.updateTask(updated);
+        await provider.saveTodoToPod();
       }
-      await provider.saveTodoToPod();
     }
   }
 

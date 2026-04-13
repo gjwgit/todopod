@@ -39,6 +39,7 @@ Code](https://claude.com/product/claude-code).
 
 ## 0.2 Basic Functionality
 
++ Bug fix on dragging items when list is filtered [0.1.18 20260413 gjw]
 + Support export to PDF [0.1.17 20260413 gjw]
 + Search allows tags and project/context [0.1.16 20260413 gjw]
 + Avoid dismissing editable popups [0.1.15 20260412 gjw]

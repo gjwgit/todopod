@@ -179,11 +179,13 @@ class AppProvider extends ChangeNotifier {
   /// When sorted by priority, dragging a task into a different priority
   /// section automatically changes the task's priority to match.
 
-  void reorderTask(int oldIndex, int newIndex) {
+  void reorderTask(int oldIndex, int newIndex, {List<Task>? visibleTasks}) {
     if (oldIndex < newIndex) newIndex--;
     if (oldIndex == newIndex) return;
 
-    final visible = tasks; // sorted + filtered snapshot
+    // Use the caller-supplied visible list (which may be further filtered by
+    // the screen's own search query) so indices always match the displayed list.
+    final visible = visibleTasks ?? tasks;
     final task = visible[oldIndex];
 
     // Determine new priority from the drop target's neighbours.

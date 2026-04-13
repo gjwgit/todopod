@@ -202,7 +202,7 @@ class _TasksScreenState extends State<TasksScreen> {
               child: ReorderableListView.builder(
                 buildDefaultDragHandles: false,
                 onReorder: (oldIndex, newIndex) {
-                  provider.reorderTask(oldIndex, newIndex);
+                  provider.reorderTask(oldIndex, newIndex, visibleTasks: tasks);
                   provider.saveTodoToPod();
                 },
                 itemCount: tasks.length,

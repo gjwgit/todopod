@@ -168,10 +168,7 @@ void main() {
     });
 
     test('can clear nullable fields with sentinel', () {
-      final original = makeTask(
-        priority: 'A',
-        dueDate: DateTime(2026, 4, 1),
-      );
+      final original = makeTask(priority: 'A', dueDate: DateTime(2026, 4, 1));
       final cleared = original.copyWith(priority: null, dueDate: null);
       expect(cleared.priority, isNull);
       expect(cleared.dueDate, isNull);

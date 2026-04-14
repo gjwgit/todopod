@@ -185,7 +185,7 @@ fix:
 .PHONY: format
 format:
 	@echo "Dart: FORMAT"
-	dart format lib/ $(if $(shell test -d example && echo yes),example/)
+	dart format lib/ $(if $(shell test -d example && echo yes),example/) $(if $(shell test -d test && echo yes),test/) $(if $(shell test -d integration_test && echo yes),integration_test/)
 	@echo $(SEPARATOR)
 
 # My emacs IDE is starting to add imports of backups automagically!

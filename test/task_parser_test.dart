@@ -108,7 +108,8 @@ x 2026-04-10 2026-04-05 Completed thing
 
   group('round-trip', () {
     test('active task survives parse → toTodoTxt → parse', () {
-      const line = '(B) 2026-04-01 Write tests +work @laptop due:2026-04-15 =2h';
+      const line =
+          '(B) 2026-04-01 Write tests +work @laptop due:2026-04-15 =2h';
       final parsed = parseTodoTxt(line).first;
       final reparsed = parseTodoTxt(parsed.toTodoTxt()).first;
 

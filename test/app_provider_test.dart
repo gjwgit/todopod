@@ -36,10 +36,7 @@ void main() {
   AppProvider freshProvider() {
     final p = AppProvider();
     // Load tasks directly without pod.
-    p.loadFromContent(
-      todoContent: '',
-      doneContent: '',
-    );
+    p.loadFromContent(todoContent: '', doneContent: '');
     return p;
   }
 
@@ -161,13 +158,20 @@ void main() {
       p.completeTask('bug');
 
       // Task must be removed from active list.
-      expect(p.tasks.length, tasksBefore - 1,
-          reason: '_tasks was not decremented — task still appears as active');
+      expect(
+        p.tasks.length,
+        tasksBefore - 1,
+        reason: '_tasks was not decremented — task still appears as active',
+      );
 
       // Task must be added to done list.
-      expect(p.doneTasks.length, doneBefore + 1,
-          reason: '_done was not incremented — task will be lost on restart '
-              'if only saveTodoToPod() is called');
+      expect(
+        p.doneTasks.length,
+        doneBefore + 1,
+        reason:
+            '_done was not incremented — task will be lost on restart '
+            'if only saveTodoToPod() is called',
+      );
     });
 
     test('uncompleteTask moves task back to active', () {
@@ -201,16 +205,16 @@ void main() {
 
     test('due date sort puts earlier dates first', () {
       final p = freshProvider();
-      p.addTask(makeTask(
-        id: '1',
-        description: 'Later',
-        dueDate: DateTime(2026, 5, 1),
-      ));
-      p.addTask(makeTask(
-        id: '2',
-        description: 'Earlier',
-        dueDate: DateTime(2026, 4, 1),
-      ));
+      p.addTask(
+        makeTask(id: '1', description: 'Later', dueDate: DateTime(2026, 5, 1)),
+      );
+      p.addTask(
+        makeTask(
+          id: '2',
+          description: 'Earlier',
+          dueDate: DateTime(2026, 4, 1),
+        ),
+      );
       p.addTask(makeTask(id: '3', description: 'No due date'));
       p.setSortOrder(SortOrder.dueDate);
 
@@ -227,8 +231,12 @@ void main() {
   group('provider filters', () {
     test('filterProject filters by project', () {
       final p = freshProvider();
-      p.addTask(makeTask(id: '1', description: 'Work task', projects: ['work']));
-      p.addTask(makeTask(id: '2', description: 'Home task', projects: ['home']));
+      p.addTask(
+        makeTask(id: '1', description: 'Work task', projects: ['work']),
+      );
+      p.addTask(
+        makeTask(id: '2', description: 'Home task', projects: ['home']),
+      );
       p.setFilterProject('work');
 
       expect(p.tasks, hasLength(1));
@@ -237,8 +245,12 @@ void main() {
 
     test('filterContext filters by context', () {
       final p = freshProvider();
-      p.addTask(makeTask(id: '1', description: 'Phone task', contexts: ['phone']));
-      p.addTask(makeTask(id: '2', description: 'Email task', contexts: ['email']));
+      p.addTask(
+        makeTask(id: '1', description: 'Phone task', contexts: ['phone']),
+      );
+      p.addTask(
+        makeTask(id: '2', description: 'Email task', contexts: ['email']),
+      );
       p.setFilterContext('phone');
 
       expect(p.tasks, hasLength(1));
@@ -335,8 +347,10 @@ void main() {
       p.addTask(t);
       // Import same id — provider adds it, UI deduplication is caller's job.
       // Just verify the import doesn't crash.
-      expect(() => p.importTasks([t.copyWith(description: 'Duplicate')]),
-          returnsNormally);
+      expect(
+        () => p.importTasks([t.copyWith(description: 'Duplicate')]),
+        returnsNormally,
+      );
     });
   });
 

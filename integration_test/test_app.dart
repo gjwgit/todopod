@@ -33,10 +33,7 @@ Widget buildTestApp(AppProvider provider) {
 }
 
 /// Create a provider pre-loaded with todo.txt content.
-AppProvider providerWith({
-  String todo = '',
-  String done = '',
-}) {
+AppProvider providerWith({String todo = '', String done = ''}) {
   final p = AppProvider();
   p.loadFromContent(todoContent: todo, doneContent: done);
   return p;

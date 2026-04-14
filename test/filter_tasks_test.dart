@@ -186,9 +186,10 @@ void main() {
     });
 
     test('tasks with no projects are excluded', () {
-      expect(filterTasks(tasks, 'project:work'), everyElement(
-        predicate<Task>((t) => t.projects.isNotEmpty),
-      ));
+      expect(
+        filterTasks(tasks, 'project:work'),
+        everyElement(predicate<Task>((t) => t.projects.isNotEmpty)),
+      );
     });
   });
 
@@ -239,16 +240,14 @@ void main() {
 
     test('due: filters exclude tasks with no due date', () {
       expect(
-        filterTasks(tasks, 'due:today')
-            .any((t) => t.dueDate == null),
+        filterTasks(tasks, 'due:today').any((t) => t.dueDate == null),
         isFalse,
       );
     });
 
     test('due:week excludes overdue tasks', () {
       expect(
-        filterTasks(tasks, 'due:week')
-            .any((t) => t.description == 'Overdue'),
+        filterTasks(tasks, 'due:week').any((t) => t.description == 'Overdue'),
         isFalse,
       );
     });

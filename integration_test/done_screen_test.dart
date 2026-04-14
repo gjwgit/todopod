@@ -35,23 +35,20 @@ void main() {
     testWidgets('shows completed task descriptions', (tester) async {
       await pumpApp(
         tester,
-        done: 'x 2026-04-13 2026-04-10 Finished report +work\n'
+        done:
+            'x 2026-04-13 2026-04-10 Finished report +work\n'
             'x 2026-04-12 Buy groceries @errands\n',
       );
       expect(find.text('Finished report'), findsOneWidget);
       expect(find.text('Buy groceries'), findsOneWidget);
     });
 
-    testWidgets('completed tasks have strikethrough decoration', (tester) async {
-      await pumpApp(
-        tester,
-        done: 'x 2026-04-13 Done task\n',
-      );
+    testWidgets('completed tasks have strikethrough decoration', (
+      tester,
+    ) async {
+      await pumpApp(tester, done: 'x 2026-04-13 Done task\n');
       final textWidget = tester.widget<Text>(find.text('Done task'));
-      expect(
-        textWidget.style?.decoration,
-        TextDecoration.lineThrough,
-      );
+      expect(textWidget.style?.decoration, TextDecoration.lineThrough);
     });
   });
 

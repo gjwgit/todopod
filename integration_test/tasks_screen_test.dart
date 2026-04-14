@@ -61,10 +61,7 @@ void main() {
 
   group('task list', () {
     testWidgets('displays loaded tasks', (tester) async {
-      await pumpApp(
-        tester,
-        providerWith(todo: 'Buy milk\nWrite tests\n'),
-      );
+      await pumpApp(tester, providerWith(todo: 'Buy milk\nWrite tests\n'));
       expect(find.text('Buy milk'), findsOneWidget);
       expect(find.text('Write tests'), findsOneWidget);
     });
@@ -77,15 +74,11 @@ void main() {
     });
 
     testWidgets('past due task shows title in red', (tester) async {
-      final yesterday =
-          DateTime.now().subtract(const Duration(days: 1));
+      final yesterday = DateTime.now().subtract(const Duration(days: 1));
       final dateStr =
           '${yesterday.year}-${yesterday.month.toString().padLeft(2, '0')}'
           '-${yesterday.day.toString().padLeft(2, '0')}';
-      await pumpApp(
-        tester,
-        providerWith(todo: 'Overdue task due:$dateStr\n'),
-      );
+      await pumpApp(tester, providerWith(todo: 'Overdue task due:$dateStr\n'));
       expect(find.text('Overdue task'), findsOneWidget);
       // Find the Text widget and verify its colour.
       final textWidget = tester.widget<Text>(find.text('Overdue task'));
@@ -114,10 +107,9 @@ void main() {
       await pumpApp(tester, provider);
       await tapAddButton(tester);
       expect(find.byType(Dialog), findsOneWidget);
-      await tester.tap(find.descendant(
-        of: find.byType(Dialog),
-        matching: find.text('Cancel'),
-      ));
+      await tester.tap(
+        find.descendant(of: find.byType(Dialog), matching: find.text('Cancel')),
+      );
       await tester.pumpAndSettle();
       expect(find.byType(Dialog), findsNothing);
       expect(provider.tasks, isEmpty);
@@ -145,10 +137,12 @@ void main() {
       await tester.enterText(descField, 'My new task');
       await tester.pumpAndSettle();
 
-      await tester.tap(find.descendant(
-        of: find.byType(Dialog),
-        matching: find.text('Add Task'),
-      ));
+      await tester.tap(
+        find.descendant(
+          of: find.byType(Dialog),
+          matching: find.text('Add Task'),
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(find.byType(Dialog), findsNothing);
@@ -156,8 +150,9 @@ void main() {
       expect(provider.tasks, hasLength(1));
     });
 
-    testWidgets('tapping outside barrier-dismissed=false does not close',
-        (tester) async {
+    testWidgets('tapping outside barrier-dismissed=false does not close', (
+      tester,
+    ) async {
       await pumpApp(tester, providerWith());
       await tapAddButton(tester);
 
@@ -197,37 +192,43 @@ void main() {
     });
 
     testWidgets(
-        'CRITICAL: completing via edit dialog removes from tasks AND adds to done',
-        (tester) async {
-      final provider = providerWith(todo: 'Edit to complete\n');
-      await pumpApp(tester, provider);
+      'CRITICAL: completing via edit dialog removes from tasks AND adds to done',
+      (tester) async {
+        final provider = providerWith(todo: 'Edit to complete\n');
+        await pumpApp(tester, provider);
 
-      // Tap the task title to open edit dialog.
-      await tester.tap(find.text('Edit to complete'));
-      await tester.pumpAndSettle();
-      expect(find.byType(Dialog), findsOneWidget);
+        // Tap the task title to open edit dialog.
+        await tester.tap(find.text('Edit to complete'));
+        await tester.pumpAndSettle();
+        expect(find.byType(Dialog), findsOneWidget);
 
-      // Tick "Mark as done" inside the dialog.
-      final checkbox = find.descendant(
-        of: find.byType(Dialog),
-        matching: find.text('Mark as done'),
-      );
-      await tester.tap(checkbox);
-      await tester.pumpAndSettle();
+        // Tick "Mark as done" inside the dialog.
+        final checkbox = find.descendant(
+          of: find.byType(Dialog),
+          matching: find.text('Mark as done'),
+        );
+        await tester.tap(checkbox);
+        await tester.pumpAndSettle();
 
-      // Save.
-      await tester.tap(find.descendant(
-        of: find.byType(Dialog),
-        matching: find.text('Save'),
-      ));
-      await tester.pumpAndSettle();
+        // Save.
+        await tester.tap(
+          find.descendant(of: find.byType(Dialog), matching: find.text('Save')),
+        );
+        await tester.pumpAndSettle();
 
-      // Must be in done, not in active.
-      expect(provider.tasks, isEmpty,
-          reason: 'Task still in active list after marking done via edit');
-      expect(provider.doneTasks, hasLength(1),
-          reason: 'Task not in done list — would be lost on restart');
-    });
+        // Must be in done, not in active.
+        expect(
+          provider.tasks,
+          isEmpty,
+          reason: 'Task still in active list after marking done via edit',
+        );
+        expect(
+          provider.doneTasks,
+          hasLength(1),
+          reason: 'Task not in done list — would be lost on restart',
+        );
+      },
+    );
   });
 
   // ── Search / filter ────────────────────────────────────────────────────────
@@ -248,10 +249,7 @@ void main() {
     });
 
     testWidgets('clearing search shows all tasks', (tester) async {
-      await pumpApp(
-        tester,
-        providerWith(todo: 'Task A\nTask B\n'),
-      );
+      await pumpApp(tester, providerWith(todo: 'Task A\nTask B\n'));
 
       final searchField = find.byType(TextField).first;
       await typeInField(tester, searchField, 'Task A');

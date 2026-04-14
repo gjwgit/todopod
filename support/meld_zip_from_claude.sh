@@ -33,7 +33,13 @@ mkdir tmp
 
 # Run meld with the file and find result
 
-meld tmp/lib lib
+if [ -d tmp/lib ]; then
+    meld tmp/lib lib
+fi
+
+if [ -d tmp/test ]; then
+    meld tmp/test test
+fi
 
 # Check if pubspec included and if so compare.
 

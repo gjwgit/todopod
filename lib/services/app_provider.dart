@@ -18,6 +18,7 @@ import 'package:uuid/uuid.dart';
 
 import 'package:todopod/constants/app.dart';
 import 'package:todopod/models/task.dart';
+import 'package:todopod/models/task_parser.dart';
 import 'package:todopod/services/pod_service.dart';
 
 const _uuid = Uuid();
@@ -300,6 +301,18 @@ class AppProvider extends ChangeNotifier {
   String serialiseDone() => jsonEncode(_done.map((t) => t.toJson()).toList());
 
   // ── Pod sync ──────────────────────────────────────────────────────────────
+
+  /// Load tasks directly from content strings — used in tests to avoid
+  /// requiring a live Solid Pod connection.
+  void loadFromContent({
+    required String todoContent,
+    required String doneContent,
+  }) {
+    _tasks = todoContent.isEmpty ? [] : (parseTodoTxt(todoContent)..toList());
+    _done = doneContent.isEmpty ? [] : (parseTodoTxt(doneContent)..toList());
+    _loading = false;
+    notifyListeners();
+  }
 
   Future<void> loadFromPod() async {
     _loading = true;

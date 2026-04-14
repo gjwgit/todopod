@@ -3,9 +3,11 @@
 /// The filter lives in TasksScreenState but the logic is pure — we test it
 /// by extracting it here as a standalone function matching the implementation.
 ///
+library;
 // Run: flutter test test/filter_tasks_test.dart
 
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:todopod/models/task.dart';
 
 // ── Mirror of _filterTasks from tasks_screen.dart ─────────────────────────────

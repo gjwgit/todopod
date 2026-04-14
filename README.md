@@ -113,3 +113,29 @@ Add to `ios/Runner/Info.plist`:
     <true/>
 </dict>
 ```
+
+## Testing
+
+**Unit tests** (`test/`) — 75 tests covering:
+
++ `Task` model — serialisation, `toTodoTxt`, `copyWith`, `displayText`
++ Parser — todo.txt parsing, round-trips, edge cases
++ `AppProvider` — CRUD, the critical completion persistence bug,
+  sorting, filtering, reorder
++ Search filters — all six modes (`context:`, `project:`,
+  `due:past/today/tomorrow/week`)
+
+**Integration tests** (`integration_test/`) — 19 tests covering the full widget tree:
+
++ Empty state display
++ Task list rendering, priority badges, due-date colours
++ Add task via FAB, cancel without saving, barrier dismissal
++ Completing via checkbox and via the edit dialog (including the
+  persistence regression test)
++ Search filtering in the UI
++ Navigation between Tasks and Done screens
+
+The test harness (`test_app.dart`) uses `_TestScaffold` which skips
+all solidpod/solidui/key-management code, and `_testMode` on
+`AppProvider` silences pod save calls — so tests run fast and produce
+clean output.

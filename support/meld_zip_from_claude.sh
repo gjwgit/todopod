@@ -41,6 +41,10 @@ if [ -d tmp/test ]; then
     meld tmp/test test
 fi
 
+if [ -d tmp/integration_test ]; then
+    meld tmp/integration_test integration_test
+fi
+
 # Check if pubspec included and if so compare.
 
 if [ -f tmp/pubspec.yaml ]; then

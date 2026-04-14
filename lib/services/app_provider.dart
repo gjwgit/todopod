@@ -308,6 +308,7 @@ class AppProvider extends ChangeNotifier {
     required String todoContent,
     required String doneContent,
   }) {
+    _testMode = true;
     _tasks = todoContent.isEmpty ? [] : (parseTodoTxt(todoContent)..toList());
     _done = doneContent.isEmpty ? [] : (parseTodoTxt(doneContent)..toList());
     _loading = false;
@@ -328,7 +329,12 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// When true, all pod save operations are silently skipped.
+  /// Set via [loadFromContent] to keep test output clean.
+  bool _testMode = false;
+
   Future<String?> saveTodoToPod() async {
+    if (_testMode) return null;
     final err = await PodService.saveTasks(todoFileName, _tasks);
     if (err != null) {
       _error = err;
@@ -338,6 +344,7 @@ class AppProvider extends ChangeNotifier {
   }
 
   Future<String?> saveDoneToPod() async {
+    if (_testMode) return null;
     final err = await PodService.saveTasks(doneFileName, _done);
     if (err != null) {
       _error = err;

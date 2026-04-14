@@ -2,9 +2,11 @@
 ///
 /// These tests focus on in-memory operations (no pod/network calls).
 ///
+library;
 // Run: flutter test test/app_provider_test.dart
 
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:todopod/models/task.dart';
 import 'package:todopod/services/app_provider.dart';
 

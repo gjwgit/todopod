@@ -230,7 +230,8 @@ class _TasksScreenState extends State<TasksScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _addTask(context, provider),
+        onPressed: () =>
+            _addTask(context, provider, initialTitle: _query.trim()),
         tooltip: 'Add task',
         child: const Icon(Icons.add),
       ),
@@ -242,12 +243,20 @@ class _TasksScreenState extends State<TasksScreen> {
       p.filterContext != null ||
       p.filterPriority != null;
 
-  Future<void> _addTask(BuildContext context, AppProvider provider) async {
+  Future<void> _addTask(
+    BuildContext context,
+    AppProvider provider, {
+    String? initialTitle,
+  }) async {
     final messenger = ScaffoldMessenger.of(context);
     final task = await showDialog<Task>(
       context: context,
       barrierDismissible: false,
-      builder: (_) => const TaskEdit(),
+      builder: (_) => TaskEdit(
+        initialTitle: (initialTitle != null && initialTitle.isNotEmpty)
+            ? initialTitle
+            : null,
+      ),
     );
     if (task != null) {
       provider.addTask(task);
@@ -262,8 +271,6 @@ class _TasksScreenState extends State<TasksScreen> {
     AppProvider provider,
   ) async {
     final title = _search.text.trim();
-    _search.clear();
-    setState(() => _query = '');
 
     final messenger = ScaffoldMessenger.of(context);
     final task = await showDialog<Task>(
@@ -274,6 +281,9 @@ class _TasksScreenState extends State<TasksScreen> {
     if (task != null) {
       provider.addTask(task);
       await provider.saveTodoToPod();
+      // Clear search only after a task was actually saved.
+      _search.clear();
+      setState(() => _query = '');
       if (!context.mounted) return;
       messenger.showSnackBar(const SnackBar(content: Text('Task added')));
     }

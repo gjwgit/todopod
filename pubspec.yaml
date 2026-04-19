@@ -30,6 +30,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/app_icon.png
+    - assets/images/app_image.jpg
   uses-material-design: true
 
 # Define launcher icons for all platforms (except Linux) so icons for

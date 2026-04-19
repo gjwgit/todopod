@@ -39,6 +39,7 @@ Code](https://claude.com/product/claude-code).
 
 ## 0.2 Basic Functionality
 
++ Ensure bullets render in tootlips [0.1.22 20260420 gjw]
 + Remove Floating add button. Update tooltips. [0.1.21 20260420 gjw]
 + Floating + add search as default title [0.1.20 20260417 gjw]
 + Add a DONE checkbox in the EDIT dialog [0.1.19 20260414 gjw]

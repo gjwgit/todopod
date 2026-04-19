@@ -134,39 +134,19 @@ class TaskTile extends StatelessWidget {
   }
 
   String _buildTooltip() {
-    final buf = StringBuffer('**${task.description}**\n\n');
-
-    if (task.priority != null) {
-      final label = priorityLabels[task.priority] ?? task.priority!;
-      buf.writeln('**Priority:** ${task.priority} — $label\n');
+    if (task.notes == null || task.notes!.isEmpty) return '';
+    // Ensure lines starting with `+` are separated by a blank line so they
+    // render as distinct paragraphs rather than a collapsed list in Markdown.
+    final lines = task.notes!.split('\n');
+    final buf = StringBuffer();
+    for (int i = 0; i < lines.length; i++) {
+      final line = lines[i];
+      if (line.startsWith('+') && i > 0 && lines[i - 1].isNotEmpty) {
+        buf.writeln();
+      }
+      buf.writeln(line);
     }
-
-    if (task.dueDate != null) {
-      buf.writeln('**Due:** ${_fmtDue(task.dueDate!)}\n');
-    }
-
-    if (task.duration != null) {
-      buf.writeln('**Duration:** ${task.duration}\n');
-    }
-
-    if (task.projects.isNotEmpty) {
-      buf.writeln(
-        '**Projects:** ${task.projects.map((p) => '+$p').join(', ')}\n',
-      );
-    }
-
-    if (task.contexts.isNotEmpty) {
-      buf.writeln(
-        '**Contexts:** ${task.contexts.map((c) => '@$c').join(', ')}\n',
-      );
-    }
-
-    if (task.notes != null && task.notes!.isNotEmpty) {
-      buf.writeln('---\n');
-      buf.writeln(task.notes);
-    }
-
-    return buf.toString().trimRight();
+    return '**Notes**\n\n${buf.toString().trimRight()}';
   }
 
   bool _hasTags(Task t) =>

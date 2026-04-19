@@ -13,6 +13,7 @@ library;
 import 'package:flutter/material.dart';
 
 import 'package:gap/gap.dart';
+import 'package:markdown_tooltip/markdown_tooltip.dart';
 
 import 'package:todopod/constants/app.dart';
 import 'package:todopod/services/app_provider.dart';
@@ -27,26 +28,29 @@ class TaskSortButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton<SortOrder>(
-      tooltip: 'Sort',
-      icon: const Icon(Icons.sort),
-      onSelected: provider.setSortOrder,
-      itemBuilder: (_) => [
-        for (final order in SortOrder.values)
-          PopupMenuItem(
-            value: order,
-            child: Row(
-              children: [
-                if (provider.sortOrder == order)
-                  Icon(Icons.check, size: 16, color: cs.primary)
-                else
-                  const SizedBox(width: 16),
-                const Gap(8),
-                Text(_sortLabel(order)),
-              ],
+    return MarkdownTooltip(
+      message: '**Sort**\n\nChange the order in which tasks are listed.',
+      child: PopupMenuButton<SortOrder>(
+        tooltip: '', // suppress Flutter's default "Show menu" tooltip
+        icon: const Icon(Icons.sort),
+        onSelected: provider.setSortOrder,
+        itemBuilder: (_) => [
+          for (final order in SortOrder.values)
+            PopupMenuItem(
+              value: order,
+              child: Row(
+                children: [
+                  if (provider.sortOrder == order)
+                    Icon(Icons.check, size: 16, color: cs.primary)
+                  else
+                    const SizedBox(width: 16),
+                  const Gap(8),
+                  Text(_sortLabel(order)),
+                ],
+              ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -75,13 +79,15 @@ class TaskFilterButton extends StatelessWidget {
         provider.filterContext != null ||
         provider.filterPriority != null;
 
-    return IconButton(
-      icon: Badge(
-        isLabelVisible: hasFilter,
-        child: const Icon(Icons.filter_list),
+    return MarkdownTooltip(
+      message: '**Filter**\n\nFilter tasks by priority, project or context.',
+      child: IconButton(
+        icon: Badge(
+          isLabelVisible: hasFilter,
+          child: const Icon(Icons.filter_list),
+        ),
+        onPressed: () => _showFilterSheet(context),
       ),
-      tooltip: 'Filter',
-      onPressed: () => _showFilterSheet(context),
     );
   }
 

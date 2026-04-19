@@ -134,18 +134,27 @@ class _TasksScreenState extends State<TasksScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           if (_query.isNotEmpty)
-                            IconButton(
-                              icon: const Icon(Icons.clear, size: 18),
-                              onPressed: () {
-                                _search.clear();
-                                setState(() => _query = '');
-                              },
+                            MarkdownTooltip(
+                              message:
+                                  '**Clear search**\n\nRemove the search text and show all tasks.',
+                              child: IconButton(
+                                icon: const Icon(Icons.clear, size: 18),
+                                onPressed: () {
+                                  _search.clear();
+                                  setState(() => _query = '');
+                                },
+                              ),
                             ),
-                          IconButton(
-                            icon: const Icon(Icons.add, size: 20),
-                            tooltip: 'Create task from search text',
-                            onPressed: () =>
-                                _addTaskFromSearch(context, provider),
+                          MarkdownTooltip(
+                            message:
+                                '**Add task**\n\n'
+                                'Create a new task, pre-filled with the '
+                                'current search text as the title.',
+                            child: IconButton(
+                              icon: const Icon(Icons.add, size: 20),
+                              onPressed: () =>
+                                  _addTaskFromSearch(context, provider),
+                            ),
                           ),
                         ],
                       ),
@@ -159,6 +168,7 @@ class _TasksScreenState extends State<TasksScreen> {
                     onSubmitted: (_) => _addTaskFromSearch(context, provider),
                   ),
                 ),
+                const Gap(8),
                 const MarkdownTooltip(
                   message: '''
 
@@ -228,12 +238,6 @@ class _TasksScreenState extends State<TasksScreen> {
               ),
             ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () =>
-            _addTask(context, provider, initialTitle: _query.trim()),
-        tooltip: 'Add task',
-        child: const Icon(Icons.add),
       ),
     );
   }

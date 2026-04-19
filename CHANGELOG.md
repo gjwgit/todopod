@@ -39,6 +39,7 @@ Code](https://claude.com/product/claude-code).
 
 ## 0.2 Basic Functionality
 
++ Remove Floating add button. Update tooltips. [0.1.21 20260420 gjw]
 + Floating + add search as default title [0.1.20 20260417 gjw]
 + Add a DONE checkbox in the EDIT dialog [0.1.19 20260414 gjw]
 + Bug fix on dragging items when list is filtered [0.1.18 20260413 gjw]

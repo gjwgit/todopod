@@ -13,6 +13,7 @@ library;
 import 'package:flutter/material.dart';
 
 import 'package:gap/gap.dart';
+import 'package:markdown_tooltip/markdown_tooltip.dart';
 
 import 'package:todopod/models/task.dart';
 
@@ -204,10 +205,14 @@ class DoneTile extends StatelessWidget {
                 ],
               ),
             ),
-            IconButton(
-              icon: Icon(Icons.delete_outline, size: 18, color: cs.error),
-              tooltip: 'Delete permanently',
-              onPressed: onDelete,
+            MarkdownTooltip(
+              message:
+                  '**Delete permanently**\n\n'
+                  'Remove this task from the Done list. This cannot be undone.',
+              child: IconButton(
+                icon: Icon(Icons.delete_outline, size: 18, color: cs.error),
+                onPressed: onDelete,
+              ),
             ),
           ],
         ),

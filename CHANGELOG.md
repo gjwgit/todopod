@@ -39,6 +39,7 @@ Code](https://claude.com/product/claude-code).
 
 ## 0.2 Basic Functionality
 
++ Update tooltip for tasks with no notes [0.1.23 20260420 gjw]
 + Ensure bullets render in tootlips [0.1.22 20260420 gjw]
 + Remove Floating add button. Update tooltips. [0.1.21 20260420 gjw]
 + Floating + add search as default title [0.1.20 20260417 gjw]

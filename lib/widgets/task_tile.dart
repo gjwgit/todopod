@@ -134,7 +134,9 @@ class TaskTile extends StatelessWidget {
   }
 
   String _buildTooltip() {
-    if (task.notes == null || task.notes!.isEmpty) return '';
+    if (task.notes == null || task.notes!.isEmpty) {
+      return '**Notes**\n\nNo notes for this task.';
+    }
     // Ensure lines starting with `+` are separated by a blank line so they
     // render as distinct paragraphs rather than a collapsed list in Markdown.
     final lines = task.notes!.split('\n');

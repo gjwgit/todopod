@@ -1,6 +1,6 @@
-/// ImportScreen — import from todo.txt and export backups.
+/// ImportScreen — import from todo.txt / JSON and export backups.
 ///
-// Time-stamp: <Monday 2026-04-13 12:08:45 +1000 Graham Williams>
+// Time-stamp: <Thursday 2026-04-23 10:00:00 +1100 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -42,19 +42,20 @@ class _ImportScreenState extends State<ImportScreen> {
   String? _exportMessage;
   bool _exportError = false;
 
-  void _setImportMessage(String msg, {bool error = false}) {
-    setState(() {
-      _importMessage = msg;
-      _importError = error;
-    });
-  }
+  void _setImportMsg(String msg, {bool error = false}) => setState(() {
+    _importMessage = msg;
+    _importError = error;
+  });
 
-  void _setMessage(String msg, {bool error = false}) {
-    setState(() {
-      _exportMessage = msg;
-      _exportError = error;
-    });
-  }
+  void _setExportMsg(String msg, {bool error = false}) => setState(() {
+    _exportMessage = msg;
+    _exportError = error;
+  });
+
+  /// Zero-padded timestamp string for filenames: YYYYMMDD_HHMM.
+  String _ts(DateTime t) =>
+      '${t.year}${t.month.toString().padLeft(2, '0')}${t.day.toString().padLeft(2, '0')}'
+      '_${t.hour.toString().padLeft(2, '0')}${t.minute.toString().padLeft(2, '0')}';
 
   @override
   Widget build(BuildContext context) {
@@ -70,8 +71,8 @@ class _ImportScreenState extends State<ImportScreen> {
           Text('Import', style: Theme.of(context).textTheme.titleLarge),
           const Gap(8),
           Text(
-            'Import tasks from a todo.txt file. Imported tasks are '
-            'merged with your existing task list.',
+            'Import tasks from a todo.txt or JSON file. Imported tasks '
+            'are merged with your existing task list.',
             style: TextStyle(color: cs.onSurfaceVariant),
           ),
           if (_importMessage != null) ...[
@@ -88,7 +89,48 @@ class _ImportScreenState extends State<ImportScreen> {
             title: 'Import Todo.txt',
             subtitle: 'Select a Todo.txt file to import active tasks.',
             loading: _loading,
-            onTap: () => _importTodoTxt(context),
+            onTap: () => _import(
+              context,
+              dialogTitle: 'Select Todo.txt file',
+              parse: (b) => parseTodoTxt(utf8.decode(b)),
+            ),
+          ),
+          const Gap(12),
+          ImportActionCard(
+            icon: Icons.upload_file_outlined,
+            title: 'Import Done.txt',
+            subtitle: 'Select a Done.txt file to import completed tasks.',
+            loading: _loading,
+            onTap: () => _import(
+              context,
+              dialogTitle: 'Select Done.txt file',
+              parse: (b) => parseTodoTxt(utf8.decode(b)),
+            ),
+          ),
+          const Gap(12),
+          ImportActionCard(
+            icon: Icons.upload_file_outlined,
+            title: 'Import JSON Backup',
+            subtitle: 'Restore tasks from a todopod JSON backup file.',
+            loading: _loading,
+            onTap: () => _import(
+              context,
+              dialogTitle: 'Select JSON backup file',
+              fileType: FileType.custom,
+              extensions: ['json'],
+              parse: (b) {
+                final bundle =
+                    jsonDecode(utf8.decode(b)) as Map<String, dynamic>;
+                return [
+                  ...(bundle['tasks'] as List? ?? [])
+                      .cast<Map<String, dynamic>>()
+                      .map(Task.fromJson),
+                  ...(bundle['done'] as List? ?? [])
+                      .cast<Map<String, dynamic>>()
+                      .map(Task.fromJson),
+                ];
+              },
+            ),
           ),
 
           // ── Export ──────────────────────────────────────────────────
@@ -107,8 +149,7 @@ class _ImportScreenState extends State<ImportScreen> {
           ],
           const Gap(8),
           Text(
-            'Save a timestamped copy of your tasks to your '
-            'Downloads folder.',
+            'Save a timestamped copy of your tasks.',
             style: TextStyle(color: cs.onSurfaceVariant),
           ),
           const Gap(16),
@@ -119,7 +160,7 @@ class _ImportScreenState extends State<ImportScreen> {
                 'Saves Todo_YYYYMMDD_HHMM.txt with '
                 '${provider.tasks.length} active tasks.',
             loading: _loading,
-            onTap: () => _exportTodoTxt(context),
+            onTap: () => _exportTxt(tasks: provider.tasks, prefix: 'Todo'),
           ),
           const Gap(12),
           ImportActionCard(
@@ -129,7 +170,7 @@ class _ImportScreenState extends State<ImportScreen> {
                 'Saves Done_YYYYMMDD_HHMM.txt with '
                 '${provider.doneTasks.length} completed tasks.',
             loading: _loading,
-            onTap: () => _exportDoneTxt(context),
+            onTap: () => _exportTxt(tasks: provider.doneTasks, prefix: 'Done'),
           ),
           const Gap(12),
           ImportActionCard(
@@ -161,6 +202,16 @@ class _ImportScreenState extends State<ImportScreen> {
               prefix: 'Done',
             ),
           ),
+          const Gap(12),
+          ImportActionCard(
+            icon: Icons.download_outlined,
+            title: 'Export JSON Backup',
+            subtitle:
+                'Save all ${provider.tasks.length + provider.doneTasks.length} '
+                'tasks to a todopod JSON backup file.',
+            loading: _loading,
+            onTap: () => _exportJson(context),
+          ),
         ],
       ),
     );
@@ -168,51 +219,47 @@ class _ImportScreenState extends State<ImportScreen> {
 
   // ── Import ────────────────────────────────────────────────────────────────
 
-  Future<void> _importTodoTxt(BuildContext context) async {
+  /// Generic import: picks a file, decodes bytes via [parse], merges into pod.
+  Future<void> _import(
+    BuildContext context, {
+    required String dialogTitle,
+    FileType fileType = FileType.any,
+    List<String>? extensions,
+    required List<Task> Function(List<int> bytes) parse,
+  }) async {
     final provider = context.read<AppProvider>();
     setState(() {
       _loading = true;
       _importMessage = null;
     });
-
     try {
       final result = await FilePicker.platform.pickFiles(
-        dialogTitle: 'Select Todo.txt file',
-        type: FileType.any,
+        dialogTitle: dialogTitle,
+        type: fileType,
+        allowedExtensions: extensions,
         withData: true,
       );
-
-      if (result == null || result.files.isEmpty) {
-        setState(() => _loading = false);
-        return;
-      }
-
+      if (result == null || result.files.isEmpty) return;
       final file = result.files.first;
       final bytes = file.bytes;
       if (bytes == null) {
-        _setMessage('Could not read file.', error: true);
-        setState(() => _loading = false);
+        _setImportMsg('Could not read file.', error: true);
         return;
       }
-
-      final content = utf8.decode(bytes);
-      final tasks = parseTodoTxt(content);
-
+      final tasks = parse(bytes);
       if (tasks.isEmpty) {
-        _setImportMessage('No tasks found in "${file.name}".', error: true);
-        setState(() => _loading = false);
+        _setImportMsg('No tasks found in "${file.name}".', error: true);
         return;
       }
-
       provider.importTasks(tasks);
       await provider.saveAllToPod();
-      _setImportMessage(
+      _setImportMsg(
         'Imported ${tasks.length} task${tasks.length == 1 ? '' : 's'} '
         'from "${file.name}".',
       );
     } catch (e, st) {
       debugPrint('[Import] error: $e\n$st');
-      _setImportMessage('Import failed: $e', error: true);
+      _setImportMsg('Import failed: $e', error: true);
     } finally {
       setState(() => _loading = false);
     }
@@ -220,48 +267,66 @@ class _ImportScreenState extends State<ImportScreen> {
 
   // ── Export ────────────────────────────────────────────────────────────────
 
-  Future<void> _exportTodoTxt(BuildContext context) async {
-    final provider = context.read<AppProvider>();
-    await _export(tasks: provider.tasks, prefix: 'Todo');
-  }
-
-  Future<void> _exportDoneTxt(BuildContext context) async {
-    final provider = context.read<AppProvider>();
-    await _export(tasks: provider.doneTasks, prefix: 'Done');
-  }
-
-  Future<void> _export({required List tasks, required String prefix}) async {
+  Future<void> _exportTxt({required List tasks, required String prefix}) async {
     setState(() {
       _loading = true;
       _exportMessage = null;
     });
-
     try {
-      final lines = tasks.map((t) => t.toTodoTxt()).join('\n');
-      final bytes = utf8.encode(lines);
-      final now = DateTime.now();
-      final ts =
-          '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}'
-          '_${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}';
-      final fileName = '${prefix}_$ts.txt';
-
       if (kIsWeb) {
-        _setMessage('Export to file is not supported on web.', error: true);
+        _setExportMsg('Export to file is not supported on web.', error: true);
         return;
       }
-
-      final home =
-          Platform.environment['HOME'] ??
-          Platform.environment['USERPROFILE'] ??
-          '.';
-      final downloads = Directory('$home/Downloads');
-      final dir = downloads.existsSync() ? downloads : Directory(home);
-      final file = File('${dir.path}/$fileName');
-      await file.writeAsBytes(bytes);
-      _setMessage('Exported to ${file.path}');
+      final now = DateTime.now();
+      final savePath = await FilePicker.platform.saveFile(
+        dialogTitle: 'Save $prefix.txt',
+        fileName: '${prefix}_${_ts(now)}.txt',
+        type: FileType.any,
+      );
+      if (savePath == null) return;
+      await File(
+        savePath,
+      ).writeAsBytes(utf8.encode(tasks.map((t) => t.toTodoTxt()).join('\n')));
+      _setExportMsg('Saved to $savePath');
     } catch (e, st) {
       debugPrint('[Export] error: $e\n$st');
-      _setMessage('Export failed: $e', error: true);
+      _setExportMsg('Export failed: $e', error: true);
+    } finally {
+      setState(() => _loading = false);
+    }
+  }
+
+  Future<void> _exportJson(BuildContext context) async {
+    final provider = context.read<AppProvider>();
+    setState(() {
+      _loading = true;
+      _exportMessage = null;
+    });
+    try {
+      if (kIsWeb) {
+        _setExportMsg('Export to file is not supported on web.', error: true);
+        return;
+      }
+      final now = DateTime.now();
+      final bundle = {
+        'exported_at': now.toIso8601String(),
+        'tasks': provider.tasks.map((t) => t.toJson()).toList(),
+        'done': provider.doneTasks.map((t) => t.toJson()).toList(),
+      };
+      final savePath = await FilePicker.platform.saveFile(
+        dialogTitle: 'Save JSON Backup',
+        fileName: 'todopod_backup_${_ts(now)}.json',
+        type: FileType.custom,
+        allowedExtensions: ['json'],
+      );
+      if (savePath == null) return;
+      await File(
+        savePath,
+      ).writeAsString(const JsonEncoder.withIndent('  ').convert(bundle));
+      _setExportMsg('Saved to $savePath');
+    } catch (e, st) {
+      debugPrint('[ExportJSON] error: $e\n$st');
+      _setExportMsg('Export failed: $e', error: true);
     } finally {
       setState(() => _loading = false);
     }
@@ -276,18 +341,12 @@ class _ImportScreenState extends State<ImportScreen> {
     required String prefix,
   }) async {
     final today = DateTime.now();
-    final todayDate = DateTime(today.year, today.month, today.day);
-
-    // Collect available projects and contexts from the task list.
     final projects = <String>{};
     final contexts = <String>{};
     for (final t in allTasks) {
       projects.addAll(t.projects);
       contexts.addAll(t.contexts);
     }
-
-    // Show the filter bottom sheet and wait for the user's selection.
-    // Returns (filteredTasks, filterLabel) so the filename can reflect filters.
     final result = await showModalBottomSheet<(List<Task>, String)>(
       context: context,
       isScrollControlled: true,
@@ -298,15 +357,14 @@ class _ImportScreenState extends State<ImportScreen> {
         allTasks: allTasks,
         projects: projects.toList()..sort(),
         contexts: contexts.toList()..sort(),
-        todayDate: todayDate,
+        todayDate: DateTime(today.year, today.month, today.day),
         title: title,
       ),
     );
-
     if (result == null || !mounted) return;
     final (filtered, filterLabel) = result;
     await _exportPdf(
-      // ignore: use_build_context_synchronously — mounted checked immediately above.
+      // ignore: use_build_context_synchronously — mounted checked above.
       context,
       tasks: filtered,
       title: title,
@@ -314,8 +372,6 @@ class _ImportScreenState extends State<ImportScreen> {
       filterLabel: filterLabel,
     );
   }
-
-  // ── PDF Export ───────────────────────────────────────────────────────────
 
   Future<void> _exportPdf(
     BuildContext context, {
@@ -328,15 +384,13 @@ class _ImportScreenState extends State<ImportScreen> {
       _loading = true;
       _exportMessage = null;
     });
-
     try {
-      final doc = pw.Document();
       final now = DateTime.now();
       final dateStr =
           '${now.day.toString().padLeft(2, '0')}/'
           '${now.month.toString().padLeft(2, '0')}/'
           '${now.year}';
-
+      final doc = pw.Document();
       doc.addPage(
         pw.MultiPage(
           pageFormat: PdfPageFormat.a4,
@@ -352,7 +406,8 @@ class _ImportScreenState extends State<ImportScreen> {
                 ),
               ),
               pw.Text(
-                'Generated $dateStr  ·  ${tasks.length} task${tasks.length == 1 ? '' : 's'}',
+                'Generated $dateStr  ·  '
+                '${tasks.length} task${tasks.length == 1 ? '' : 's'}',
                 style: const pw.TextStyle(
                   fontSize: 10,
                   color: PdfColors.grey600,
@@ -365,36 +420,32 @@ class _ImportScreenState extends State<ImportScreen> {
           build: (ctx) => [
             pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: tasks.map<pw.Widget>((t) {
-                final line = t.toTodoTxt();
-                return pw.Padding(
-                  padding: const pw.EdgeInsets.only(bottom: 6),
-                  child: pw.Text(line, style: const pw.TextStyle(fontSize: 11)),
-                );
-              }).toList(),
+              children: tasks
+                  .map<pw.Widget>(
+                    (t) => pw.Padding(
+                      padding: const pw.EdgeInsets.only(bottom: 6),
+                      child: pw.Text(
+                        t.toTodoTxt(),
+                        style: const pw.TextStyle(fontSize: 11),
+                      ),
+                    ),
+                  )
+                  .toList(),
             ),
           ],
         ),
       );
-
-      // Build the suggested filename from active filters.
-      final datePart =
-          '${now.year}'
-          '${now.month.toString().padLeft(2, '0')}'
-          '${now.day.toString().padLeft(2, '0')}';
       final labelPart = filterLabel.isNotEmpty ? '_$filterLabel' : '';
       final pdfName =
-          'todopod_${prefix.toLowerCase()}${labelPart}_$datePart.pdf';
+          'todopod_${prefix.toLowerCase()}${labelPart}_${_ts(now)}.pdf';
       final pdfBytes = await doc.save();
-
       if (kIsWeb) {
-        // On web fall back to the printing dialog.
         await Printing.layoutPdf(
           onLayout: (_) async => pdfBytes,
           name: pdfName,
         );
+        _setExportMsg('PDF ready — use the dialog to save or print.');
       } else {
-        // On desktop/mobile use FilePicker so the filename is pre-filled.
         final savePath = await FilePicker.platform.saveFile(
           dialogTitle: 'Save PDF',
           fileName: pdfName,
@@ -403,20 +454,16 @@ class _ImportScreenState extends State<ImportScreen> {
         );
         if (savePath != null) {
           await File(savePath).writeAsBytes(pdfBytes);
-          _setMessage('Saved to $savePath');
+          _setExportMsg('Saved to $savePath');
         }
-        return;
       }
-      _setMessage('PDF ready — use the dialog to save or print.');
     } catch (e, st) {
       debugPrint('[PDF Export] error: $e\n$st');
-      _setMessage('PDF export failed: $e', error: true);
+      _setExportMsg('PDF export failed: $e', error: true);
     } finally {
       setState(() => _loading = false);
     }
   }
 }
-
-// ── Action card ───────────────────────────────────────────────────────────────
 
 // Widgets in import_screen_widgets.dart.

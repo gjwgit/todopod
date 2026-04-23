@@ -10,12 +10,11 @@
 [![GitHub commit activity (dev)](https://img.shields.io/github/commit-activity/w/gjwgit/todopod/dev)](https://github.com/gjwgit/rattle/commits/dev/)
 [![GitHub Issues](https://img.shields.io/github/issues/gjwgit/todopod)](https://github.com/gjwgit/todopod/issues)
 
-[Todopod](https://gjwgit.github.io/todopod/) is a tool to collect your
-Hyundai vehicle data together in one secure and private place. You can
-selectively share any parts of your data with others. The app itself
-presents the data and analyses of the data. It is being developed by
-[Togaware](https://togaware.com) by [Graham
-Williams](https://togaware.com/Graham.Williams.html) with coding by
+[Todopod](https://gjwgit.github.io/todopod/) manages your tasks with
+all data securely and privately stored encrypted on your own personal
+online data store (Pod) hosted on a Solid Server. The app is being
+developed at [Togaware](https://togaware.com) by [Graham
+Williams](https://togaware.com/Graham.Williams.html) pair coding with
 [Claude Code](https://claude.com/product/claude-code).
 
 We make this project available for free so if you appreciate the app
@@ -81,61 +80,3 @@ Hover over a task to view the task details.
 Tap on a task to edit the task.
 
 Drag the right hand clasp to reorder a task.
-
-## Android Network Config
-
-Add to `android/app/src/main/AndroidManifest.xml` inside `<application>`:
-
-```xml
-android:usesCleartextTraffic="true"
-android:networkSecurityConfig="@xml/network_security_config"
-```
-
-And create `android/app/src/main/res/xml/network_security_config.xml`:
-
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<network-security-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">au-apigw.ccs.hyundai.com.au</domain>
-    </domain-config>
-</network-security-config>
-```
-
-## iOS
-
-Add to `ios/Runner/Info.plist`:
-
-```xml
-<key>NSAppTransportSecurity</key>
-<dict>
-    <key>NSAllowsArbitraryLoads</key>
-    <true/>
-</dict>
-```
-
-## Testing
-
-**Unit tests** (`test/`) — 75 tests covering:
-
-+ `Task` model — serialisation, `toTodoTxt`, `copyWith`, `displayText`
-+ Parser — todo.txt parsing, round-trips, edge cases
-+ `AppProvider` — CRUD, the critical completion persistence bug,
-  sorting, filtering, reorder
-+ Search filters — all six modes (`context:`, `project:`,
-  `due:past/today/tomorrow/week`)
-
-**Integration tests** (`integration_test/`) — 19 tests covering the full widget tree:
-
-+ Empty state display
-+ Task list rendering, priority badges, due-date colours
-+ Add task via FAB, cancel without saving, barrier dismissal
-+ Completing via checkbox and via the edit dialog (including the
-  persistence regression test)
-+ Search filtering in the UI
-+ Navigation between Tasks and Done screens
-
-The test harness (`test_app.dart`) uses `_TestScaffold` which skips
-all solidpod/solidui/key-management code, and `_testMode` on
-`AppProvider` silences pod save calls — so tests run fast and produce
-clean output.

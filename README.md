@@ -77,7 +77,7 @@ of the new task.
 
 After we save the task it is added to our TASK LIST.
 
-![Add a new task](./assets/screenshots/task_list_compuvault_only.png)
+![Add a new task](./assets/screenshots/task_list_compuvault.png)
 
 Hover over a task to view the task details.
 

@@ -67,7 +67,7 @@ ordered list, a kanban board, or as a planner/calendar.
 
 Task list view:
 
-![List](./assets/screenshots/task_list_view.png)
+![List](./assets/screenshots/list_view.png)
 
 New tasks are added by a tap of the `+` in the SEARCH bar or by typing
 ENTER in the SEARCH bar whereby the text typed there becomes the title

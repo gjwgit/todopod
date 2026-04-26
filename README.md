@@ -57,17 +57,17 @@ a Pull Request. The app is implemented in
 
 ## Introduction
 
-A Flutter app to manage todo lists based on the todo.txt format for
-lists. Lists in the format of todo.txt can be imported and
-exported. Each item has a title, notes, priority (A=now, B=today,
-C=this week, D=next week, E=later, and F=parked), due date, duration,
-project (to collect together related tasks), and a context (where the
-task is to be undertaken). The app supports extensive MarkdownTooltips
-for documentation.
+Todo Pod is a Solid Flutter app to manage todo lists based on the
+todo.txt format for importing and exporting lists. Each item has a
+title, notes, priority (A=now, B=today, C=this week, D=next week,
+E=later, and F=parked), together with optional due date, duration
+optional, project (to collect together related tasks), and a context
+(where the task is to be undertaken). You can view your tasks in an
+ordered list, a kanban board, or as a planner/calendar.
 
-New tasks are added by a tap of the floating `+` button or the `+` in
-the SEARCH bar or by typing ENTER in the SEARCH bar whereby the text
-typed there becomes the title of the new task.
+New tasks are added by a tap of the `+` in the SEARCH bar or by typing
+ENTER in the SEARCH bar whereby the text typed there becomes the title
+of the new task.
 
 ![Add a new task](./assets/screenshots/add_task_compuvault.png)
 

@@ -19,6 +19,8 @@ import 'package:solidui/solidui.dart';
 import 'package:todopod/constants/app.dart';
 import 'package:todopod/screens/done_screen.dart';
 import 'package:todopod/screens/import_screen.dart';
+import 'package:todopod/screens/kanban_screen.dart';
+import 'package:todopod/screens/planner_screen.dart';
 import 'package:todopod/screens/settings_screen.dart';
 import 'package:todopod/screens/tasks_screen.dart';
 import 'package:todopod/services/app_provider.dart';
@@ -83,6 +85,24 @@ class _AppScaffoldState extends State<AppScaffold> {
           icon: Icons.check_circle_outline,
           tooltip: '**Done**\n\nCompleted tasks. Tap the checkbox to restore.',
           child: DoneScreen(),
+        ),
+        SolidMenuItem(
+          title: 'Kanban',
+          icon: Icons.view_kanban_outlined,
+          tooltip:
+              '**Kanban**\n\n'
+              'Board view of tasks by priority. '
+              'Long-press and drag a card to change its priority.',
+          child: KanbanScreen(),
+        ),
+        SolidMenuItem(
+          title: 'Planner',
+          icon: Icons.calendar_month_outlined,
+          tooltip:
+              '**Planner**\n\n'
+              'Calendar view of tasks by due date. '
+              'Tap a day to see what is due.',
+          child: PlannerScreen(),
         ),
         SolidMenuItem(
           title: 'Import / Export',

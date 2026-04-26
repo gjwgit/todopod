@@ -1,6 +1,6 @@
 /// SettingsScreen — pod sharing and app preferences.
 ///
-// Time-stamp: <Friday 2026-03-27 10:00:00 +1100 Graham Williams>
+// Time-stamp: <Friday 2026-04-24 20:00:05 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -78,7 +78,7 @@ class SettingsScreen extends StatelessWidget {
               context,
               MaterialPageRoute<void>(
                 builder: (_) => const GrantPermissionUi(
-                  resourceName: todoFileName,
+                  resourceNames: [todoFileName],
                   child: _ReturnPage(),
                 ),
               ),
@@ -92,7 +92,7 @@ class SettingsScreen extends StatelessWidget {
               context,
               MaterialPageRoute<void>(
                 builder: (_) => const GrantPermissionUi(
-                  resourceName: doneFileName,
+                  resourceNames: [doneFileName],
                   child: _ReturnPage(),
                 ),
               ),

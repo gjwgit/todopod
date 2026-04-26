@@ -7,7 +7,7 @@ environment:
   sdk: ^3.11.3
 
 dependencies:
-  file_picker: ^10.3.10
+  file_picker: ^11.0.2
   flutter:
     sdk: flutter
   gap: ^3.0.1
@@ -15,8 +15,8 @@ dependencies:
   pdf: ^3.11.1
   printing: ^5.13.1
   provider: ^6.1.5
-  solidpod: ^0.12.2
-  solidui: ^0.3.18
+  solidpod: ^0.12.4
+  solidui: ^0.3.24
   uuid: ^4.5.3
 
 dev_dependencies:

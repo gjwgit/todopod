@@ -197,10 +197,10 @@ packages:
     dependency: "direct main"
     description:
       name: file_picker
-      sha256: "57d9a1dd5063f85fa3107fb42d1faffda52fdc948cefd5fe5ea85267a5fc7343"
+      sha256: f13a03000d942e476bc1ff0a736d2e9de711d2f89a95cd4c1d88f861c3348387
       url: "https://pub.dev"
     source: hosted
-    version: "10.3.10"
+    version: "11.0.2"
   fixnum:
     dependency: transitive
     description:
@@ -877,10 +877,10 @@ packages:
     dependency: "direct main"
     description:
       name: solidui
-      sha256: be695a963899c3707bcf4a931ae8b40b680529b3b034b6bace734bcd2989c7cd
+      sha256: b0fed201a7abd00ef2ac479568b02ea1e4537b37562de0cca7599a02b7e2a665
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.18"
+    version: "0.3.24"
   source_span:
     dependency: transitive
     description:

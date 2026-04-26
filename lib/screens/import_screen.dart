@@ -1,6 +1,6 @@
 /// ImportScreen — import from todo.txt / JSON and export backups.
 ///
-// Time-stamp: <Thursday 2026-04-23 10:00:00 +1100 Graham Williams>
+// Time-stamp: <Friday 2026-04-24 19:58:58 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -233,7 +233,7 @@ class _ImportScreenState extends State<ImportScreen> {
       _importMessage = null;
     });
     try {
-      final result = await FilePicker.platform.pickFiles(
+      final result = await FilePicker.pickFiles(
         dialogTitle: dialogTitle,
         type: fileType,
         allowedExtensions: extensions,
@@ -278,7 +278,7 @@ class _ImportScreenState extends State<ImportScreen> {
         return;
       }
       final now = DateTime.now();
-      final savePath = await FilePicker.platform.saveFile(
+      final savePath = await FilePicker.saveFile(
         dialogTitle: 'Save $prefix.txt',
         fileName: '${prefix}_${_ts(now)}.txt',
         type: FileType.any,
@@ -313,7 +313,7 @@ class _ImportScreenState extends State<ImportScreen> {
         'tasks': provider.tasks.map((t) => t.toJson()).toList(),
         'done': provider.doneTasks.map((t) => t.toJson()).toList(),
       };
-      final savePath = await FilePicker.platform.saveFile(
+      final savePath = await FilePicker.saveFile(
         dialogTitle: 'Save JSON Backup',
         fileName: 'todopod_backup_${_ts(now)}.json',
         type: FileType.custom,
@@ -446,7 +446,7 @@ class _ImportScreenState extends State<ImportScreen> {
         );
         _setExportMsg('PDF ready — use the dialog to save or print.');
       } else {
-        final savePath = await FilePicker.platform.saveFile(
+        final savePath = await FilePicker.saveFile(
           dialogTitle: 'Save PDF',
           fileName: pdfName,
           type: FileType.custom,

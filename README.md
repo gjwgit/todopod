@@ -65,6 +65,10 @@ optional, project (to collect together related tasks), and a context
 (where the task is to be undertaken). You can view your tasks in an
 ordered list, a kanban board, or as a planner/calendar.
 
+Task list view:
+
+![List](./assets/screenshots/task_list_view.png)
+
 New tasks are added by a tap of the `+` in the SEARCH bar or by typing
 ENTER in the SEARCH bar whereby the text typed there becomes the title
 of the new task.
@@ -77,6 +81,18 @@ After we save the task it is added to our TASK LIST.
 
 Hover over a task to view the task details.
 
+![Add a new task](./assets/screenshots/task_list_hover.png)
+
 Tap on a task to edit the task.
 
 Drag the right hand clasp to reorder a task.
+
+Drag a task to the left to delete.
+
+Kanban view:
+
+![](./assets/screenshots/kanban_view.png)
+
+Planner view:
+
+![Planner](./assets/screenshots/planner_view.png)

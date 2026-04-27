@@ -91,8 +91,8 @@ Drag a task to the left to delete.
 
 Kanban view:
 
-![](./assets/screenshots/kanban_view.png)
+![Kanban view](./assets/screenshots/kanban_view.png)
 
 Planner view:
 
-![Planner](./assets/screenshots/planner_view.png)
+![Planner view](./assets/screenshots/planner_view.png)

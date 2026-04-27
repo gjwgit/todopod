@@ -39,6 +39,7 @@ Code](https://claude.com/product/claude-code).
 
 ## 0.2 Basic Functionality
 
++ Add a TODAY button to the PLANNER [0.1.26 20260427 gjw]
 + Add Kanban and Planner [0.1.25 20260427 gjw]
 + Import/Export Done.txt and JSON for backup [0.1.24 20260423 gjw]
 + Update tooltip for tasks with no notes [0.1.23 20260420 gjw]

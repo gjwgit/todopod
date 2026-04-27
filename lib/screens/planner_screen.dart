@@ -57,6 +57,25 @@ class _PlannerScreenState extends State<PlannerScreen> {
 
     return Column(
       children: [
+        // ── Today shortcut ─────────────────────────────────────────────
+        Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 12, top: 4),
+            child: TextButton.icon(
+              onPressed: () {
+                final today = DateTime.now();
+                setState(() {
+                  _selectedDay = today;
+                  _focusedDay = today;
+                });
+              },
+              icon: const Icon(Icons.today_outlined, size: 16),
+              label: const Text('Today'),
+              style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
+            ),
+          ),
+        ),
         // ── Calendar ───────────────────────────────────────────────────
         TableCalendar<Task>(
           firstDay: DateTime(2020),

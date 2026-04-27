@@ -72,6 +72,7 @@ class KanbanScreen extends StatelessWidget {
                   onEditTask: (task) => _editTask(context, provider, task),
                   onCompleteTask: (task) =>
                       _completeTask(context, provider, task),
+                  onDeleteTask: (task) => _deleteTask(context, provider, task),
                 );
               }).toList(),
             ),
@@ -112,6 +113,34 @@ class KanbanScreen extends StatelessWidget {
     provider.completeTask(task.id);
     provider.saveAllToPod();
   }
+
+  Future<void> _deleteTask(
+    BuildContext context,
+    AppProvider provider,
+    Task task,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete task?'),
+        content: Text('"${task.description}" will be permanently removed.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      provider.deleteTask(task.id);
+      provider.saveAllToPod();
+    }
+  }
 }
 
 // ── Column widget ─────────────────────────────────────────────────────────────
@@ -123,6 +152,7 @@ class _KanbanColumn extends StatefulWidget {
   final void Function(Task) onDropTask;
   final void Function(Task) onEditTask;
   final void Function(Task) onCompleteTask;
+  final void Function(Task) onDeleteTask;
 
   const _KanbanColumn({
     required this.col,
@@ -131,6 +161,7 @@ class _KanbanColumn extends StatefulWidget {
     required this.onDropTask,
     required this.onEditTask,
     required this.onCompleteTask,
+    required this.onDeleteTask,
   });
 
   @override
@@ -237,6 +268,7 @@ class _KanbanColumnState extends State<_KanbanColumn> {
                       col: col,
                       onEdit: widget.onEditTask,
                       onComplete: widget.onCompleteTask,
+                      onDelete: widget.onDeleteTask,
                     ),
                   ),
                 ),
@@ -256,12 +288,14 @@ class _KanbanCard extends StatelessWidget {
   final _KanbanCol col;
   final void Function(Task) onEdit;
   final void Function(Task) onComplete;
+  final void Function(Task) onDelete;
 
   const _KanbanCard({
     required this.task,
     required this.col,
     required this.onEdit,
     required this.onComplete,
+    required this.onDelete,
   });
 
   @override
@@ -338,24 +372,41 @@ class _KanbanCard extends StatelessWidget {
                   ],
                 ),
               ],
-              // Complete button
-              Align(
-                alignment: Alignment.centerRight,
-                child: MarkdownTooltip(
-                  message: '**Mark done**\n\nMark this task as completed.',
-                  child: InkWell(
-                    onTap: () => onComplete(task),
-                    borderRadius: BorderRadius.circular(12),
-                    child: Padding(
-                      padding: const EdgeInsets.all(4),
-                      child: Icon(
-                        Icons.check_circle_outline,
-                        size: 18,
-                        color: col.color.withValues(alpha: 0.7),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  MarkdownTooltip(
+                    message: '**Delete**\n\nPermanently remove this task.',
+                    child: InkWell(
+                      onTap: () => onDelete(task),
+                      borderRadius: BorderRadius.circular(12),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Icon(
+                          Icons.delete_outline,
+                          size: 16,
+                          color: Colors.red.withValues(alpha: 0.6),
+                        ),
                       ),
                     ),
                   ),
-                ),
+                  const SizedBox(width: 4),
+                  MarkdownTooltip(
+                    message: '**Mark done**\n\nMark this task as completed.',
+                    child: InkWell(
+                      onTap: () => onComplete(task),
+                      borderRadius: BorderRadius.circular(12),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Icon(
+                          Icons.check_circle_outline,
+                          size: 18,
+                          color: col.color.withValues(alpha: 0.7),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

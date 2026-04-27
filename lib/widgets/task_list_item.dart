@@ -12,6 +12,8 @@ library;
 
 import 'package:flutter/material.dart';
 
+import 'package:markdown_tooltip/markdown_tooltip.dart';
+
 import 'package:todopod/constants/app.dart';
 import 'package:todopod/models/task.dart';
 import 'package:todopod/widgets/task_tile.dart';
@@ -75,17 +77,21 @@ class ReorderableTaskItem extends StatelessWidget {
                   onEditField: onEditField,
                 ),
               ),
-              ReorderableDragStartListener(
-                index: index,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 12,
-                  ),
-                  child: Icon(
-                    Icons.drag_handle,
-                    size: 20,
-                    color: cs.onSurfaceVariant.withValues(alpha: 0.4),
+              MarkdownTooltip(
+                message:
+                    '**Delete task**\n\nSwipe left on the task to delete it.',
+                child: ReorderableDragStartListener(
+                  index: index,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 12,
+                    ),
+                    child: Icon(
+                      Icons.drag_handle,
+                      size: 20,
+                      color: cs.onSurfaceVariant.withValues(alpha: 0.4),
+                    ),
                   ),
                 ),
               ),

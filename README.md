@@ -12,8 +12,8 @@
 
 [Todopod](https://gjwgit.github.io/todopod/) manages your tasks with
 all data securely and privately stored encrypted on your own personal
-online data store (Pod) hosted on a Solid Server. The app is being
-developed at [Togaware](https://togaware.com) by [Graham
+online data store (Pod) hosted on a Solid Server. The app implemented
+at [Togaware](https://togaware.com) by [Graham
 Williams](https://togaware.com/Graham.Williams.html) pair coding with
 [Claude Code](https://claude.com/product/claude-code).
 

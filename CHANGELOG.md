@@ -35,8 +35,6 @@ This app has been pair programmed by [Graham
 Williams](https://togaware.com/Graham.Williams.html) and [Claude
 Code](https://claude.com/product/claude-code).
 
-## ToDo
-
 ## 0.2 Basic Functionality
 
 + Add a TODAY button to the PLANNER [0.1.26 20260427 gjw]
@@ -66,6 +64,6 @@ Code](https://claude.com/product/claude-code).
 + Autocomplete ptoject/context [0.1.2 20260401 gjw]
 + Support basic import of Todo.txt [0.1.1 20260327 gjw]
 
-## 0.1 Initial Shell App
+## 0.1 Initial App
 
 + Initial template app [0.1.0 20260327 gjw]

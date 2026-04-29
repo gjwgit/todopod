@@ -877,18 +877,18 @@ packages:
     dependency: "direct main"
     description:
       name: solidpod
-      sha256: "90ec5c104fdd19d231676ebbba65455704a6b9ebb492ac6e27f4872d79d51559"
+      sha256: "90961ee3f63bd919c186ab6db405dc9050280320f7e65c603578f8795f71fb1a"
       url: "https://pub.dev"
     source: hosted
-    version: "0.12.4"
+    version: "0.12.5"
   solidui:
     dependency: "direct main"
     description:
       name: solidui
-      sha256: b0fed201a7abd00ef2ac479568b02ea1e4537b37562de0cca7599a02b7e2a665
+      sha256: "8daff596aace23f562e2cb878dafaa8844ae980033b0ad67cd8086195b6bf4d1"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.24"
+    version: "0.3.29"
   source_span:
     dependency: transitive
     description:
@@ -1053,18 +1053,18 @@ packages:
     dependency: transitive
     description:
       name: version_widget
-      sha256: "70476a63dc059150b8717026ecf77888e70d86c4f22eabd8545a57307c80a040"
+      sha256: "1f442f4a0b9f6e8cad96381957f03cbf7f5720da8848b78e44ddd7def5e621a7"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.6"
+    version: "1.0.8"
   vm_service:
     dependency: transitive
     description:
       name: vm_service
-      sha256: "046d3928e16fa4dc46e8350415661755ab759d9fc97fc21b5ab295f71e4f0499"
+      sha256: "0016aef94fc66495ac78af5859181e3f3bf2026bd8eecc72b9565601e19ab360"
       url: "https://pub.dev"
     source: hosted
-    version: "15.1.0"
+    version: "15.2.0"
   web:
     dependency: transitive
     description:

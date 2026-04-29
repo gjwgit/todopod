@@ -1,6 +1,6 @@
 /// AppScaffold — main SolidScaffold with left nav for TodoPod.
 ///
-// Time-stamp: <Friday 2026-03-27 10:00:00 +1100 Graham Williams>
+// Time-stamp: <Wednesday 2026-04-29 15:20:03 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -66,9 +66,9 @@ class _AppScaffoldState extends State<AppScaffold> {
       showLogout: false,
       showLogin: false,
       themeToggle: const SolidThemeToggleConfig(enabled: true),
-      appBar: const SolidAppBarConfig(
-        title: appName,
-        versionConfig: SolidVersionConfig(
+      appBar: SolidAppBarConfig(
+        title: appTitle.split(' - ')[0],
+        versionConfig: const SolidVersionConfig(
           changelogUrl:
               'https://github.com/gjwgit/todopod/blob/dev/CHANGELOG.md',
         ),

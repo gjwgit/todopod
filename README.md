@@ -3,23 +3,30 @@
 [![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
 
-[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/gjwgit/todopod)
+[![Github Docs](https://img.shields.io/badge/GitHub-Pages-green?logo=gitbook)](https://gjwgit.github.io/todopod)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Repo-blue?logo=github)](https://github.com/gjwgit/todopod)
 [![GitHub License](https://img.shields.io/github/license/gjwgit/todopod)](https://raw.githubusercontent.com/gjwgit/todopod/dev/LICENSE)
-[![Flutter Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/gjwgit/todopod/master/pubspec.yaml&query=$.version&label=version)](https://github.com/gjwgit/todopod/blob/dev/CHANGELOG.md)
-[![Last Updated](https://img.shields.io/github/last-commit/gjwgit/todopod?label=last%20updated)](https://github.com/gjwgit/todopod/commits/dev/)
-[![GitHub commit activity (dev)](https://img.shields.io/github/commit-activity/w/gjwgit/todopod/dev)](https://github.com/gjwgit/rattle/commits/dev/)
+[![Github Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/gjwgit/todopod/master/pubspec.yaml&query=$.version&label=version)](https://github.com/gjwgit/todopod/blob/dev/CHANGELOG.md)
+[![Github Last Updated](https://img.shields.io/github/last-commit/gjwgit/todopod?label=last%20updated)](https://github.com/gjwgit/todopod/commits/dev/)
+[![GitHub Commit Activity (dev)](https://img.shields.io/github/commit-activity/w/gjwgit/todopod/dev)](https://github.com/gjwgit/rattle/commits/dev/)
 [![GitHub Issues](https://img.shields.io/github/issues/gjwgit/todopod)](https://github.com/gjwgit/todopod/issues)
 
-[Todopod](https://gjwgit.github.io/todopod/) manages your tasks with
-all data securely and privately stored encrypted on your own personal
-online data store (Pod) hosted on a Solid Server. The app implemented
-at [Togaware](https://togaware.com) by [Graham
+[TodoPod](https://gjwgit.github.io/todopod/) is a Trello-like app that
+manages your tasks, viewing tasks through a task list, kanban, or
+planner. All tasks are securely and privately stored encrypted on your
+own personal online data store ([Pod](https://solidproject.org/about)). The app
+is implemented by [Togaware](https://togaware.com)'s [Graham
 Williams](https://togaware.com/Graham.Williams.html) pair coding with
-[Claude Code](https://claude.com/product/claude-code).
+[Claude Code](https://claude.com/product/claude-code) using
+[Flutter](https://flutter.dev)'s
+[SolidUI](https://github.com/anusii/solidui) package for cross
+platform development.
 
 We make this project available for free so if you appreciate the app
 then please show some ❤️ and tap on the star at
-[GitHub](https://github.com/gjwgit/todopod) to support our work.
+[GitHub](https://github.com/gjwgit/todopod) to support our work. See
+the [AU Solid Community](https://solidcommunity.au) **showcase** for
+many more apps using the Solid ecosystem.
 
 The latest version of the app can be run online at
 [todopod.solidcommunity.au](https://todopod.solidcommunity.au) with no

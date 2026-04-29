@@ -1,12 +1,32 @@
-/// TodoPod — privacy-first todo list with Solid Pod storage.
+/// TodoPod — privacy-first todo list with Solid Pod storage main entry point.
 ///
-// Time-stamp: <Friday 2026-03-27 10:00:00 +1100 Graham Williams>
+// Time-stamp: <Wednesday 2026-04-29 15:16:11 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
-/// Licensed under the GNU General Public License, Version 3 (the "License");
+/// Licensed under the GNU General Public License, Version 3 (the "License").
 ///
 /// License: https://opensource.org/license/gpl-3-0
+//
+// This program is free software: you can redistribute it and/or modify it under
+// the terms of the GNU General Public License as published by the Free Software
+// Foundation, either version 3 of the License, or (at your option) any later
+// version.
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+// FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+// details.
+//
+// You should have received a copy of the GNU General Public License along with
+// this program.  If not, see <https://opensource.org/license/gpl-3-0>.
+///
+/// This main.dart can be used as a template for any solidui base app (and in
+/// general for any Flutter app). It contains no app specific settings but
+/// includes some settings that you may want to tune, like the minimum window
+/// size for desktop apps, etc.
+///
+/// Authors: Graham Williams
 
 library;
 
@@ -58,7 +78,7 @@ class _TodoPodAppState extends State<TodoPodApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: appName,
+      title: appTitle,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF3A6B3A)),
         useMaterial3: true,

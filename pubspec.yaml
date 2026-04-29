@@ -1,10 +1,18 @@
 name: todopod
-description: "Task Management with Secure and Private Storage"
+description: "Todo Pod - Task Management with Secure and Private Storage"
 publish_to: 'none'
-version: 0.1.26+3
+version: 0.1.27+3
 
 environment:
   sdk: ^3.11.3
+
+# 20250722 gjw To automatically upgrade package dependencies:
+#
+#   flutter pub upgrade --major-versions
+#
+# To see which dependencies have newer versions available:
+#
+#   flutter pub outdated
 
 dependencies:
   file_picker: ^11.0.2
@@ -34,12 +42,10 @@ flutter:
     - assets/images/app_image.jpg
   uses-material-design: true
 
-# Define launcher icons for all platforms (except Linux) so icons for
-# the apps can be automatically updated using:
+# 20250429 gjw Define launcher icons for all platforms (except Linux)
+# so icons for the apps can be automatically updated using:
 #
 # `dart run flutter_launcher_icons`
-#
-# (gjw 20250429)
 
 flutter_launcher_icons:
   image_path: "assets/images/app_icon.png"

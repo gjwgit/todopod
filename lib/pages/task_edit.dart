@@ -75,8 +75,8 @@ class _TaskEditState extends State<TaskEdit> {
     _notes = TextEditingController(text: t?.notes ?? '');
     _duration = TextEditingController(text: t?.duration ?? '');
     _completed = t?.completed ?? false;
-    _priority = t?.priority;
-    _dueDate = t?.dueDate;
+    _priority = t != null ? t.priority : 'B';
+    _dueDate = t != null ? t.dueDate : DateTime.now();
     _projects = (t?.projects ?? [])
         .map((p) => TextEditingController(text: p))
         .toList();

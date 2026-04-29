@@ -14,8 +14,9 @@
 [TodoPod](https://gjwgit.github.io/todopod/) is a Trello-like app that
 manages your tasks, viewing tasks through a task list, kanban, or
 planner. All tasks are securely and privately stored encrypted on your
-own personal online data store ([Pod](https://solidproject.org/about)). The app
-is implemented by [Togaware](https://togaware.com)'s [Graham
+own personal online data store
+([Pod](https://solidproject.org/about)). The app is supported by
+[Togaware](https://togaware.com) and implemented by [Graham
 Williams](https://togaware.com/Graham.Williams.html) pair coding with
 [Claude Code](https://claude.com/product/claude-code) using
 [Flutter](https://flutter.dev)'s

@@ -37,6 +37,7 @@ Code](https://claude.com/product/claude-code).
 
 ## 0.2 Basic Functionality
 
++ Add window title [0.1.28 20260430 gjw]
 + Default new task to priority B and due today [0.1.27 20260430 gjw]
 + Add a TODAY button to the PLANNER [0.1.26 20260427 gjw]
 + Add Kanban and Planner [0.1.25 20260427 gjw]

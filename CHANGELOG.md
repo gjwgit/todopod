@@ -37,6 +37,7 @@ Code](https://claude.com/product/claude-code).
 
 ## 0.2 Basic Functionality
 
++ Migreat to latest solidui with server list [0.1.29 20260501 gjw]
 + Add window title [0.1.28 20260430 gjw]
 + Default new task to priority B and due today [0.1.27 20260430 gjw]
 + Add a TODAY button to the PLANNER [0.1.26 20260427 gjw]

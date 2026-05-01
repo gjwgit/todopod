@@ -1,6 +1,6 @@
 /// TaskTile — a single task row with checkbox and tag chips.
 ///
-// Time-stamp: <Friday 2026-03-27 10:00:00 +1100 Graham Williams>
+// Time-stamp: <Friday 2026-05-01 12:10:45 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -37,97 +37,105 @@ class TaskTile extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final isDone = task.completed;
 
-    return MarkdownTooltip(
-      message: _buildTooltip(),
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Checkbox
-              Checkbox(
-                value: isDone,
-                onChanged: isDone ? null : onComplete,
-                shape: const CircleBorder(),
-              ),
-              const Gap(4),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Priority + description row
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (task.priority != null) ...[
-                          _PriorityBadge(priority: task.priority!, cs: cs),
-                          const Gap(8),
-                        ],
-                        Expanded(
-                          child: Text(
-                            task.description,
-                            style: TextStyle(
-                              fontSize: 14,
-                              decoration: isDone
-                                  ? TextDecoration.lineThrough
-                                  : TextDecoration.none,
-                              color: isDone
-                                  ? cs.onSurfaceVariant
-                                  : _titleColor(task.dueDate, cs),
-                            ),
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Checkbox
+            Checkbox(
+              value: isDone,
+              onChanged: isDone ? null : onComplete,
+              shape: const CircleBorder(),
+            ),
+            const Gap(4),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Priority + description row
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (task.priority != null) ...[
+                        _PriorityBadge(priority: task.priority!, cs: cs),
+                        const Gap(8),
+                      ],
+                      Expanded(
+                        child: Text(
+                          task.description,
+                          style: TextStyle(
+                            fontSize: 14,
+                            decoration: isDone
+                                ? TextDecoration.lineThrough
+                                : TextDecoration.none,
+                            color: isDone
+                                ? cs.onSurfaceVariant
+                                : _titleColor(task.dueDate, cs),
                           ),
                         ),
-                      ],
-                    ),
-                    // Tags row
-                    if (_hasTags(task)) ...[
-                      const Gap(4),
-                      Wrap(
-                        spacing: 4,
-                        runSpacing: 2,
-                        children: [
-                          for (final p in task.projects)
-                            _TagChip(
-                              label: '+$p',
-                              color: cs.primaryContainer,
-                              textColor: cs.onPrimaryContainer,
-                              onTap: onEditField != null
-                                  ? () => onEditField!('projects')
-                                  : null,
-                            ),
-                          for (final c in task.contexts)
-                            _TagChip(
-                              label: '@$c',
-                              color: cs.secondaryContainer,
-                              textColor: cs.onSecondaryContainer,
-                              onTap: onEditField != null
-                                  ? () => onEditField!('contexts')
-                                  : null,
-                            ),
-                          if (task.dueDate != null)
-                            _TagChip(
-                              label: _fmtDue(task.dueDate!),
-                              color: _dueDateColor(task.dueDate!, cs),
-                              textColor: cs.onErrorContainer,
-                              icon: Icons.event_outlined,
-                            ),
-                          if (task.duration != null)
-                            _TagChip(
-                              label: task.duration!,
-                              color: cs.surfaceContainerHighest,
-                              textColor: cs.onSurfaceVariant,
-                              icon: Icons.timer_outlined,
-                            ),
-                        ],
                       ),
                     ],
+                  ),
+                  // Tags row
+                  if (_hasTags(task)) ...[
+                    const Gap(4),
+                    Wrap(
+                      spacing: 4,
+                      runSpacing: 2,
+                      children: [
+                        for (final p in task.projects)
+                          _TagChip(
+                            label: '+$p',
+                            color: cs.primaryContainer,
+                            textColor: cs.onPrimaryContainer,
+                            onTap: onEditField != null
+                                ? () => onEditField!('projects')
+                                : null,
+                          ),
+                        for (final c in task.contexts)
+                          _TagChip(
+                            label: '@$c',
+                            color: cs.secondaryContainer,
+                            textColor: cs.onSecondaryContainer,
+                            onTap: onEditField != null
+                                ? () => onEditField!('contexts')
+                                : null,
+                          ),
+                        if (task.dueDate != null)
+                          _TagChip(
+                            label: _fmtDue(task.dueDate!),
+                            color: _dueDateColor(task.dueDate!, cs),
+                            textColor: cs.onErrorContainer,
+                            icon: Icons.event_outlined,
+                          ),
+                        if (task.duration != null)
+                          _TagChip(
+                            label: task.duration!,
+                            color: cs.surfaceContainerHighest,
+                            textColor: cs.onSurfaceVariant,
+                            icon: Icons.timer_outlined,
+                          ),
+                      ],
+                    ),
                   ],
-                ),
+                ],
               ),
-            ],
-          ),
+            ),
+            // Notes info icon.
+            MarkdownTooltip(
+              message: _buildTooltip(),
+              child: Icon(
+                Icons.info_outline,
+                //size: 16,
+                color: (task.notes != null && task.notes!.isNotEmpty)
+                    ? cs.primary.withValues(alpha: 1.0)
+                    : cs.onSurfaceVariant.withValues(alpha: 0.0),
+              ),
+            ),
+          ],
         ),
       ),
     );

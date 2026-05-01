@@ -1,6 +1,6 @@
 /// AppScaffold — main SolidScaffold with left nav for TodoPod.
 ///
-// Time-stamp: <Wednesday 2026-04-29 15:20:03 +1000 Graham Williams>
+// Time-stamp: <Friday 2026-05-01 11:44:49 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -63,8 +63,38 @@ class _AppScaffoldState extends State<AppScaffold> {
     context.watch<AppProvider>();
 
     return SolidScaffold(
-      showLogout: false,
-      showLogin: false,
+      // 20260501 gjw Uncomment any of the following and change the default
+      // value as shown here.
+      //
+      // showLogout: false,
+      // showLogin: false,
+      // hideNavRail: false,
+      // enableProfile: true,
+      aboutConfig: SolidAboutConfig(
+        applicationName: appTitle.split(' - ')[0],
+        applicationIcon: Image.asset(
+          'assets/images/app_icon.png',
+          width: 64,
+          height: 64,
+        ),
+        applicationLegalese: '''
+
+        © 2026 Togaware Pty Ltd
+
+        ''',
+        text: '''
+
+        TodoPod is a Trello-like personal task manager that allows you to manage
+        your tasks as a list, a kanban, or a planner/calendar. All data is
+        stored securely and privately on your personal online data store (Pod)
+        hosted on a Solid server.
+
+        For more information, visit the
+        [TodoPod](https://github.com/gjwgit/todopod) GitHub repository and our
+        [Australian Solid Community](https://solidcommunity.au) web site.
+
+        ''',
+      ),
       themeToggle: const SolidThemeToggleConfig(enabled: true),
       appBar: SolidAppBarConfig(
         title: appTitle.split(' - ')[0],

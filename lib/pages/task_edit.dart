@@ -196,6 +196,7 @@ class _TaskEditState extends State<TaskEdit> {
       initialDate: _dueDate ?? DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime(2100),
+      barrierDismissible: false,
     );
     if (picked != null) setState(() => _dueDate = picked);
   }

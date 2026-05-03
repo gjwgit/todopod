@@ -1,6 +1,6 @@
 /// EmacsTextField — a multiline text field with common Emacs key bindings.
 ///
-// Time-stamp: <Thursday 2026-04-30 09:00:00 +1000 Graham Williams>
+// Time-stamp: <Sunday 2026-05-03 21:44:43 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -95,7 +95,6 @@ class _EmacsTextFieldState extends State<EmacsTextField> {
   }
 
   int _prevLine(int at) {
-    final text = _ctrl.text;
     final start = _lineStart(at);
     if (start == 0) return 0;
     final prevEnd = start - 1;

@@ -19,6 +19,7 @@ import 'package:uuid/uuid.dart';
 import 'package:todopod/models/task.dart';
 import 'package:todopod/pages/task_edit_form_fields.dart';
 import 'package:todopod/services/app_provider.dart';
+import 'package:todopod/widgets/emacs_text_field.dart';
 import 'package:todopod/widgets/tag_autocomplete.dart';
 
 const _uuid = Uuid();
@@ -271,16 +272,13 @@ class _TaskEditState extends State<TaskEdit> {
             tooltip:
                 '**Notes**\n\n'
                 'Additional details, links, or context for the task.\n\n'
-                'Supports **markdown** formatting — bold, italic, '
-                'links, lists, and code blocks will render when viewing '
-                'the task.',
+                'Supports **markdown** formatting.\n\n'
+                '**Emacs keys:** C-a/e line · C-f/b char · C-n/p line '
+                '· M-f/b word · C-k kill · C-y yank · M-Enter bullet',
           ),
           const Gap(8),
-          TextField(
+          EmacsTextField(
             controller: _notes,
-            maxLines: null,
-            minLines: 3,
-            keyboardType: TextInputType.multiline,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
               isDense: true,

@@ -1,6 +1,6 @@
 /// TaskEdit — dialog to add or edit a task.
 ///
-// Time-stamp: <Friday 2026-03-27 10:00:00 +1100 Graham Williams>
+// Time-stamp: <Tuesday 2026-05-05 14:50:31 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -12,6 +12,7 @@ library;
 
 import 'package:flutter/material.dart';
 
+import 'package:emacs_text_field/emacs_text_field.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -19,7 +20,6 @@ import 'package:uuid/uuid.dart';
 import 'package:todopod/models/task.dart';
 import 'package:todopod/pages/task_edit_form_fields.dart';
 import 'package:todopod/services/app_provider.dart';
-import 'package:todopod/widgets/emacs_text_field.dart';
 import 'package:todopod/widgets/tag_autocomplete.dart';
 
 const _uuid = Uuid();

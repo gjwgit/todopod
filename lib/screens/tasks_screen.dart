@@ -12,6 +12,8 @@ library;
 
 import 'package:flutter/material.dart';
 
+import 'package:emacs_text_field/emacs_text_field.dart'
+    show attachPrimarySelection;
 import 'package:gap/gap.dart';
 import 'package:markdown_tooltip/markdown_tooltip.dart';
 import 'package:provider/provider.dart';
@@ -31,10 +33,18 @@ class TasksScreen extends StatefulWidget {
 
 class _TasksScreenState extends State<TasksScreen> {
   final _search = TextEditingController();
+  late final VoidCallback _removePrimarySearch;
   String _query = '';
 
   @override
+  void initState() {
+    super.initState();
+    _removePrimarySearch = attachPrimarySelection(_search);
+  }
+
+  @override
   void dispose() {
+    _removePrimarySearch();
     _search.dispose();
     super.dispose();
   }

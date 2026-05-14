@@ -65,13 +65,19 @@ a Pull Request. The app is implemented in
 
 ## Introduction
 
-Todo Pod is a Solid Flutter app to manage todo lists based on the
-todo.txt format for importing and exporting lists. Each item has a
+TodoPod is a Trello-like Solid Flutter app to manage todo/task lists
+based on the open standard todo.txt format. Tasks can be imported and
+exported from other apps using the todo.txt format. Each item has a
 title, notes, priority (A=now, B=today, C=this week, D=next week,
-E=later, and F=parked), together with optional due date, duration
-optional, project (to collect together related tasks), and a context
-(where the task is to be undertaken). You can view your tasks in an
-ordered list, a kanban board, or as a planner/calendar.
+E=later, and F=parked), together with optional due date, duration,
+project (to collect together related tasks), and a context (where the
+task is to be undertaken). You can view your tasks in an ordered list,
+a kanban board, or as a planner/calendar. All tasks are securely and
+privately stored encrypted on your own personal online data store
+(Pod) hosted in a Data Vault on a Solid server of your choice. The app
+is multi-platform so you can install it for your desktop or mobile
+device, or run it directly through a web browser, all accessing and
+updating the tasks encrypted within your Pod.
 
 Task list view:
 

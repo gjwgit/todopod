@@ -414,9 +414,8 @@ class _KanbanCard extends StatelessWidget {
       ),
     );
 
-    return LongPressDraggable<Task>(
+    return Draggable<Task>(
       data: task,
-      delay: const Duration(milliseconds: 300),
       feedback: Material(
         elevation: 6,
         borderRadius: BorderRadius.circular(8),

@@ -157,10 +157,10 @@ packages:
     dependency: "direct main"
     description:
       name: emacs_text_field
-      sha256: "36d726b2e873d5973fd813463f958e571fc510b622b4b02b909cee12d466d78b"
+      sha256: "537feeeb1da6182ec7e44d575c4d336e998d5afd32982093565b0d1b9b988d87"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0"
+    version: "0.1.1"
   encrypter_plus:
     dependency: transitive
     description:
@@ -273,7 +273,7 @@ packages:
     source: hosted
     version: "0.7.7+1"
   flutter_markdown_plus:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_markdown_plus
       sha256: "039177906850278e8fb1cd364115ee0a46281135932fa8ecea8455522166d2de"
@@ -292,18 +292,18 @@ packages:
     dependency: transitive
     description:
       name: flutter_secure_storage
-      sha256: da922f2aab2d733db7e011a6bcc4a825b844892d4edd6df83ff156b09a9b2e40
+      sha256: "6848263f9744072d0977347c383fb8b57d9780319a6bf5238b5a2866a029de62"
       url: "https://pub.dev"
     source: hosted
-    version: "10.0.0"
+    version: "10.2.0"
   flutter_secure_storage_darwin:
     dependency: transitive
     description:
       name: flutter_secure_storage_darwin
-      sha256: "8878c25136a79def1668c75985e8e193d9d7d095453ec28730da0315dc69aee3"
+      sha256: "67cd1ff671add31dc13e45194398187a04bb63804b37fa47866afae296d73fcb"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.0"
+    version: "0.3.1"
   flutter_secure_storage_linux:
     dependency: transitive
     description:
@@ -324,10 +324,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_secure_storage_web
-      sha256: "6a1137df62b84b54261dca582c1c09ea72f4f9a4b2fcee21b025964132d5d0c3"
+      sha256: "073a62b3aeb866ab4ce795f960413948e51e5a42a9b0c8333b6daf5bb3208a1c"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.0"
+    version: "2.1.1"
   flutter_secure_storage_windows:
     dependency: transitive
     description:
@@ -844,6 +844,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.0"
+  share_plus:
+    dependency: transitive
+    description:
+      name: share_plus
+      sha256: d7dc0630a923883c6328ca31b89aa682bacbf2f8304162d29f7c6aaff03a27a1
+      url: "https://pub.dev"
+    source: hosted
+    version: "11.1.0"
+  share_plus_platform_interface:
+    dependency: transitive
+    description:
+      name: share_plus_platform_interface
+      sha256: "88023e53a13429bd65d8e85e11a9b484f49d4c190abbd96c7932b74d6927cc9a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.1.0"
   shared_preferences:
     dependency: transitive
     description:
@@ -933,10 +949,10 @@ packages:
     dependency: "direct main"
     description:
       name: solidui
-      sha256: "654d3811bbe81642fd0052cf8acf2977aea51c6376b51694f2d8cc7621182751"
+      sha256: "3f62033f90463187494d0bbefc086d081b11835b410bc81bf6169b4ed271b33d"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.35"
+    version: "0.3.43"
   source_span:
     dependency: transitive
     description:
@@ -1069,10 +1085,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_web
-      sha256: d0412fcf4c6b31ecfdb7762359b7206ffba3bbffd396c6d9f9c4616ece476c1f
+      sha256: "85c81589622fbc87c1c683aaea164d3604a7777495a79d91e39ffcdec39ddb34"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.2"
+    version: "2.4.3"
   url_launcher_windows:
     dependency: transitive
     description:
@@ -1101,10 +1117,10 @@ packages:
     dependency: transitive
     description:
       name: version_widget
-      sha256: "1f442f4a0b9f6e8cad96381957f03cbf7f5720da8848b78e44ddd7def5e621a7"
+      sha256: a504c7d0bfb789f9125d01a295d2d2ad6d31a7dadac92679ba04efc2edd419d4
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.8"
+    version: "1.0.10"
   vm_service:
     dependency: transitive
     description:

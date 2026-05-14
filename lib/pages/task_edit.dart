@@ -12,7 +12,9 @@ library;
 
 import 'package:flutter/material.dart';
 
-import 'package:emacs_text_field/emacs_text_field.dart';
+import 'package:emacs_text_field/emacs_text_field.dart'
+    show EmacsTextField, attachPrimarySelection, writePrimarySelection;
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -44,6 +46,9 @@ class _TaskEditState extends State<TaskEdit> {
   late final TextEditingController _description;
   late final TextEditingController _notes;
   late final TextEditingController _duration;
+  late VoidCallback _removePrimaryDescription;
+  late VoidCallback _removePrimaryDuration;
+  late bool _showPreview;
   late bool _completed;
   late String? _priority;
   late DateTime? _dueDate;
@@ -75,6 +80,11 @@ class _TaskEditState extends State<TaskEdit> {
     );
     _notes = TextEditingController(text: t?.notes ?? '');
     _duration = TextEditingController(text: t?.duration ?? '');
+    // _notes is an EmacsTextField — it handles primary selection internally.
+    _removePrimaryDescription = attachPrimarySelection(_description);
+    _removePrimaryDuration = attachPrimarySelection(_duration);
+    // Default to preview for existing tasks, edit for new.
+    _showPreview = widget.task != null;
     _completed = t?.completed ?? false;
     _priority = t != null ? t.priority : 'B';
     _dueDate = t != null ? t.dueDate : DateTime.now();
@@ -109,6 +119,8 @@ class _TaskEditState extends State<TaskEdit> {
 
   @override
   void dispose() {
+    _removePrimaryDescription();
+    _removePrimaryDuration();
     _description.dispose();
     _notes.dispose();
     _duration.dispose();
@@ -241,139 +253,193 @@ class _TaskEditState extends State<TaskEdit> {
     ),
   );
 
-  Widget _buildForm(BuildContext context) => Flexible(
-    child: SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          editSectionLabel(
-            context,
-            'Title',
-            tooltip:
-                '**Title**\n\n'
-                'A short summary of the task — what needs to be done.\n\n'
-                'This is the main text that appears in the task list.',
-          ),
-          const Gap(8),
-          TextField(
-            controller: _description,
-            autofocus: _isNew && widget.focusField == null,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              isDense: true,
-              hintText: 'What needs to be done?',
+  Widget _buildForm(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Flexible(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            editSectionLabel(
+              context,
+              'Title',
+              tooltip:
+                  '**Title**\n\n'
+                  'A short summary of the task — what needs to be done.\n\n'
+                  'This is the main text that appears in the task list.',
             ),
-          ),
-          const Gap(16),
-          editSectionLabel(
-            context,
-            'Notes',
-            tooltip:
-                '**Notes**\n\n'
-                'Additional details, links, or context for the task.\n\n'
-                'Supports **markdown** formatting.\n\n'
-                '**Emacs keys:** C-a/e line · C-f/b char · C-n/p line '
-                '· M-f/b word · C-k kill · C-y yank · M-Enter bullet',
-          ),
-          const Gap(8),
-          EmacsTextField(
-            controller: _notes,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              isDense: true,
-              alignLabelWithHint: true,
-              hintText: 'Details, links, markdown…',
+            const Gap(8),
+            TextField(
+              controller: _description,
+              autofocus: _isNew && widget.focusField == null,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                isDense: true,
+                hintText: 'What needs to be done?',
+              ),
             ),
-          ),
-          const Gap(16),
-          PriorityDueDateRow(
-            priority: _priority,
-            dueDate: _dueDate,
-            onPriorityChanged: (v) => setState(() => _priority = v),
-            onPickDueDate: _pickDueDate,
-            onClearDueDate: () => setState(() => _dueDate = null),
-          ),
-          const Gap(8),
-          CheckboxListTile(
-            value: _completed,
-            onChanged: (v) => setState(() => _completed = v ?? false),
-            title: const Text('Mark as done'),
-            controlAffinity: ListTileControlAffinity.leading,
-            contentPadding: EdgeInsets.zero,
-            dense: true,
-          ),
-          const Gap(16),
-          editSectionLabel(
-            context,
-            'Duration',
-            tooltip:
-                '**Duration**\n\n'
-                'Estimated time to complete the task.\n\n'
-                'Free-text — common formats include '
-                '*30m*, *1h*, *2h30m*, *15min*.',
-          ),
-          const Gap(8),
-          TextField(
-            controller: _duration,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              isDense: true,
-              hintText: 'e.g. 30m, 1h, 2h30m',
-              prefixText: '= ',
+            const Gap(16),
+            // Notes section header with Edit/Preview toggle.
+            Row(
+              children: [
+                Expanded(
+                  child: editSectionLabel(
+                    context,
+                    'Notes',
+                    tooltip:
+                        '**Notes**\n\n'
+                        'Additional details, links, or context for the task.\n\n'
+                        'Supports **markdown** formatting.\n\n'
+                        '**Emacs keys:** C-a/e line · C-f/b char · C-n/p line '
+                        '· M-f/b word · C-k kill · C-y yank · M-Enter bullet',
+                  ),
+                ),
+                TextButton.icon(
+                  onPressed: () => setState(() => _showPreview = !_showPreview),
+                  icon: Icon(
+                    _showPreview ? Icons.edit_outlined : Icons.preview_outlined,
+                    size: 16,
+                  ),
+                  label: Text(_showPreview ? 'Edit' : 'Preview'),
+                  style: TextButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                  ),
+                ),
+              ],
             ),
-          ),
-          const Gap(16),
-          TagListEditor(
-            label: 'Projects',
-            prefix: '+',
-            controllers: _projects,
-            options: context.read<AppProvider>().allProjects,
-            hintText: 'project name',
-            tooltip:
-                '**Projects**\n\n'
-                'Group related tasks under a project tag (prefixed with **+**).\n\n'
-                'Examples: +home, +work, +garden.\n'
-                'Autocomplete suggests existing project names.',
-            focusLast: _focusNewProject,
-            onFocusConsumed: () => _focusNewProject = false,
-            onAdd: () => setState(() {
-              _projects.add(TextEditingController());
-              _focusNewProject = true;
-            }),
-            onRemove: (i) => setState(() {
-              _projects[i].dispose();
-              _projects.removeAt(i);
-            }),
-          ),
-          const Gap(16),
-          TagListEditor(
-            label: 'Contexts',
-            prefix: '@',
-            controllers: _contexts,
-            options: context.read<AppProvider>().allContexts,
-            hintText: 'home, office, phone...',
-            tooltip:
-                '**Contexts**\n\n'
-                'Where or how the task should be done (prefixed with **@**).\n\n'
-                'Examples: @home, @office, @phone, @computer.\n'
-                'Useful for filtering tasks by location or tool.',
-            focusLast: _focusNewContext,
-            onFocusConsumed: () => _focusNewContext = false,
-            onAdd: () => setState(() {
-              _contexts.add(TextEditingController());
-              _focusNewContext = true;
-            }),
-            onRemove: (i) => setState(() {
-              _contexts[i].dispose();
-              _contexts.removeAt(i);
-            }),
-          ),
-          const Gap(8),
-        ],
+            const Gap(8),
+            if (_showPreview)
+              Container(
+                width: double.infinity,
+                constraints: const BoxConstraints(minHeight: 80),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  border: Border.all(color: cs.outline),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: _notes.text.trim().isEmpty
+                    ? Text(
+                        'Nothing to preview.',
+                        style: TextStyle(
+                          color: cs.onSurfaceVariant,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      )
+                    : SelectionArea(
+                        onSelectionChanged: (value) {
+                          final text = value?.plainText ?? '';
+                          if (text.isNotEmpty) writePrimarySelection(text);
+                        },
+                        child: MarkdownBody(
+                          data: _notes.text,
+                          shrinkWrap: true,
+                          styleSheet: MarkdownStyleSheet.fromTheme(
+                            Theme.of(context),
+                          ),
+                        ),
+                      ),
+              )
+            else
+              EmacsTextField(
+                controller: _notes,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  isDense: true,
+                  alignLabelWithHint: true,
+                  hintText: 'Details, links, markdown…',
+                ),
+              ),
+            const Gap(16),
+            PriorityDueDateRow(
+              priority: _priority,
+              dueDate: _dueDate,
+              onPriorityChanged: (v) => setState(() => _priority = v),
+              onPickDueDate: _pickDueDate,
+              onClearDueDate: () => setState(() => _dueDate = null),
+            ),
+            const Gap(8),
+            CheckboxListTile(
+              value: _completed,
+              onChanged: (v) => setState(() => _completed = v ?? false),
+              title: const Text('Mark as done'),
+              controlAffinity: ListTileControlAffinity.leading,
+              contentPadding: EdgeInsets.zero,
+              dense: true,
+            ),
+            const Gap(16),
+            editSectionLabel(
+              context,
+              'Duration',
+              tooltip:
+                  '**Duration**\n\n'
+                  'Estimated time to complete the task.\n\n'
+                  'Free-text — common formats include '
+                  '*30m*, *1h*, *2h30m*, *15min*.',
+            ),
+            const Gap(8),
+            TextField(
+              controller: _duration,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                isDense: true,
+                hintText: 'e.g. 30m, 1h, 2h30m',
+                prefixText: '= ',
+              ),
+            ),
+            const Gap(16),
+            TagListEditor(
+              label: 'Projects',
+              prefix: '+',
+              controllers: _projects,
+              options: context.read<AppProvider>().allProjects,
+              hintText: 'project name',
+              tooltip:
+                  '**Projects**\n\n'
+                  'Group related tasks under a project tag (prefixed with **+**).\n\n'
+                  'Examples: +home, +work, +garden.\n'
+                  'Autocomplete suggests existing project names.',
+              focusLast: _focusNewProject,
+              onFocusConsumed: () => _focusNewProject = false,
+              onAdd: () => setState(() {
+                _projects.add(TextEditingController());
+                _focusNewProject = true;
+              }),
+              onRemove: (i) => setState(() {
+                _projects[i].dispose();
+                _projects.removeAt(i);
+              }),
+            ),
+            const Gap(16),
+            TagListEditor(
+              label: 'Contexts',
+              prefix: '@',
+              controllers: _contexts,
+              options: context.read<AppProvider>().allContexts,
+              hintText: 'home, office, phone...',
+              tooltip:
+                  '**Contexts**\n\n'
+                  'Where or how the task should be done (prefixed with **@**).\n\n'
+                  'Examples: @home, @office, @phone, @computer.\n'
+                  'Useful for filtering tasks by location or tool.',
+              focusLast: _focusNewContext,
+              onFocusConsumed: () => _focusNewContext = false,
+              onAdd: () => setState(() {
+                _contexts.add(TextEditingController());
+                _focusNewContext = true;
+              }),
+              onRemove: (i) => setState(() {
+                _contexts[i].dispose();
+                _contexts.removeAt(i);
+              }),
+            ),
+            const Gap(8),
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 
   Widget _buildActions(BuildContext context) => Column(
     children: [

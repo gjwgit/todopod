@@ -12,6 +12,8 @@ library;
 
 import 'package:flutter/material.dart';
 
+import 'package:emacs_text_field/emacs_text_field.dart'
+    show attachPrimarySelection;
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
@@ -28,10 +30,18 @@ class DoneScreen extends StatefulWidget {
 
 class _DoneScreenState extends State<DoneScreen> {
   final _search = TextEditingController();
+  late final VoidCallback _removePrimarySearch;
   String _query = '';
 
   @override
+  void initState() {
+    super.initState();
+    _removePrimarySearch = attachPrimarySelection(_search);
+  }
+
+  @override
   void dispose() {
+    _removePrimarySearch();
     _search.dispose();
     super.dispose();
   }

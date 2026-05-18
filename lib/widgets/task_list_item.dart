@@ -75,6 +75,13 @@ class ReorderableTaskItem extends StatelessWidget {
                   onTap: onTap,
                   onComplete: onComplete,
                   onEditField: onEditField,
+                  onDelete: onDelete == null
+                      ? null
+                      : () async {
+                          if (await _confirmDelete(context)) {
+                            onDelete!();
+                          }
+                        },
                 ),
               ),
               MarkdownTooltip(

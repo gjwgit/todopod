@@ -37,6 +37,7 @@ Code](https://claude.com/product/claude-code).
 
 ## 0.2 Basic Functionality
 
++ Add a delete button to augment swipe to delete [0.1.34 20260519 gjw]
 + Updated emacs. Kanban moves on short tap [0.1.33 20260514 gjw]
 + Support emacs in NOTES like diarypod [0.1.32 20260503 gjw]
 + Date picker is not barier dismissable [0.1.31 20260503 gjw]

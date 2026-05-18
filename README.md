@@ -79,6 +79,11 @@ is multi-platform so you can install it for your desktop or mobile
 device, or run it directly through a web browser, all accessing and
 updating the tasks encrypted within your Pod.
 
+Solid Pods are a new approach to handling your personal data on the
+World Wide Web and is the latest innovation from the inventor of the
+WWW, Sir Tim Berners-Lee. Obtain a Pod for yourself on any Solid
+server and link it to your app.
+
 Task list view:
 
 ![List](./assets/screenshots/list_view.png)

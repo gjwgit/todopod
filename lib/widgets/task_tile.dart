@@ -1,6 +1,6 @@
 /// TaskTile — a single task row with checkbox and tag chips.
 ///
-// Time-stamp: <Friday 2026-05-01 12:10:45 +1000 Graham Williams>
+// Time-stamp: <Tuesday 2026-05-19 07:40:48 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -23,6 +23,7 @@ class TaskTile extends StatelessWidget {
   final VoidCallback onTap;
   final ValueChanged<bool?> onComplete;
   final ValueChanged<String>? onEditField;
+  final VoidCallback? onDelete;
 
   const TaskTile({
     super.key,
@@ -30,6 +31,7 @@ class TaskTile extends StatelessWidget {
     required this.onTap,
     required this.onComplete,
     this.onEditField,
+    this.onDelete,
   });
 
   @override
@@ -124,17 +126,21 @@ class TaskTile extends StatelessWidget {
                 ],
               ),
             ),
-            // Notes info icon.
-            MarkdownTooltip(
-              message: _buildTooltip(),
-              child: Icon(
-                Icons.info_outline,
-                //size: 16,
-                color: (task.notes != null && task.notes!.isNotEmpty)
-                    ? cs.primary.withValues(alpha: 1.0)
-                    : cs.onSurfaceVariant.withValues(alpha: 0.0),
+            // Delete button (replaces former notes-info icon).
+            if (onDelete != null)
+              MarkdownTooltip(
+                message: _buildTooltip(),
+                child: IconButton(
+                  icon: Icon(
+                    Icons.delete_outline,
+                    size: 16,
+                    color: Colors.red.withValues(alpha: 0.6),
+                  ),
+                  visualDensity: VisualDensity.compact,
+                  tooltip: 'Delete task',
+                  onPressed: onDelete,
+                ),
               ),
-            ),
           ],
         ),
       ),
@@ -142,9 +148,9 @@ class TaskTile extends StatelessWidget {
   }
 
   String _buildTooltip() {
-    if (task.notes == null || task.notes!.isEmpty) {
-      return '**Notes**\n\nNo notes for this task.';
-    }
+    final hasNotes = task.notes != null && task.notes!.isNotEmpty;
+    final deleteBlurb = '**Delete task**\n\nPermanently remove this task.';
+    if (!hasNotes) return deleteBlurb;
     // Ensure lines starting with `+` are separated by a blank line so they
     // render as distinct paragraphs rather than a collapsed list in Markdown.
     final lines = task.notes!.split('\n');
@@ -156,7 +162,7 @@ class TaskTile extends StatelessWidget {
       }
       buf.writeln(line);
     }
-    return '**Notes**\n\n${buf.toString().trimRight()}';
+    return '$deleteBlurb\n\n---\n\n**Notes**\n\n${buf.toString().trimRight()}';
   }
 
   bool _hasTags(Task t) =>

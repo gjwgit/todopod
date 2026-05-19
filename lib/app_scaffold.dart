@@ -111,12 +111,6 @@ class _AppScaffoldState extends State<AppScaffold> {
           child: TasksScreen(),
         ),
         SolidMenuItem(
-          title: 'Done',
-          icon: Icons.check_circle_outline,
-          tooltip: '**Done**\n\nCompleted tasks. Tap the checkbox to restore.',
-          child: DoneScreen(),
-        ),
-        SolidMenuItem(
           title: 'Kanban',
           icon: Icons.view_kanban_outlined,
           tooltip:
@@ -133,6 +127,12 @@ class _AppScaffoldState extends State<AppScaffold> {
               'Calendar view of tasks by due date. '
               'Tap a day to see what is due.',
           child: PlannerScreen(),
+        ),
+        SolidMenuItem(
+          title: 'Done',
+          icon: Icons.check_circle_outline,
+          tooltip: '**Done**\n\nCompleted tasks. Tap the checkbox to restore.',
+          child: DoneScreen(),
         ),
         SolidMenuItem(
           title: 'Import / Export',

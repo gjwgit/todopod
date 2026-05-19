@@ -23,6 +23,11 @@ Williams](https://togaware.com/Graham.Williams.html) pair coding with
 [SolidUI](https://github.com/anusii/solidui) package for cross
 platform development.
 
+Solid Pods are a new approach to handling your personal data on the
+World Wide Web and is the latest innovation from the inventor of the
+WWW, Sir Tim Berners-Lee. Obtain a Pod for yourself on any Solid
+server and link it to your app.
+
 We make this project available for free so if you appreciate the app
 then please show some ❤️ and tap on the star at
 [GitHub](https://github.com/gjwgit/todopod) to support our work. See

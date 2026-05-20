@@ -17,15 +17,12 @@ import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:todopod/constants/app.dart';
+import 'package:todopod/models/sort_order.dart';
 import 'package:todopod/models/task.dart';
 import 'package:todopod/models/task_parser.dart';
 import 'package:todopod/services/pod_service.dart';
 
 const _uuid = Uuid();
-
-/// Sort order for the task list.
-
-enum SortOrder { priority, dueDate, project, context, creationDate, added }
 
 /// App-level state: tasks, done tasks, sort/filter, pod sync.
 

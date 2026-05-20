@@ -18,10 +18,16 @@ import 'package:gap/gap.dart';
 import 'package:markdown_tooltip/markdown_tooltip.dart';
 import 'package:provider/provider.dart';
 
+import 'package:todopod/models/sort_order.dart';
 import 'package:todopod/models/task.dart';
 import 'package:todopod/pages/task_edit.dart';
-import 'package:todopod/screens/tasks_screen_widgets.dart';
+import 'package:todopod/screens/tasks_widgets/task_empty_state.dart';
+import 'package:todopod/screens/tasks_widgets/task_filter_button.dart';
+import 'package:todopod/screens/tasks_widgets/task_filter_chips.dart';
+import 'package:todopod/screens/tasks_widgets/task_filter_sheet.dart';
+import 'package:todopod/screens/tasks_widgets/task_sort_button.dart';
 import 'package:todopod/services/app_provider.dart';
+import 'package:todopod/services/task_actions.dart';
 import 'package:todopod/widgets/task_list_item.dart';
 
 class TasksScreen extends StatefulWidget {
@@ -238,11 +244,20 @@ class _TasksScreenState extends State<TasksScreen> {
                     task: task,
                     showHeader: showHeader,
                     isFirstHeader: showHeader && i == 0,
-                    onTap: () => _editTask(context, task, provider),
-                    onComplete: (_) => _complete(task, provider),
+                    onTap: () => editTaskAction(
+                      context: context,
+                      provider: provider,
+                      task: task,
+                    ),
+                    onComplete: (_) =>
+                        completeTaskAction(provider: provider, task: task),
                     onDelete: () => _deleteTask(task, provider),
-                    onEditField: (field) =>
-                        _editTaskField(context, task, provider, field),
+                    onEditField: (field) => editTaskAction(
+                      context: context,
+                      provider: provider,
+                      task: task,
+                      focusField: field,
+                    ),
                   );
                 },
               ),
@@ -301,46 +316,6 @@ class _TasksScreenState extends State<TasksScreen> {
       if (!context.mounted) return;
       messenger.showSnackBar(const SnackBar(content: Text('Task added')));
     }
-  }
-
-  Future<void> _editTask(
-    BuildContext context,
-    Task task,
-    AppProvider provider,
-  ) async {
-    final updated = await showDialog<Task>(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => TaskEdit(task: task),
-    );
-    if (updated != null) {
-      // updateTask handles the move to _done automatically when
-      // updated.completed is true. saveAllToPod covers both files.
-      provider.updateTask(updated);
-      await provider.saveAllToPod();
-    }
-  }
-
-  Future<void> _editTaskField(
-    BuildContext context,
-    Task task,
-    AppProvider provider,
-    String field,
-  ) async {
-    final updated = await showDialog<Task>(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => TaskEdit(task: task, focusField: field),
-    );
-    if (updated != null) {
-      provider.updateTask(updated);
-      await provider.saveAllToPod();
-    }
-  }
-
-  void _complete(Task task, AppProvider provider) {
-    provider.completeTask(task.id);
-    provider.saveAllToPod();
   }
 
   void _deleteTask(Task task, AppProvider provider) {

@@ -20,7 +20,8 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:todopod/models/task.dart';
-import 'package:todopod/pages/task_edit_form_fields.dart';
+import 'package:todopod/pages/edit_fields/priority_due_date_row.dart';
+import 'package:todopod/pages/edit_fields/tag_list_editor.dart';
 import 'package:todopod/services/app_provider.dart';
 import 'package:todopod/widgets/tag_autocomplete.dart';
 

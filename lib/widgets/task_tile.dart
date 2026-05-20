@@ -17,6 +17,8 @@ import 'package:markdown_tooltip/markdown_tooltip.dart';
 
 import 'package:todopod/constants/app.dart';
 import 'package:todopod/models/task.dart';
+import 'package:todopod/widgets/priority_badge.dart';
+import 'package:todopod/widgets/tag_chip.dart';
 
 class TaskTile extends StatelessWidget {
   final Task task;
@@ -62,7 +64,7 @@ class TaskTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (task.priority != null) ...[
-                        _PriorityBadge(priority: task.priority!, cs: cs),
+                        PriorityBadge(priority: task.priority!, cs: cs),
                         const Gap(8),
                       ],
                       Expanded(
@@ -89,7 +91,7 @@ class TaskTile extends StatelessWidget {
                       runSpacing: 2,
                       children: [
                         for (final p in task.projects)
-                          _TagChip(
+                          TagChip(
                             label: '+$p',
                             color: cs.primaryContainer,
                             textColor: cs.onPrimaryContainer,
@@ -98,7 +100,7 @@ class TaskTile extends StatelessWidget {
                                 : null,
                           ),
                         for (final c in task.contexts)
-                          _TagChip(
+                          TagChip(
                             label: '@$c',
                             color: cs.secondaryContainer,
                             textColor: cs.onSecondaryContainer,
@@ -107,14 +109,14 @@ class TaskTile extends StatelessWidget {
                                 : null,
                           ),
                         if (task.dueDate != null)
-                          _TagChip(
+                          TagChip(
                             label: _fmtDue(task.dueDate!),
                             color: _dueDateColor(task.dueDate!, cs),
                             textColor: cs.onErrorContainer,
                             icon: Icons.event_outlined,
                           ),
                         if (task.duration != null)
-                          _TagChip(
+                          TagChip(
                             label: task.duration!,
                             color: cs.surfaceContainerHighest,
                             textColor: cs.onSurfaceVariant,
@@ -202,86 +204,4 @@ class TaskTile extends StatelessWidget {
 
 // ── Priority badge ────────────────────────────────────────────────────────────
 
-class _PriorityBadge extends StatelessWidget {
-  final String priority;
-  final ColorScheme cs;
-
-  const _PriorityBadge({required this.priority, required this.cs});
-
-  @override
-  Widget build(BuildContext context) {
-    final color = _priorityColor(priority, cs);
-    final label = priorityLabels[priority] ?? priority;
-
-    return MarkdownTooltip(
-      message: '**Priority $priority** — $label',
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Text(
-          priority,
-          style: const TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Color _priorityColor(String p, ColorScheme cs) =>
-      priorityColors[p] ?? cs.primary;
-}
-
 // ── Tag chip ──────────────────────────────────────────────────────────────────
-
-class _TagChip extends StatelessWidget {
-  final String label;
-  final Color color;
-  final Color textColor;
-  final IconData? icon;
-  final VoidCallback? onTap;
-
-  const _TagChip({
-    required this.label,
-    required this.color,
-    required this.textColor,
-    this.icon,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final chip = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (icon != null) ...[
-            Icon(icon, size: 11, color: textColor),
-            const Gap(2),
-          ],
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 11,
-              color: textColor,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-    if (onTap == null) return chip;
-
-    return GestureDetector(onTap: onTap, child: chip);
-  }
-}

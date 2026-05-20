@@ -1,12 +1,10 @@
-/// Import/Export screen widgets for TodoPod.
+/// ExportFilterSheet — modal sheet for filtering tasks during export.
 ///
-// Time-stamp: <Friday 2026-03-27 10:00:00 +1100 Graham Williams>
+// Time-stamp: <2026-05-20>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
-/// Licensed under the GNU General Public License, Version 3 (the "License");
-///
-/// License: https://opensource.org/license/gpl-3-0
+/// Licensed under the GNU General Public License, Version 3
 
 library;
 
@@ -16,49 +14,8 @@ import 'package:gap/gap.dart';
 
 import 'package:todopod/constants/app.dart';
 import 'package:todopod/models/task.dart';
-
-class ImportActionCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final bool loading;
-  final VoidCallback onTap;
-
-  const ImportActionCard({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.loading,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-
-    return Card(
-      child: ListTile(
-        leading: Icon(icon, color: cs.primary),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
-        subtitle: Text(
-          subtitle,
-          style: TextStyle(color: cs.onSurfaceVariant, fontSize: 12),
-        ),
-        trailing: loading
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-            : Icon(Icons.chevron_right, color: cs.onSurfaceVariant),
-        onTap: loading ? null : onTap,
-      ),
-    );
-  }
-}
-
-// ── Export filter bottom sheet ────────────────────────────────────────────────
+import 'package:todopod/screens/import_widgets/export_filter_chip.dart';
+import 'package:todopod/screens/import_widgets/export_filter_row.dart';
 
 class ExportFilterSheet extends StatefulWidget {
   final List<Task> allTasks;
@@ -278,112 +235,6 @@ class ExportFilterSheetState extends State<ExportFilterSheet> {
                       _filtered,
                       _buildFilterLabel(),
                     )),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ── Helper widgets ─────────────────────────────────────────────────────────────
-
-class ExportFilterRow extends StatelessWidget {
-  final String label;
-  final Widget child;
-  const ExportFilterRow({super.key, required this.label, required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 72,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 6),
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ),
-        ),
-        Expanded(child: child),
-      ],
-    );
-  }
-}
-
-class ExportFilterChip extends StatelessWidget {
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-  final ColorScheme cs;
-  const ExportFilterChip({
-    super.key,
-    required this.label,
-    required this.selected,
-    required this.onTap,
-    required this.cs,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Chip(
-        label: Text(label),
-        labelStyle: TextStyle(
-          fontSize: 12,
-          color: selected ? cs.onPrimary : cs.onSurfaceVariant,
-        ),
-        backgroundColor: selected ? cs.primary : cs.surfaceContainerHighest,
-        padding: EdgeInsets.zero,
-        visualDensity: VisualDensity.compact,
-      ),
-    );
-  }
-}
-
-// ── Message banner ────────────────────────────────────────────────────────────
-
-class ImportMessageBanner extends StatelessWidget {
-  final String message;
-  final bool isError;
-  final ColorScheme cs;
-
-  const ImportMessageBanner({
-    super.key,
-    required this.message,
-    required this.isError,
-    required this.cs,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: isError ? cs.errorContainer : cs.secondaryContainer,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            isError ? Icons.error_outline : Icons.check_circle_outline,
-            color: isError ? cs.onErrorContainer : cs.onSecondaryContainer,
-          ),
-          const Gap(8),
-          Expanded(
-            child: Text(
-              message,
-              style: TextStyle(
-                color: isError ? cs.onErrorContainer : cs.onSecondaryContainer,
-              ),
             ),
           ),
         ],

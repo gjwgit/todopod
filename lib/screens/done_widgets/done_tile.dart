@@ -16,6 +16,7 @@ import 'package:gap/gap.dart';
 import 'package:markdown_tooltip/markdown_tooltip.dart';
 
 import 'package:todopod/models/task.dart';
+import 'package:todopod/screens/done_widgets/small_chip.dart';
 
 // ── Done task detail viewer ──────────────────────────────────────────────────
 
@@ -196,9 +197,9 @@ class DoneTile extends StatelessWidget {
                       spacing: 4,
                       children: [
                         for (final p in task.projects)
-                          _SmallChip(label: '+$p', cs: cs),
+                          SmallChip(label: '+$p', cs: cs),
                         for (final c in task.contexts)
-                          _SmallChip(label: '@$c', cs: cs),
+                          SmallChip(label: '@$c', cs: cs),
                       ],
                     ),
                   ],
@@ -224,23 +225,3 @@ class DoneTile extends StatelessWidget {
 }
 
 // ── Small chip ───────────────────────────────────────────────────────────────
-
-class _SmallChip extends StatelessWidget {
-  final String label;
-  final ColorScheme cs;
-
-  const _SmallChip({required this.label, required this.cs});
-
-  @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
-    decoration: BoxDecoration(
-      color: cs.surfaceContainerHighest,
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: Text(
-      label,
-      style: TextStyle(fontSize: 11, color: cs.onSurfaceVariant),
-    ),
-  );
-}

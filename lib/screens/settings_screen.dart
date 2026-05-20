@@ -16,6 +16,7 @@ import 'package:gap/gap.dart';
 import 'package:solidui/solidui.dart';
 
 import 'package:todopod/constants/app.dart';
+import 'package:todopod/screens/settings_widgets/return_page.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -79,7 +80,7 @@ class SettingsScreen extends StatelessWidget {
               MaterialPageRoute<void>(
                 builder: (_) => const GrantPermissionUi(
                   resourceNames: [todoFileName],
-                  child: _ReturnPage(),
+                  child: ReturnPage(),
                 ),
               ),
             ),
@@ -93,7 +94,7 @@ class SettingsScreen extends StatelessWidget {
               MaterialPageRoute<void>(
                 builder: (_) => const GrantPermissionUi(
                   resourceNames: [doneFileName],
-                  child: _ReturnPage(),
+                  child: ReturnPage(),
                 ),
               ),
             ),
@@ -105,7 +106,7 @@ class SettingsScreen extends StatelessWidget {
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute<void>(
-                builder: (_) => const SharedResourcesUi(child: _ReturnPage()),
+                builder: (_) => const SharedResourcesUi(child: ReturnPage()),
               ),
             ),
           ),
@@ -116,19 +117,4 @@ class SettingsScreen extends StatelessWidget {
 
   Color _priorityColor(String p, ColorScheme cs) =>
       priorityColors[p] ?? cs.primary;
-}
-
-class _ReturnPage extends StatelessWidget {
-  const _ReturnPage();
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text(appName)),
-    body: Center(
-      child: FilledButton.tonal(
-        onPressed: () => Navigator.of(context).pop(),
-        child: const Text('Return to Settings'),
-      ),
-    ),
-  );
 }

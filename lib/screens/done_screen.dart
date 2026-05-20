@@ -18,7 +18,7 @@ import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 import 'package:todopod/models/task.dart';
-import 'package:todopod/screens/done_screen_widgets.dart';
+import 'package:todopod/screens/done_widgets/done_tile.dart';
 import 'package:todopod/services/app_provider.dart';
 
 class DoneScreen extends StatefulWidget {

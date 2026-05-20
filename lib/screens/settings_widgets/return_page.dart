@@ -10,13 +10,10 @@ library;
 
 import 'package:flutter/material.dart';
 
-import 'package:gap/gap.dart';
-import 'package:solidui/solidui.dart';
-
 import 'package:todopod/constants/app.dart';
 
 class ReturnPage extends StatelessWidget {
-  const ReturnPage();
+  const ReturnPage({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(

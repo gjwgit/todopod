@@ -10,17 +10,15 @@ library;
 
 import 'package:flutter/material.dart';
 
-import 'package:gap/gap.dart';
 import 'package:markdown_tooltip/markdown_tooltip.dart';
 
 import 'package:todopod/constants/app.dart';
-import 'package:todopod/models/task.dart';
 
 class PriorityBadge extends StatelessWidget {
   final String priority;
   final ColorScheme cs;
 
-  const PriorityBadge({required this.priority, required this.cs});
+  const PriorityBadge({super.key, required this.priority, required this.cs});
 
   @override
   Widget build(BuildContext context) {

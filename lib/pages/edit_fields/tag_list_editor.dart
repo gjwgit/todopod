@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 
 import 'package:gap/gap.dart';
 
-import 'package:todopod/constants/app.dart';
 import 'package:todopod/widgets/tag_autocomplete.dart';
 
 class TagListEditor extends StatelessWidget {

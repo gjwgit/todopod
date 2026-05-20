@@ -10,11 +10,9 @@ library;
 
 import 'package:flutter/material.dart';
 
-import 'package:markdown_tooltip/markdown_tooltip.dart';
 import 'package:provider/provider.dart';
 
 import 'package:todopod/models/task.dart';
-import 'package:todopod/screens/kanban_widgets/kanban_card.dart';
 import 'package:todopod/screens/kanban_widgets/kanban_col.dart';
 import 'package:todopod/screens/kanban_widgets/kanban_column.dart';
 import 'package:todopod/services/app_provider.dart';

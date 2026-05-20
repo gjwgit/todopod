@@ -24,7 +24,6 @@ import 'package:todopod/pages/task_edit.dart';
 import 'package:todopod/screens/tasks_widgets/task_empty_state.dart';
 import 'package:todopod/screens/tasks_widgets/task_filter_button.dart';
 import 'package:todopod/screens/tasks_widgets/task_filter_chips.dart';
-import 'package:todopod/screens/tasks_widgets/task_filter_sheet.dart';
 import 'package:todopod/screens/tasks_widgets/task_sort_button.dart';
 import 'package:todopod/services/app_provider.dart';
 import 'package:todopod/services/task_actions.dart';

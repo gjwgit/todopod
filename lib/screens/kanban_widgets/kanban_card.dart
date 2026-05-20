@@ -11,12 +11,9 @@ library;
 import 'package:flutter/material.dart';
 
 import 'package:markdown_tooltip/markdown_tooltip.dart';
-import 'package:provider/provider.dart';
 
 import 'package:todopod/models/task.dart';
 import 'package:todopod/screens/kanban_widgets/kanban_col.dart';
-import 'package:todopod/services/app_provider.dart';
-import 'package:todopod/services/task_actions.dart';
 
 class KanbanCard extends StatelessWidget {
   final Task task;
@@ -26,6 +23,7 @@ class KanbanCard extends StatelessWidget {
   final void Function(Task) onDelete;
 
   const KanbanCard({
+    super.key,
     required this.task,
     required this.col,
     required this.onEdit,

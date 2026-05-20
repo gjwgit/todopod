@@ -24,6 +24,7 @@ class KanbanColumn extends StatefulWidget {
   final void Function(Task) onDeleteTask;
 
   const KanbanColumn({
+    super.key,
     required this.col,
     required this.tasks,
     required this.height,

@@ -10,14 +10,8 @@ library;
 
 import 'package:flutter/material.dart';
 
-import 'package:gap/gap.dart';
-import 'package:provider/provider.dart';
-import 'package:table_calendar/table_calendar.dart';
-
 import 'package:todopod/constants/app.dart';
 import 'package:todopod/models/task.dart';
-import 'package:todopod/services/app_provider.dart';
-import 'package:todopod/services/task_actions.dart';
 
 class PlannerTile extends StatelessWidget {
   final Task task;
@@ -25,6 +19,7 @@ class PlannerTile extends StatelessWidget {
   final VoidCallback onComplete;
 
   const PlannerTile({
+    super.key,
     required this.task,
     required this.onTap,
     required this.onComplete,

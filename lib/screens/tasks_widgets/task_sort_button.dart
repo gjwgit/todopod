@@ -13,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:markdown_tooltip/markdown_tooltip.dart';
 
-import 'package:todopod/constants/app.dart';
 import 'package:todopod/models/sort_order.dart';
 import 'package:todopod/services/app_provider.dart';
 

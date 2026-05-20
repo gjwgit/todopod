@@ -10,16 +10,11 @@ library;
 
 import 'package:flutter/material.dart';
 
-import 'package:gap/gap.dart';
-import 'package:markdown_tooltip/markdown_tooltip.dart';
-
-import 'package:todopod/models/task.dart';
-
 class SmallChip extends StatelessWidget {
   final String label;
   final ColorScheme cs;
 
-  const SmallChip({required this.label, required this.cs});
+  const SmallChip({super.key, required this.label, required this.cs});
 
   @override
   Widget build(BuildContext context) => Container(

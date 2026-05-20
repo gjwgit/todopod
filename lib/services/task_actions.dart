@@ -44,10 +44,7 @@ Future<void> editTaskAction({
 }
 
 /// Mark [task] complete (moves it from active to done) and persist.
-void completeTaskAction({
-  required AppProvider provider,
-  required Task task,
-}) {
+void completeTaskAction({required AppProvider provider, required Task task}) {
   provider.completeTask(task.id);
   provider.saveAllToPod();
 }

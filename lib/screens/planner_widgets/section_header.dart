@@ -11,13 +11,6 @@ library;
 import 'package:flutter/material.dart';
 
 import 'package:gap/gap.dart';
-import 'package:provider/provider.dart';
-import 'package:table_calendar/table_calendar.dart';
-
-import 'package:todopod/constants/app.dart';
-import 'package:todopod/models/task.dart';
-import 'package:todopod/services/app_provider.dart';
-import 'package:todopod/services/task_actions.dart';
 
 class SectionHeader extends StatelessWidget {
   final String label;
@@ -25,6 +18,7 @@ class SectionHeader extends StatelessWidget {
   final ColorScheme cs;
 
   const SectionHeader({
+    super.key,
     required this.label,
     required this.count,
     required this.cs,

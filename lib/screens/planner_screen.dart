@@ -14,7 +14,6 @@ import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import 'package:todopod/constants/app.dart';
 import 'package:todopod/models/task.dart';
 import 'package:todopod/screens/planner_widgets/planner_tile.dart';
 import 'package:todopod/screens/planner_widgets/section_header.dart';
@@ -139,8 +138,13 @@ class _PlannerScreenState extends State<PlannerScreen> {
                 ...selectedTasks.map(
                   (t) => PlannerTile(
                     task: t,
-                    onTap: () => editTaskAction(context: context, provider: provider, task: t),
-                    onComplete: () => completeTaskAction(provider: provider, task: t),
+                    onTap: () => editTaskAction(
+                      context: context,
+                      provider: provider,
+                      task: t,
+                    ),
+                    onComplete: () =>
+                        completeTaskAction(provider: provider, task: t),
                   ),
                 ),
 
@@ -164,8 +168,13 @@ class _PlannerScreenState extends State<PlannerScreen> {
                 ...unscheduled.map(
                   (t) => PlannerTile(
                     task: t,
-                    onTap: () => editTaskAction(context: context, provider: provider, task: t),
-                    onComplete: () => completeTaskAction(provider: provider, task: t),
+                    onTap: () => editTaskAction(
+                      context: context,
+                      provider: provider,
+                      task: t,
+                    ),
+                    onComplete: () =>
+                        completeTaskAction(provider: provider, task: t),
                   ),
                 ),
             ],

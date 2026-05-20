@@ -11,10 +11,6 @@ library;
 import 'package:flutter/material.dart';
 
 import 'package:gap/gap.dart';
-import 'package:markdown_tooltip/markdown_tooltip.dart';
-
-import 'package:todopod/constants/app.dart';
-import 'package:todopod/models/task.dart';
 
 class TagChip extends StatelessWidget {
   final String label;
@@ -24,6 +20,7 @@ class TagChip extends StatelessWidget {
   final VoidCallback? onTap;
 
   const TagChip({
+    super.key,
     required this.label,
     required this.color,
     required this.textColor,

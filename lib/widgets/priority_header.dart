@@ -10,11 +10,7 @@ library;
 
 import 'package:flutter/material.dart';
 
-import 'package:markdown_tooltip/markdown_tooltip.dart';
-
 import 'package:todopod/constants/app.dart';
-import 'package:todopod/models/task.dart';
-import 'package:todopod/widgets/task_tile.dart';
 
 class PriorityHeader extends StatelessWidget {
   final String? priority;

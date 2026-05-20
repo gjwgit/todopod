@@ -933,26 +933,26 @@ packages:
     dependency: transitive
     description:
       name: solid_auth
-      sha256: f8669ec441ef7662edabfe8a592dafb6997fddcebdd6470a31c86271415be264
+      sha256: "7f24bcf1e82c395a3571bf37310a03a074a8c6316398ca6b7238a0556abf2b50"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.29"
+    version: "0.1.30"
   solidpod:
     dependency: "direct main"
     description:
       name: solidpod
-      sha256: ece9c695348abb6d6627367bd8b51848f0dd42eb406ecb835f34856da87e2cfb
+      sha256: e88d4aaff5e5966504161769363e9047d188e23286a0730756f5214e8af774d1
       url: "https://pub.dev"
     source: hosted
-    version: "0.12.6"
+    version: "0.12.9"
   solidui:
     dependency: "direct main"
     description:
       name: solidui
-      sha256: "2b72585cb976ce744d6128d33b0f5c5b7f7bc1f968dd12e140a59225d93f7789"
+      sha256: "8bd0d68ae1a6141a1caddc3498e8791e324f79b80986c4115cbe299e4f4a5f28"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.46"
+    version: "0.3.49"
   source_span:
     dependency: transitive
     description:
@@ -1045,10 +1045,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_android
-      sha256: "3bb000251e55d4a209aa0e2e563309dc9bb2befea2295fd0cec1f51760aac572"
+      sha256: "17bc677f0b301615530dd1d67e0a9828cafa2d0b6b6eae4cd3679b7eac4a273c"
       url: "https://pub.dev"
     source: hosted
-    version: "6.3.29"
+    version: "6.3.30"
   url_launcher_ios:
     dependency: transitive
     description:

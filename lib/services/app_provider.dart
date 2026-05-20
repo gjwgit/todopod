@@ -242,7 +242,22 @@ class AppProvider extends ChangeNotifier {
   }
 
   void updateTask(Task updated) {
-    _tasks = [for (final t in _tasks) t.id == updated.id ? updated : t];
+    if (updated.completed) {
+      // Treat an update that flips completed to true as a complete-and-move:
+      // never leave a completed task in the active _tasks list.
+      _tasks = _tasks.where((t) => t.id != updated.id).toList();
+      final stamped = updated.completionDate == null
+          ? updated.copyWith(completionDate: DateTime.now())
+          : updated;
+      // Replace if already in _done, otherwise prepend.
+      if (_done.any((t) => t.id == updated.id)) {
+        _done = [for (final t in _done) t.id == updated.id ? stamped : t];
+      } else {
+        _done = [stamped, ..._done];
+      }
+    } else {
+      _tasks = [for (final t in _tasks) t.id == updated.id ? updated : t];
+    }
     notifyListeners();
   }
 
@@ -309,8 +324,11 @@ class AppProvider extends ChangeNotifier {
     required String doneContent,
   }) {
     _testMode = true;
-    _tasks = todoContent.isEmpty ? [] : (parseTodoTxt(todoContent)..toList());
-    _done = doneContent.isEmpty ? [] : (parseTodoTxt(doneContent)..toList());
+    final todo = todoContent.isEmpty ? <Task>[] : parseTodoTxt(todoContent);
+    final done = doneContent.isEmpty ? <Task>[] : parseTodoTxt(doneContent);
+    final all = [...todo, ...done];
+    _tasks = all.where((t) => !t.completed).toList();
+    _done = all.where((t) => t.completed).toList();
     _loading = false;
     notifyListeners();
   }
@@ -323,8 +341,13 @@ class AppProvider extends ChangeNotifier {
     final todo = await PodService.loadTasks(todoFileName);
     final done = await PodService.loadTasks(doneFileName);
 
-    _tasks = todo ?? [];
-    _done = done ?? [];
+    // Partition by completion status so that a completed task in todo.ttl,
+    // or an active task in done.ttl, ends up in the correct list. Bad data
+    // from earlier bugs (or hand-edited Pod files) is self-healed on load
+    // and re-saved correctly on the next save.
+    final all = [...?todo, ...?done];
+    _tasks = all.where((t) => !t.completed).toList();
+    _done = all.where((t) => t.completed).toList();
     _loading = false;
     notifyListeners();
   }

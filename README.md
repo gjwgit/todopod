@@ -1,4 +1,4 @@
-# Todo Pod
+# TodoPod
 
 > Task Management with Secure and Private Solid Pod Storage
 
@@ -258,26 +258,8 @@ status bar.
 
 If you log into a fresh Pod, TodoPod creates the directory and empty
 task files on first save. Nothing about your tasks ever leaves your
-Pod unless you explicitly export it as todo.txt or JSON.
-
----
-
-## Troubleshooting
-
-**The app shows "loading…" forever after login.**
-The status bar at the bottom of the window shows your security-key state.
-If the key is missing, tap it and provide your password — task loading
-restarts automatically once the key is saved.
-
-**Imported tasks aren't showing up.**
-Check the import message banner for the count of new vs skipped items.
-todo.txt imports skip lines that don't parse as valid tasks; JSON
-imports skip any task whose ID already exists in your list.
-
-**A reordered task jumps back.**
-Reorder takes effect on save to your Pod. If your network or key
-status is interrupted mid-save, the order may revert. Re-check the
-status bar.
+Pod unless you explicitly share it with another Pod or you export it
+as todo.txt or JSON.
 
 ---
 

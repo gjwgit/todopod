@@ -37,6 +37,7 @@ Code](https://claude.com/product/claude-code).
 
 ## 0.2 Basic Functionality
 
++ Bug fix when DONE from Kanban and Planner [0.1.36 20260521 gjw]
 + Change menu ordering - Done is lower [0.1.35 20260519 gjw]
 + Add a delete button to augment swipe to delete [0.1.34 20260519 gjw]
 + Updated emacs. Kanban moves on short tap [0.1.33 20260514 gjw]

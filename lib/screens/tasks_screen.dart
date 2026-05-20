@@ -314,16 +314,10 @@ class _TasksScreenState extends State<TasksScreen> {
       builder: (_) => TaskEdit(task: task),
     );
     if (updated != null) {
-      if (!task.completed && updated.completed) {
-        // Save edits first, then move to done — must save both lists since
-        // completeTask moves the entry from _tasks to _done.
-        provider.updateTask(updated.copyWith(completed: false));
-        provider.completeTask(task.id);
-        await provider.saveAllToPod();
-      } else {
-        provider.updateTask(updated);
-        await provider.saveTodoToPod();
-      }
+      // updateTask handles the move to _done automatically when
+      // updated.completed is true. saveAllToPod covers both files.
+      provider.updateTask(updated);
+      await provider.saveAllToPod();
     }
   }
 
@@ -339,14 +333,8 @@ class _TasksScreenState extends State<TasksScreen> {
       builder: (_) => TaskEdit(task: task, focusField: field),
     );
     if (updated != null) {
-      if (!task.completed && updated.completed) {
-        provider.updateTask(updated.copyWith(completed: false));
-        provider.completeTask(task.id);
-        await provider.saveAllToPod();
-      } else {
-        provider.updateTask(updated);
-        await provider.saveTodoToPod();
-      }
+      provider.updateTask(updated);
+      await provider.saveAllToPod();
     }
   }
 

@@ -223,7 +223,7 @@ through the standard Solid permission flow.
 
 ## Backup and import
 
-TodoPod uses the open [todo.txt](https://todotxt.org/) format, so your
+TodoPod uses the open [todo.txt](https://todotxt.github.io/) format, so your
 tasks are not locked into the app. You can:
 
 + **Import from todo.txt** — bring tasks in from any todo.txt-compatible

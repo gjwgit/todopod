@@ -1,6 +1,6 @@
 /// TodoPod — privacy-first todo list with Solid Pod storage main entry point.
 ///
-// Time-stamp: <Thursday 2026-04-30 12:14:09 +1000 Graham Williams>
+// Time-stamp: <2026-05-20>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -19,12 +19,11 @@
 // details.
 //
 // You should have received a copy of the GNU General Public License along with
-// this program.  If not, see <https://opensource.org/license/gpl-3-0>.
+// this program. If not, see <https://opensource.org/license/gpl-3-0>.
 ///
-/// This main.dart can be used as a template for any solidui base app (and in
-/// general for any Flutter app). It contains no app specific settings but
-/// includes some settings that you may want to tune, like the minimum window
-/// size for desktop apps, etc.
+/// This main.dart can be used as a template for any solidui-based app (and in
+/// general for any Flutter app). It contains no app-specific UI; the App
+/// widget in `app.dart` is the root of the widget tree.
 ///
 /// Authors: Graham Williams
 
@@ -36,16 +35,16 @@ import 'package:provider/provider.dart';
 import 'package:solidui/solidui.dart';
 import 'package:window_manager/window_manager.dart';
 
-import 'package:todopod/app_scaffold.dart';
+import 'package:todopod/app.dart';
 import 'package:todopod/constants/app.dart';
 import 'package:todopod/services/app_provider.dart';
 
-// 20260402 gjw Below is the main entry point for the application.  For main()
+// 20260520 gjw Below is the main entry point for the application. For main()
 // we require [async] because we asynchronously [await] the window manager as
-// below. Often, `main()` will include just the call [runApp].
+// below. Often, main() will include just the call to runApp().
 
 void main() async {
-  // 20260402 gjw Optionally for development we utilise [debugPrint] to trace
+  // 20260520 gjw Optionally for development we utilise [debugPrint] to trace
   // execution, and note that the output is not shown on a `--release`. To
   // quieten the `--debug` running we can globally remove [debugPrint] messages
   // by mapping it to null (no op).
@@ -54,16 +53,17 @@ void main() async {
   //   null;
   // };
 
-  // 20260402 gjw We want to ensure Flutter bindings are initialized for async
+  // 20260520 gjw We want to ensure Flutter bindings are initialised for async
   // operations particularly to set the Linux desktop window [title] as we do
   // below.
 
   WidgetsFlutterBinding.ensureInitialized();
   SolidSecurityKeyCentralManager.instance;
+
   if (isDesktop) {
     await windowManager.ensureInitialized();
 
-    // 20260402 gjw For our desktop app we tune various window oriented
+    // 20260520 gjw For our desktop app we tune various window oriented
     // settings.
 
     const windowOptions = WindowOptions(
@@ -74,8 +74,8 @@ void main() async {
       titleBarStyle: TitleBarStyle.normal,
     );
 
-    // 20260402 gjw Now we await the window being shown and receiving the focus,
-    // to then proceed to run the app.
+    // 20260520 gjw Now we await the window being shown and receiving the
+    // focus, to then proceed to run the app.
 
     await windowManager.waitUntilReadyToShow(windowOptions, () async {
       await windowManager.show();
@@ -83,59 +83,11 @@ void main() async {
     });
   }
 
+  // 20260520 gjw The runApp() function takes the given Widget and makes it
+  // the root of the widget tree. AppProvider is provided here so the entire
+  // tree (App -> AppScaffold -> screens -> Home) can read and watch it.
+
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => AppProvider(),
-      child: const TodoPodApp(),
-    ),
+    ChangeNotifierProvider(create: (_) => AppProvider(), child: const App()),
   );
-}
-
-class TodoPodApp extends StatefulWidget {
-  const TodoPodApp({super.key});
-
-  @override
-  State<TodoPodApp> createState() => _TodoPodAppState();
-}
-
-class _TodoPodAppState extends State<TodoPodApp> {
-  @override
-  void initState() {
-    super.initState();
-    _initTheme();
-    solidThemeNotifier.addListener(() => setState(() {}));
-  }
-
-  Future<void> _initTheme() async {
-    await solidThemeNotifier.initialize();
-    if (mounted) setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: appTitle,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF3A6B3A)),
-        useMaterial3: true,
-      ),
-      darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF3A6B3A),
-          brightness: Brightness.dark,
-        ),
-        useMaterial3: true,
-      ),
-      themeMode: solidThemeNotifier.themeMode,
-      home: SolidLogin(
-        required: false,
-        appDirectory: appDirectory,
-        title: appTitle.replaceAll(' - ', '\n'),
-        image: const AssetImage('assets/images/app_image.jpg'),
-        logo: const AssetImage('assets/images/app_icon.png'),
-        link: 'https://github.com/gjwgit/todopod',
-        child: const AppScaffold(),
-      ),
-    );
-  }
 }

@@ -30,6 +30,7 @@ class AppProvider extends ChangeNotifier {
   List<Task> _tasks = [];
   List<Task> _done = [];
   bool _loading = false;
+  bool _isKeySaved = false;
   String? _error;
   SortOrder _sortOrder = SortOrder.priority;
   String? _filterProject;
@@ -40,12 +41,21 @@ class AppProvider extends ChangeNotifier {
   // ── Getters ───────────────────────────────────────────────────────────────
 
   bool get loading => _loading;
+  bool get isKeySaved => _isKeySaved;
   String? get error => _error;
   SortOrder get sortOrder => _sortOrder;
   String? get filterProject => _filterProject;
   String? get filterContext => _filterContext;
   String? get filterPriority => _filterPriority;
   bool get showCompleted => _showCompleted;
+
+  /// Update the security-key saved state. Notifies listeners so the
+  /// status bar badge in [AppScaffold] re-renders.
+  void setKeySaved(bool saved) {
+    if (_isKeySaved == saved) return;
+    _isKeySaved = saved;
+    notifyListeners();
+  }
 
   List<Task> get tasks => _sorted(_filtered(_tasks));
   List<Task> get doneTasks => _done;

@@ -7,6 +7,7 @@ library;
 
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:todopod/models/sort_order.dart';
 import 'package:todopod/models/task.dart';
 import 'package:todopod/services/app_provider.dart';
 

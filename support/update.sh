@@ -31,7 +31,7 @@ FILES=(
     ${SCRIPTS}support/flutter.mk support/flutter.mk
     ${SCRIPTS}support/update.sh support/update.sh
     ${SCRIPTS}flutter/.gitignore .gitignore
-    ${SCRIPTS}/Makefile Makefile
+    ${SCRIPTS}Makefile Makefile
 )
 
 length=${#FILES[@]}

@@ -37,6 +37,7 @@ Code](https://claude.com/product/claude-code).
 
 ## 0.2 Basic Functionality
 
++ Add README to ABOUT [0.1.39 20260526 gjw]
 + Restructure main/app/app_scafffold/home [0.1.38 20260521 gjw]
 + Restructure to one file per function/class [0.1.37 20260521 gjw]
 + Bug fix when DONE from Kanban and Planner [0.1.36 20260521 gjw]

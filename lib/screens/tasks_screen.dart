@@ -1,6 +1,6 @@
 /// TasksScreen — the main task list with sort, filter and search.
 ///
-// Time-stamp: <Wednesday 2026-04-01 12:40:18 +1100 Graham Williams>
+// Time-stamp: <Wednesday 2026-05-27 11:42:53 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -226,7 +226,7 @@ class _TasksScreenState extends State<TasksScreen> {
             Expanded(
               child: ReorderableListView.builder(
                 buildDefaultDragHandles: false,
-                onReorder: (oldIndex, newIndex) {
+                onReorderItem: (oldIndex, newIndex) {
                   provider.reorderTask(oldIndex, newIndex, visibleTasks: tasks);
                   provider.saveTodoToPod();
                 },

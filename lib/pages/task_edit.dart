@@ -274,6 +274,14 @@ class _TaskEditState extends State<TaskEdit> {
             TextField(
               controller: _description,
               autofocus: _isNew && widget.focusField == null,
+              textInputAction: _isNew
+                  ? TextInputAction.done
+                  : TextInputAction.next,
+              onSubmitted: (_) {
+                if (!_isNew) return;
+                if (_description.text.trim().isEmpty) return;
+                Navigator.of(context).pop(_buildTask());
+              },
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 isDense: true,

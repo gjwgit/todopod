@@ -93,10 +93,10 @@ packages:
     dependency: transitive
     description:
       name: code_assets
-      sha256: dad6bf6b9f4f378b0a69edbf42584d336efd1a9ce15deb1ba591cbb1b5ff440f
+      sha256: "67cf6d84013f9c601e42a6f8a6b74c4c0d9dc1a1619d775f2b28b732d3551b85"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.2.0"
   collection:
     dependency: transitive
     description:
@@ -292,10 +292,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_secure_storage
-      sha256: d2a6ac2df7353f5ca47eb159a5407c1dba7ec48ca0e02dc38c9ff4d29447b261
+      sha256: "7686b1d6a29985dcbb808c59518226e603e3bfa7c0ddfd1a0d00e4cda77c868e"
       url: "https://pub.dev"
     source: hosted
-    version: "10.3.0"
+    version: "10.3.1"
   flutter_secure_storage_darwin:
     dependency: transitive
     description:
@@ -925,18 +925,18 @@ packages:
     dependency: "direct main"
     description:
       name: solidpod
-      sha256: e88d4aaff5e5966504161769363e9047d188e23286a0730756f5214e8af774d1
+      sha256: f0a8530b360064af0575c48d4443bc9006e4bd630ee3e9d155683bec59a9241d
       url: "https://pub.dev"
     source: hosted
-    version: "0.12.9"
+    version: "0.12.10"
   solidui:
     dependency: "direct main"
     description:
       name: solidui
-      sha256: "0568c6a6bc4f80a0d66a144c150ea57a39c07a7791ceb01e6854a7e626e8e23e"
+      sha256: c96ac1080fce3d0489c4b6207eb58c2b5b35caae69106affec4cdbaa695b6c46
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.55"
+    version: "0.3.56"
   source_span:
     dependency: transitive
     description:
@@ -1179,4 +1179,4 @@ packages:
     version: "3.1.3"
 sdks:
   dart: ">=3.11.5 <4.0.0"
-  flutter: ">=3.38.4"
+  flutter: ">=3.44.0"

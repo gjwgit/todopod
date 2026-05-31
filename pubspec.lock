@@ -1072,7 +1072,7 @@ packages:
     description:
       path: "."
       ref: "av/40_migrate_oidc_implementation_revert"
-      resolved-ref: e092ac48f911db569a3cb279bb5f008692b840e3
+      resolved-ref: "7baa953f51cfc69f553319f1529f61f38af2312b"
       url: "https://github.com/anusii/solidui.git"
     source: git
     version: "0.3.56"

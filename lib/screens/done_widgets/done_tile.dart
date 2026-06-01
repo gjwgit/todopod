@@ -12,14 +12,18 @@ library;
 
 import 'package:flutter/material.dart';
 
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:gap/gap.dart';
 import 'package:markdown_tooltip/markdown_tooltip.dart';
 
 import 'package:todopod/models/task.dart';
 import 'package:todopod/screens/done_widgets/small_chip.dart';
 
-// ── Done task detail viewer ──────────────────────────────────────────────────
+// ── Done task detail viewer (read-only) ──────────────────────────────────────
 
+/// Show a read-only dialog with the full details of a completed [task],
+/// including completed/created/due dates, priority, duration, projects,
+/// contexts, and notes (rendered as markdown). Nothing here is editable.
 void showDoneTaskDetail(BuildContext context, Task task) {
   final cs = Theme.of(context).colorScheme;
 
@@ -56,17 +60,13 @@ void showDoneTaskDetail(BuildContext context, Task task) {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (task.completionDate != null)
-                      _detailRow(
-                        cs,
-                        'Completed',
-                        fmtDate(task.completionDate!),
-                      ),
+                      _detailRow(cs, 'Done', fmtDate(task.completionDate!)),
                     if (task.creationDate != null)
                       _detailRow(cs, 'Created', fmtDate(task.creationDate!)),
-                    if (task.priority != null)
-                      _detailRow(cs, 'Priority', task.priority!),
                     if (task.dueDate != null)
                       _detailRow(cs, 'Due', fmtDate(task.dueDate!)),
+                    if (task.priority != null)
+                      _detailRow(cs, 'Priority', task.priorityLabel),
                     if (task.duration != null)
                       _detailRow(cs, 'Duration', task.duration!),
                     if (task.projects.isNotEmpty)
@@ -92,7 +92,7 @@ void showDoneTaskDetail(BuildContext context, Task task) {
                         ),
                       ),
                       const Gap(4),
-                      Text(task.notes!, style: const TextStyle(fontSize: 13)),
+                      MarkdownBody(data: task.notes!, shrinkWrap: true),
                     ],
                   ],
                 ),

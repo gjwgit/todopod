@@ -248,11 +248,27 @@ class _TaskEditState extends State<TaskEdit> {
           _isNew ? 'New Task' : 'Edit Task',
           style: Theme.of(context).textTheme.titleLarge,
         ),
+        // Read-only created date, shown for existing tasks. Not editable —
+        // creation date is set once when the task is first added.
+        if (!_isNew && widget.task?.creationDate != null) ...[
+          const Gap(12),
+          Text(
+            'Created ${_fmtCreated(widget.task!.creationDate!)}',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
         const Spacer(),
         IconButton(icon: const Icon(Icons.close), onPressed: _confirmDiscard),
       ],
     ),
   );
+
+  String _fmtCreated(DateTime d) =>
+      '${d.day.toString().padLeft(2, '0')}/'
+      '${d.month.toString().padLeft(2, '0')}/'
+      '${d.year}';
 
   Widget _buildForm(BuildContext context) {
     final cs = Theme.of(context).colorScheme;

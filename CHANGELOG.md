@@ -37,6 +37,7 @@ Code](https://claude.com/product/claude-code).
 
 ## 0.2 Basic Functionality
 
++ DONE will markup any notes [0.1.41 20260602 gjw]
 + ENTER in TITLE of NEW TASK will now ADD ATSK [0.1.40 20260528 gjw]
 + Add README to ABOUT [0.1.39 20260526 gjw]
 + Restructure main/app/app_scafffold/home [0.1.38 20260521 gjw]

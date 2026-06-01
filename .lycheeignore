@@ -4,10 +4,9 @@
 # Localhost OAuth callbacks used in integration tests
 
 http://localhost:44007/
-
 http://localhost:8000/
-
 http://localhost/
+http://localhost:4400/redirect
 
 # POD OAuth endpoints that require authentication parameters
 

@@ -44,7 +44,6 @@ class App extends StatelessWidget {
     return SolidThemeApp(
       // 20260429 gjw We can manually turn off the debug banner. It is turned
       // off automatically for a `flutter --release`.
-
       debugShowCheckedModeBanner: false,
 
       title: appTitle,

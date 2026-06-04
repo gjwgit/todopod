@@ -6,7 +6,7 @@
 ///
 /// Licensed under the GNU General Public License, Version 3 (the "License").
 ///
-/// License: https://opensource.org/license/gpl-3-0
+/// License: https://opensource.org/license/gpl-3-0.
 //
 // This program is free software: you can redistribute it and/or modify it under
 // the terms of the GNU General Public License as published by the Free Software
@@ -32,7 +32,9 @@ import 'package:solidui/solidui.dart';
 import 'package:todopod/app_scaffold.dart';
 import 'package:todopod/constants/app.dart';
 
-// 20260520 gjw This widget is the root of the application.
+// 20260429 gjw This widget is the root of the application. On startup it will
+// call upon [SolidLogin] to connect to the user's Pod stored within the user's
+// data vault on their chosen Solid server.
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -40,11 +42,11 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SolidThemeApp(
-      // 20260520 gjw We can manually turn off the debug banner. It is turned off
-      // automatically for a `--release`.
-      //
-      // debugShowCheckedModeBanner: false,
-      //
+      // 20260429 gjw We can manually turn off the debug banner. It is turned
+      // off automatically for a `flutter --release`.
+
+      debugShowCheckedModeBanner: false,
+
       title: appTitle,
 
       theme: ThemeData(
@@ -62,9 +64,9 @@ class App extends StatelessWidget {
         clientId:
             'https://solidcommunity.au/apps/todopod/client-profile.jsonld',
         redirectUris: [
-          'http://localhost:4400/redirect',
-          'com.togaware.todopod://redirect',
           'https://solidcommunity.au/apps/todopod/redirect.html',
+          'com.togaware.todopod://redirect',
+          'http://localhost:4400/redirect',
         ],
         child: appScaffold,
       ),

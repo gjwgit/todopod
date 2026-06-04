@@ -1,6 +1,4 @@
-# TodoPod
-
-> Task Management with Secure and Private Solid Pod Storage
+# TodoPod - A Task Manager for your Secure and Private Solid Pod
 
 [![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
@@ -22,8 +20,7 @@ Data Vault on a Solid server in the cloud, where everything is stored
 encrypted and stays within the Pod. No data leaves the Pod unless you
 explicitly export it, so you stay in control. The app is supported by
 [Togaware](https://togaware.com) and implemented by [Graham
-Williams](https://togaware.com/Graham.Williams.html) pair coding with
-[Claude Code](https://claude.com/product/claude-code) using
+Williams](https://togaware.com/Graham.Williams.html) using
 [Flutter](https://flutter.dev)'s
 [SolidUI](https://github.com/anusii/solidui) package for cross
 platform development.

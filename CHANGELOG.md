@@ -1,4 +1,4 @@
-# ToDo Pod Change Log
+# ToDoPod Change Log
 
 Noted here are the high level changes for the app.  Each update
 includes a short user-oriented description.  The next release is 0.2
@@ -31,9 +31,8 @@ We make this project available for free so if you appreciate the app
 then please show some ❤️ and tap on the star at
 [GitHub](https://github.com/gjwgit/todopod) to support our work.
 
-This app has been pair programmed by [Graham
-Williams](https://togaware.com/Graham.Williams.html) and [Claude
-Code](https://claude.com/product/claude-code).
+This app is authored by [Graham
+Williams](https://togaware.com/Graham.Williams.html).
 
 ## 0.2 Basic Functionality
 

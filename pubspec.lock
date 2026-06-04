@@ -308,10 +308,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_plugin_android_lifecycle
-      sha256: "38d1c268de9097ff59cf0e844ac38759fc78f76836d37edad06fa21e182055a0"
+      sha256: "3854fe5e3bff0b113c658f260b90c95dea17c92db0f2addeac2e343dd9969785"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.34"
+    version: "2.0.35"
   flutter_secure_storage:
     dependency: transitive
     description:
@@ -395,10 +395,10 @@ packages:
     dependency: transitive
     description:
       name: hooks
-      sha256: "62ae9bb76d02526c7c2110a19b6e6ad788fe28d35e553e35efb02a41a46ab43a"
+      sha256: "9a62a50b50b769a737bc0a8ff381f333529df3ab746b2f6b02e83760231455ba"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   http:
     dependency: transitive
     description:
@@ -992,10 +992,10 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences_android
-      sha256: e8d4762b1e2e8578fc4d0fd548cebf24afd24f49719c08974df92834565e2c53
+      sha256: a2c49fc1fed7140cadd892d765bd47edbe4ac0b9c7e7e3c493dcb58126f99cf0
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.23"
+    version: "2.4.25"
   shared_preferences_foundation:
     dependency: transitive
     description:
@@ -1052,30 +1052,27 @@ packages:
   solid_auth:
     dependency: transitive
     description:
-      path: "."
-      ref: "av/session-persistence"
-      resolved-ref: "89569c7364ed57406f854cd257a2e397e9ae4fd3"
-      url: "https://github.com/anusii/solid_auth.git"
-    source: git
-    version: "0.2.0"
+      name: solid_auth
+      sha256: "5d042cd189fe07ab03283db38d2316d7fc34a3025645631fbadf5f9e0919e5ae"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   solidpod:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "av/40_migrate_oidc_implementation_revert"
-      resolved-ref: "053fc22112b7c1c2001d26f6db453efdfbeb4b16"
-      url: "https://github.com/anusii/solidpod.git"
-    source: git
-    version: "0.12.10"
+      name: solidpod
+      sha256: df2dd79d62f9d5ed4fa37720a4985eb3812773f98a58e11f92c1f8182fbeb02d
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   solidui:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "av/40_migrate_oidc_implementation_revert"
-      resolved-ref: "7baa953f51cfc69f553319f1529f61f38af2312b"
-      url: "https://github.com/anusii/solidui.git"
-    source: git
-    version: "0.3.56"
+      name: solidui
+      sha256: "344df43be3ac5b420cf4d895e9f2cad6fddf3c8755a172d9d613c3cde64d75e3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   source_span:
     dependency: transitive
     description:
@@ -1168,10 +1165,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_android
-      sha256: "17bc677f0b301615530dd1d67e0a9828cafa2d0b6b6eae4cd3679b7eac4a273c"
+      sha256: b413d49b73867ac08dd2f9890efd3cc11f2a0e577618d50843440a1fb3776c32
       url: "https://pub.dev"
     source: hosted
-    version: "6.3.30"
+    version: "6.3.32"
   url_launcher_ios:
     dependency: transitive
     description:
@@ -1325,5 +1322,5 @@ packages:
     source: hosted
     version: "3.1.3"
 sdks:
-  dart: ">=3.11.5 <4.0.0"
+  dart: ">=3.12.0 <4.0.0"
   flutter: ">=3.44.0"

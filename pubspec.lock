@@ -1061,18 +1061,18 @@ packages:
     dependency: "direct main"
     description:
       name: solidpod
-      sha256: df2dd79d62f9d5ed4fa37720a4985eb3812773f98a58e11f92c1f8182fbeb02d
+      sha256: "093210882a1f3d6f943717a21db845945961252deabcc7ede45784d1edf7e513"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.2"
   solidui:
     dependency: "direct main"
     description:
       name: solidui
-      sha256: "344df43be3ac5b420cf4d895e9f2cad6fddf3c8755a172d9d613c3cde64d75e3"
+      sha256: b4ebccf5ce9ef4e896abbb1895fe8c222ea0fd61a46166f7ff72d2bfd6a089a1
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.3"
   source_span:
     dependency: transitive
     description:
@@ -1285,10 +1285,10 @@ packages:
     dependency: transitive
     description:
       name: window_to_front
-      sha256: "7aef379752b7190c10479e12b5fd7c0b9d92adc96817d9e96c59937929512aee"
+      sha256: "14fad8984db4415e2eeb30b04bb77140b180e260d6cb66b26de126a8657a9241"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.3"
+    version: "0.0.4"
   x509_plus:
     dependency: transitive
     description:

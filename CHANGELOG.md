@@ -7,17 +7,19 @@ following incremental updates through the 0.1.n series.
 You can run the app in your
 [**browser**](https://todopod.solidcommunity.au) or else download and
 install locally the latest version from the [Solid Community
-AU](https://solidcommunity.au) or directly: for **Android** as
+AU](https://solidcommunity.au) or directly:
+
++ **Android** as
 [aab](https://solidcommunity.au/installers/todopod.aab) or
-[apk](https://solidcommunity.au/installers/todopod.apk); for
-**GNU/Linux** as
+[apk](https://solidcommunity.au/installers/todopod.apk);
++ **GNU/Linux** as
 [deb](https://solidcommunity.au/installers/todopod_amd64.deb) or
 [snap](https://solidcommunity.au/installers/todopod_amd64.snap) or
-[zip](https://solidcommunity.au/installers/todopod-linux.zip); for
-**macOS** as
+[zip](https://solidcommunity.au/installers/todopod-linux.zip);
++ **macOS** as
 [dmg](https://solidcommunity.au/installers/todopod-macos.dmg) or
-[zip](https://solidcommunity.au/installers/todopod-macos.zip); for
-**Windows** as
+[zip](https://solidcommunity.au/installers/todopod-macos.zip);
++ **Windows** as
 [inno](https://solidcommunity.au/installers/todopod-windows-inno.exe)
 or [zip](https://solidcommunity.au/installers/todopod-windows.zip).
 

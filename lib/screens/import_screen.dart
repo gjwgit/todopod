@@ -22,6 +22,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
+import 'package:solidui/solidui.dart' show ensurePodWritable;
 
 import 'package:todopod/models/task.dart';
 import 'package:todopod/models/task_parser.dart';
@@ -29,6 +30,7 @@ import 'package:todopod/screens/import_widgets/export_filter_sheet.dart';
 import 'package:todopod/screens/import_widgets/import_action_card.dart';
 import 'package:todopod/screens/import_widgets/import_message_banner.dart';
 import 'package:todopod/services/app_provider.dart';
+import 'package:todopod/services/pod_write_guard.dart';
 
 class ImportScreen extends StatefulWidget {
   const ImportScreen({super.key});
@@ -253,8 +255,16 @@ class _ImportScreenState extends State<ImportScreen> {
         _setImportMsg('No tasks found in "${file.name}".', error: true);
         return;
       }
+      if (!context.mounted) return;
+      if (!await ensurePodWritable(
+        context,
+        actionDescription: 'importing tasks',
+      )) {
+        return;
+      }
       provider.importTasks(tasks);
-      await provider.saveAllToPod();
+      if (!context.mounted) return;
+      await saveAllAndReport(context, provider);
       _setImportMsg(
         'Imported ${tasks.length} task${tasks.length == 1 ? '' : 's'} '
         'from "${file.name}".',

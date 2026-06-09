@@ -31,7 +31,7 @@ class AppProvider extends ChangeNotifier {
   List<Task> _done = [];
   bool _loading = false;
   bool _isKeySaved = false;
-  String? _error;
+  Object? _error;
   SortOrder _sortOrder = SortOrder.priority;
   String? _filterProject;
   String? _filterContext;
@@ -42,7 +42,7 @@ class AppProvider extends ChangeNotifier {
 
   bool get loading => _loading;
   bool get isKeySaved => _isKeySaved;
-  String? get error => _error;
+  Object? get error => _error;
   SortOrder get sortOrder => _sortOrder;
   String? get filterProject => _filterProject;
   String? get filterContext => _filterContext;
@@ -363,7 +363,10 @@ class AppProvider extends ChangeNotifier {
   /// Set via [loadFromContent] to keep test output clean.
   bool _testMode = false;
 
-  Future<String?> saveTodoToPod() async {
+  /// Persist the active task list to the Pod.
+  ///
+  /// Returns the caught exception on failure or `null` on success.
+  Future<Object?> saveTodoToPod() async {
     if (_testMode) return null;
     final err = await PodService.saveTasks(todoFileName, _tasks);
     if (err != null) {
@@ -373,7 +376,8 @@ class AppProvider extends ChangeNotifier {
     return err;
   }
 
-  Future<String?> saveDoneToPod() async {
+  /// Persist the done task list to the Pod. See [saveTodoToPod].
+  Future<Object?> saveDoneToPod() async {
     if (_testMode) return null;
     final err = await PodService.saveTasks(doneFileName, _done);
     if (err != null) {
@@ -383,8 +387,10 @@ class AppProvider extends ChangeNotifier {
     return err;
   }
 
-  Future<void> saveAllToPod() async {
-    await saveTodoToPod();
-    await saveDoneToPod();
+  /// Persist both task lists. Returns the first exception encountered.
+  Future<Object?> saveAllToPod() async {
+    final todoErr = await saveTodoToPod();
+    final doneErr = await saveDoneToPod();
+    return todoErr ?? doneErr;
   }
 }

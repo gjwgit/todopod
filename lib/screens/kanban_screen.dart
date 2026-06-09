@@ -11,11 +11,13 @@ library;
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:solidui/solidui.dart' show ensurePodWritable;
 
 import 'package:todopod/models/task.dart';
 import 'package:todopod/screens/kanban_widgets/kanban_col.dart';
 import 'package:todopod/screens/kanban_widgets/kanban_column.dart';
 import 'package:todopod/services/app_provider.dart';
+import 'package:todopod/services/pod_write_guard.dart';
 import 'package:todopod/services/task_actions.dart';
 
 // ── Column definitions ────────────────────────────────────────────────────────
@@ -67,8 +69,11 @@ class KanbanScreen extends StatelessWidget {
                     provider: provider,
                     task: task,
                   ),
-                  onCompleteTask: (task) =>
-                      completeTaskAction(provider: provider, task: task),
+                  onCompleteTask: (task) => completeTaskAction(
+                    context: context,
+                    provider: provider,
+                    task: task,
+                  ),
                   onDeleteTask: (task) => _deleteTask(context, provider, task),
                 );
               }).toList(),
@@ -79,15 +84,22 @@ class KanbanScreen extends StatelessWidget {
     );
   }
 
-  void _moveTo(
+  Future<void> _moveTo(
     BuildContext context,
     AppProvider provider,
     Task task,
     KanbanCol col,
-  ) {
+  ) async {
     if (task.priority == col.priority) return;
+    if (!await ensurePodWritable(
+      context,
+      actionDescription: 'moving this task',
+    )) {
+      return;
+    }
     provider.updateTask(task.copyWith(priority: col.priority));
-    provider.saveAllToPod();
+    if (!context.mounted) return;
+    await saveAllAndReport(context, provider);
   }
 
   Future<void> _deleteTask(
@@ -112,10 +124,17 @@ class KanbanScreen extends StatelessWidget {
         ],
       ),
     );
-    if (confirmed == true) {
-      provider.deleteTask(task.id);
-      provider.saveAllToPod();
+    if (confirmed != true) return;
+    if (!context.mounted) return;
+    if (!await ensurePodWritable(
+      context,
+      actionDescription: 'deleting this task',
+    )) {
+      return;
     }
+    provider.deleteTask(task.id);
+    if (!context.mounted) return;
+    await saveAllAndReport(context, provider);
   }
 }
 

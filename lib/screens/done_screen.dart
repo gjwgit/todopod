@@ -16,10 +16,12 @@ import 'package:emacs_text_field/emacs_text_field.dart'
     show attachPrimarySelection;
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
+import 'package:solidui/solidui.dart' show ensurePodWritable;
 
 import 'package:todopod/models/task.dart';
 import 'package:todopod/screens/done_widgets/done_tile.dart';
 import 'package:todopod/services/app_provider.dart';
+import 'package:todopod/services/pod_write_guard.dart';
 
 class DoneScreen extends StatefulWidget {
   const DoneScreen({super.key});
@@ -162,22 +164,40 @@ class _DoneScreenState extends State<DoneScreen> {
     );
   }
 
-  void _uncomplete(Task task, AppProvider provider) {
+  Future<void> _uncomplete(Task task, AppProvider provider) async {
+    final messenger = ScaffoldMessenger.of(context);
+    if (!await ensurePodWritable(
+      context,
+      actionDescription: 'restoring this task',
+    )) {
+      return;
+    }
     provider.uncompleteTask(task.id);
-    provider.saveAllToPod();
-    ScaffoldMessenger.of(context).showSnackBar(
+    if (!mounted) return;
+    await saveAllAndReport(context, provider);
+    if (!mounted) return;
+    messenger.showSnackBar(
       SnackBar(
         content: Text('"${task.description}" moved back to active.'),
         duration: const Duration(seconds: 5),
         action: SnackBarAction(
           label: 'Undo',
-          onPressed: () {
-            provider.completeTask(task.id);
-            provider.saveAllToPod();
-          },
+          onPressed: () => _undoUncomplete(task, provider),
         ),
       ),
     );
+  }
+
+  Future<void> _undoUncomplete(Task task, AppProvider provider) async {
+    if (!await ensurePodWritable(
+      context,
+      actionDescription: 'undoing the restore',
+    )) {
+      return;
+    }
+    provider.completeTask(task.id);
+    if (!mounted) return;
+    await saveAllAndReport(context, provider);
   }
 
   void _delete(Task task, AppProvider provider) {
@@ -202,11 +222,17 @@ class _DoneScreenState extends State<DoneScreen> {
           ),
         ],
       ),
-    ).then((confirmed) {
-      if (confirmed == true) {
-        provider.deleteDoneTask(task.id);
-        provider.saveDoneToPod();
+    ).then((confirmed) async {
+      if (confirmed != true || !mounted) return;
+      if (!await ensurePodWritable(
+        context,
+        actionDescription: 'deleting this task',
+      )) {
+        return;
       }
+      provider.deleteDoneTask(task.id);
+      if (!mounted) return;
+      await saveDoneAndReport(context, provider);
     });
   }
 
@@ -233,11 +259,17 @@ class _DoneScreenState extends State<DoneScreen> {
           ),
         ],
       ),
-    ).then((confirmed) {
-      if (confirmed == true) {
-        provider.clearDone();
-        provider.saveDoneToPod();
+    ).then((confirmed) async {
+      if (confirmed != true || !context.mounted) return;
+      if (!await ensurePodWritable(
+        context,
+        actionDescription: 'clearing completed tasks',
+      )) {
+        return;
       }
+      provider.clearDone();
+      if (!context.mounted) return;
+      await saveDoneAndReport(context, provider);
     });
   }
 }

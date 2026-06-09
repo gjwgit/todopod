@@ -51,9 +51,9 @@ class PodService {
 
   /// Save [tasks] to [fileName] on the pod.
   ///
-  /// Returns an error message on failure, or null on success.
+  /// Returns `null` on success, or the caught exception on failure.
 
-  static Future<String?> saveTasks(String fileName, List<Task> tasks) async {
+  static Future<Object?> saveTasks(String fileName, List<Task> tasks) async {
     try {
       final json = jsonEncode(tasks.map((t) => t.toJson()).toList());
       final ttl = _buildTtl(fileName, json);
@@ -61,7 +61,7 @@ class PodService {
       return null;
     } catch (e) {
       debugPrint('[PodService] saveTasks error: $e');
-      return e.toString();
+      return e;
     }
   }
 

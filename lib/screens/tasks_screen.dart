@@ -17,6 +17,7 @@ import 'package:emacs_text_field/emacs_text_field.dart'
 import 'package:gap/gap.dart';
 import 'package:markdown_tooltip/markdown_tooltip.dart';
 import 'package:provider/provider.dart';
+import 'package:solidui/solidui.dart' show ensurePodWritable;
 
 import 'package:todopod/models/sort_order.dart';
 import 'package:todopod/models/task.dart';
@@ -26,6 +27,7 @@ import 'package:todopod/screens/tasks_widgets/task_filter_button.dart';
 import 'package:todopod/screens/tasks_widgets/task_filter_chips.dart';
 import 'package:todopod/screens/tasks_widgets/task_sort_button.dart';
 import 'package:todopod/services/app_provider.dart';
+import 'package:todopod/services/pod_write_guard.dart';
 import 'package:todopod/services/task_actions.dart';
 import 'package:todopod/widgets/task_list_item.dart';
 
@@ -226,10 +228,8 @@ class _TasksScreenState extends State<TasksScreen> {
             Expanded(
               child: ReorderableListView.builder(
                 buildDefaultDragHandles: false,
-                onReorderItem: (oldIndex, newIndex) {
-                  provider.reorderTask(oldIndex, newIndex, visibleTasks: tasks);
-                  provider.saveTodoToPod();
-                },
+                onReorderItem: (oldIndex, newIndex) =>
+                    _reorder(context, provider, tasks, oldIndex, newIndex),
                 itemCount: tasks.length,
                 itemBuilder: (context, i) {
                   final task = tasks[i];
@@ -248,9 +248,12 @@ class _TasksScreenState extends State<TasksScreen> {
                       provider: provider,
                       task: task,
                     ),
-                    onComplete: (_) =>
-                        completeTaskAction(provider: provider, task: task),
-                    onDelete: () => _deleteTask(task, provider),
+                    onComplete: (_) => completeTaskAction(
+                      context: context,
+                      provider: provider,
+                      task: task,
+                    ),
+                    onDelete: () => _deleteTask(context, task, provider),
                     onEditField: (field) => editTaskAction(
                       context: context,
                       provider: provider,
@@ -286,10 +289,17 @@ class _TasksScreenState extends State<TasksScreen> {
             : null,
       ),
     );
-    if (task != null) {
-      provider.addTask(task);
-      await provider.saveTodoToPod();
+    if (task == null) return;
+    if (!context.mounted) return;
+    if (!await ensurePodWritable(
+      context,
+      actionDescription: 'adding this task',
+    )) {
+      return;
     }
+    provider.addTask(task);
+    if (!context.mounted) return;
+    await saveTodoAndReport(context, provider);
     if (!context.mounted) return;
     messenger.showSnackBar(const SnackBar(content: Text('Task added')));
   }
@@ -306,19 +316,55 @@ class _TasksScreenState extends State<TasksScreen> {
       barrierDismissible: false,
       builder: (_) => TaskEdit(initialTitle: title),
     );
-    if (task != null) {
-      provider.addTask(task);
-      await provider.saveTodoToPod();
-      // Clear search only after a task was actually saved.
-      _search.clear();
-      setState(() => _query = '');
-      if (!context.mounted) return;
-      messenger.showSnackBar(const SnackBar(content: Text('Task added')));
+    if (task == null) return;
+    if (!context.mounted) return;
+    if (!await ensurePodWritable(
+      context,
+      actionDescription: 'adding this task',
+    )) {
+      return;
     }
+    provider.addTask(task);
+    if (!context.mounted) return;
+    await saveTodoAndReport(context, provider);
+    // Clear search only after a task was actually saved.
+    _search.clear();
+    setState(() => _query = '');
+    if (!context.mounted) return;
+    messenger.showSnackBar(const SnackBar(content: Text('Task added')));
   }
 
-  void _deleteTask(Task task, AppProvider provider) {
+  Future<void> _deleteTask(
+    BuildContext context,
+    Task task,
+    AppProvider provider,
+  ) async {
+    if (!await ensurePodWritable(
+      context,
+      actionDescription: 'deleting this task',
+    )) {
+      return;
+    }
     provider.deleteTask(task.id);
-    provider.saveTodoToPod();
+    if (!context.mounted) return;
+    await saveTodoAndReport(context, provider);
+  }
+
+  Future<void> _reorder(
+    BuildContext context,
+    AppProvider provider,
+    List<Task> visibleTasks,
+    int oldIndex,
+    int newIndex,
+  ) async {
+    if (!await ensurePodWritable(
+      context,
+      actionDescription: 'reordering tasks',
+    )) {
+      return;
+    }
+    provider.reorderTask(oldIndex, newIndex, visibleTasks: visibleTasks);
+    if (!context.mounted) return;
+    await saveTodoAndReport(context, provider);
   }
 }

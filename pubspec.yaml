@@ -25,8 +25,8 @@ dependencies:
   pdf: ^3.11.1
   printing: ^5.13.1
   provider: ^6.1.5
-  solidpod: ^1.0.2
-  solidui: ^1.0.4
+  solidpod: ^1.0.4
+  solidui: ^1.0.5
   table_calendar: ^3.1.3
   uuid: ^4.5.3
   window_manager: ^0.5.1
@@ -38,6 +38,12 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
+
+dependency_overrides:
+  solidui:
+    git:
+      url: https://github.com/anusii/solidui.git
+      ref: tony/347_not_logged_in
 
 flutter:
   assets:

@@ -312,3 +312,6 @@ app.*.symbols
 CLAUDE.md
 Claude.md
 .claude/*
+/pubspec.lock
+/ios/Podfile
+/macos/Podfile

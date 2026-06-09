@@ -17,26 +17,20 @@ import 'package:todopod/services/app_provider.dart';
 /// Persist the active task list, reporting any exception via a friendly
 /// dialogue.
 
-Future<void> saveTodoAndReport(
-  BuildContext context,
-  AppProvider provider,
-) => _saveAndReport(context, provider.saveTodoToPod);
+Future<void> saveTodoAndReport(BuildContext context, AppProvider provider) =>
+    _saveAndReport(context, provider.saveTodoToPod);
 
 /// Persist the done task list, reporting any exception via a friendly
 /// dialogue.
 
-Future<void> saveDoneAndReport(
-  BuildContext context,
-  AppProvider provider,
-) => _saveAndReport(context, provider.saveDoneToPod);
+Future<void> saveDoneAndReport(BuildContext context, AppProvider provider) =>
+    _saveAndReport(context, provider.saveDoneToPod);
 
 /// Persist both task lists, reporting any exception via a friendly
 /// dialogue.
 
-Future<void> saveAllAndReport(
-  BuildContext context,
-  AppProvider provider,
-) => _saveAndReport(context, provider.saveAllToPod);
+Future<void> saveAllAndReport(BuildContext context, AppProvider provider) =>
+    _saveAndReport(context, provider.saveAllToPod);
 
 Future<void> _saveAndReport(
   BuildContext context,

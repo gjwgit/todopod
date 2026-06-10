@@ -145,6 +145,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.0"
+  cryptography_plus:
+    dependency: transitive
+    description:
+      name: cryptography_plus
+      sha256: edf96fc96518368b11bb1ba33b515f59aa5a55b0aa7533c0e1813399cf81130e
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   dart_jsonwebtoken:
     dependency: transitive
     description:
@@ -928,42 +936,42 @@ packages:
     dependency: transitive
     description:
       name: screen_retriever
-      sha256: "570dbc8e4f70bac451e0efc9c9bb19fa2d6799a11e6ef04f946d7886d2e23d0c"
+      sha256: "42cc3b402a0f67d2455a0d067553d0f13453f6a008d98eababf8b63958d506bd"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.0"
+    version: "0.2.1"
   screen_retriever_linux:
     dependency: transitive
     description:
       name: screen_retriever_linux
-      sha256: f7f8120c92ef0784e58491ab664d01efda79a922b025ff286e29aa123ea3dd18
+      sha256: "2a476f1a5538065bc5badf376cfdc83d6ecf07d77eb2391b9c2bff5a76970048"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.0"
+    version: "0.2.1"
   screen_retriever_macos:
     dependency: transitive
     description:
       name: screen_retriever_macos
-      sha256: "71f956e65c97315dd661d71f828708bd97b6d358e776f1a30d5aa7d22d78a149"
+      sha256: b5abb900fcb86614ff10b738b34e37b9e1d03b0447280668e2bc8a98bdc7bd59
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.0"
+    version: "0.2.1"
   screen_retriever_platform_interface:
     dependency: transitive
     description:
       name: screen_retriever_platform_interface
-      sha256: ee197f4581ff0d5608587819af40490748e1e39e648d7680ecf95c05197240c0
+      sha256: "3af22d926bedf20c2caa308eea376776451a3af125919ce072e56525fded8901"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.0"
+    version: "0.2.1"
   screen_retriever_windows:
     dependency: transitive
     description:
       name: screen_retriever_windows
-      sha256: "449ee257f03ca98a57288ee526a301a430a344a161f9202b4fcc38576716fe13"
+      sha256: c44b38a4c4bab34af259180a70a4eee1e29384e7b82e627c9faa68afcdab2e73
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.0"
+    version: "0.2.1"
   share_plus:
     dependency: transitive
     description:
@@ -1053,26 +1061,26 @@ packages:
     dependency: transitive
     description:
       name: solid_auth
-      sha256: "5d042cd189fe07ab03283db38d2316d7fc34a3025645631fbadf5f9e0919e5ae"
+      sha256: "6274029fc5385b68052e13e3af71040e76f21850e99ef56820cbdc07d2de2d7f"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "1.0.1"
   solidpod:
     dependency: "direct main"
     description:
       name: solidpod
-      sha256: "093210882a1f3d6f943717a21db845945961252deabcc7ede45784d1edf7e513"
+      sha256: "325f7bbbd560ac5d6a5562cf0faa7546c8f6ec21ed4be29a1818671dbfe82697"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.5"
   solidui:
     dependency: "direct main"
     description:
       name: solidui
-      sha256: "856d8cac8f75fe9a685935bd7d2693c349f5315a7452d897e7945657a48b9c0b"
+      sha256: "6aadebc990848da35fd2e8f8c4e0d21914197bb874b44448c8be61a8820df4b3"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.4"
+    version: "1.0.6"
   source_span:
     dependency: transitive
     description:

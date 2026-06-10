@@ -1,6 +1,6 @@
 /// TodoPod — the primary [MaterialApp] widget.
 ///
-// Time-stamp: <Sunday 2026-05-31 06:25:43 +1000 Graham Williams>
+// Time-stamp: <Wednesday 2026-06-10 08:26:59 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -44,7 +44,8 @@ class App extends StatelessWidget {
     return SolidThemeApp(
       // 20260429 gjw We can manually turn off the debug banner. It is turned
       // off automatically for a `flutter --release`.
-      debugShowCheckedModeBanner: false,
+      //
+      debugShowCheckedModeBanner: true,
 
       title: appTitle,
 

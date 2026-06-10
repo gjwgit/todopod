@@ -1,6 +1,6 @@
-/// TodoPod — privacy-first todo list with Solid Pod storage main entry point.
+/// TodoPod — main entry for the app.
 ///
-// Time-stamp: <2026-05-20>
+// Time-stamp: <Friday 2026-05-20 13:57:04 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///

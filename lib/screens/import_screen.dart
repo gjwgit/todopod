@@ -43,6 +43,8 @@ class _ImportScreenState extends State<ImportScreen> {
   bool _importError = false;
   String? _exportMessage;
   bool _exportError = false;
+  String? _backupMessage;
+  bool _backupError = false;
 
   void _setImportMsg(String msg, {bool error = false}) => setState(() {
     _importMessage = msg;
@@ -52,6 +54,11 @@ class _ImportScreenState extends State<ImportScreen> {
   void _setExportMsg(String msg, {bool error = false}) => setState(() {
     _exportMessage = msg;
     _exportError = error;
+  });
+
+  void _setBackupMsg(String msg, {bool error = false}) => setState(() {
+    _backupMessage = msg;
+    _backupError = error;
   });
 
   /// Zero-padded timestamp string for filenames: YYYYMMDD_HHMM.
@@ -69,50 +76,39 @@ class _ImportScreenState extends State<ImportScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Import ──────────────────────────────────────────────────
-          Text('Import', style: Theme.of(context).textTheme.titleLarge),
+          // ── Backup & Restore ────────────────────────────────────────
+          Text(
+            'Backup & Restore',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           const Gap(8),
           Text(
-            'Import tasks from a todo.txt or JSON file. Imported tasks '
-            'are merged with your existing task list.',
+            'Save a complete JSON backup of all your tasks, or restore '
+            'everything from a previously saved backup file.',
             style: TextStyle(color: cs.onSurfaceVariant),
           ),
-          if (_importMessage != null) ...[
+          if (_backupMessage != null) ...[
             const Gap(12),
             ImportMessageBanner(
-              message: _importMessage!,
-              isError: _importError,
+              message: _backupMessage!,
+              isError: _backupError,
               cs: cs,
             ),
           ],
           const Gap(16),
           ImportActionCard(
-            icon: Icons.upload_file_outlined,
-            title: 'Import Todo.txt',
-            subtitle: 'Select a Todo.txt file to import active tasks.',
+            icon: Icons.save_alt,
+            title: 'Back up all tasks (JSON)',
+            subtitle:
+                'Save all ${provider.tasks.length + provider.doneTasks.length} '
+                'tasks to a todopod JSON backup file.',
             loading: _loading,
-            onTap: () => _import(
-              context,
-              dialogTitle: 'Select Todo.txt file',
-              parse: (b) => parseTodoTxt(utf8.decode(b)),
-            ),
+            onTap: () => _exportJson(context),
           ),
           const Gap(12),
           ImportActionCard(
-            icon: Icons.upload_file_outlined,
-            title: 'Import Done.txt',
-            subtitle: 'Select a Done.txt file to import completed tasks.',
-            loading: _loading,
-            onTap: () => _import(
-              context,
-              dialogTitle: 'Select Done.txt file',
-              parse: (b) => parseTodoTxt(utf8.decode(b)),
-            ),
-          ),
-          const Gap(12),
-          ImportActionCard(
-            icon: Icons.upload_file_outlined,
-            title: 'Import JSON Backup',
+            icon: Icons.restore,
+            title: 'Restore from backup (JSON)',
             subtitle: 'Restore tasks from a todopod JSON backup file.',
             loading: _loading,
             onTap: () => _import(
@@ -120,6 +116,7 @@ class _ImportScreenState extends State<ImportScreen> {
               dialogTitle: 'Select JSON backup file',
               fileType: FileType.custom,
               extensions: ['json'],
+              backup: true,
               parse: (b) {
                 final bundle =
                     jsonDecode(utf8.decode(b)) as Map<String, dynamic>;
@@ -137,9 +134,11 @@ class _ImportScreenState extends State<ImportScreen> {
 
           // ── Export ──────────────────────────────────────────────────
           const Gap(32),
+          Text('Export', style: Theme.of(context).textTheme.titleLarge),
+          const Gap(8),
           Text(
-            'Export / Backup',
-            style: Theme.of(context).textTheme.titleLarge,
+            'Save a timestamped copy of your tasks as Todo.txt or PDF.',
+            style: TextStyle(color: cs.onSurfaceVariant),
           ),
           if (_exportMessage != null) ...[
             const Gap(12),
@@ -149,11 +148,6 @@ class _ImportScreenState extends State<ImportScreen> {
               cs: cs,
             ),
           ],
-          const Gap(8),
-          Text(
-            'Save a timestamped copy of your tasks.',
-            style: TextStyle(color: cs.onSurfaceVariant),
-          ),
           const Gap(16),
           ImportActionCard(
             icon: Icons.download_outlined,
@@ -204,15 +198,47 @@ class _ImportScreenState extends State<ImportScreen> {
               prefix: 'Done',
             ),
           ),
+
+          // ── Import ──────────────────────────────────────────────────
+          const Gap(32),
+          Text('Import', style: Theme.of(context).textTheme.titleLarge),
+          const Gap(8),
+          Text(
+            'Import tasks from a Todo.txt file. Imported tasks are merged '
+            'with your existing task list.',
+            style: TextStyle(color: cs.onSurfaceVariant),
+          ),
+          if (_importMessage != null) ...[
+            const Gap(12),
+            ImportMessageBanner(
+              message: _importMessage!,
+              isError: _importError,
+              cs: cs,
+            ),
+          ],
+          const Gap(16),
+          ImportActionCard(
+            icon: Icons.upload_file_outlined,
+            title: 'Import Todo.txt',
+            subtitle: 'Select a Todo.txt file to import active tasks.',
+            loading: _loading,
+            onTap: () => _import(
+              context,
+              dialogTitle: 'Select Todo.txt file',
+              parse: (b) => parseTodoTxt(utf8.decode(b)),
+            ),
+          ),
           const Gap(12),
           ImportActionCard(
-            icon: Icons.download_outlined,
-            title: 'Export JSON Backup',
-            subtitle:
-                'Save all ${provider.tasks.length + provider.doneTasks.length} '
-                'tasks to a todopod JSON backup file.',
+            icon: Icons.upload_file_outlined,
+            title: 'Import Done.txt',
+            subtitle: 'Select a Done.txt file to import completed tasks.',
             loading: _loading,
-            onTap: () => _exportJson(context),
+            onTap: () => _import(
+              context,
+              dialogTitle: 'Select Done.txt file',
+              parse: (b) => parseTodoTxt(utf8.decode(b)),
+            ),
           ),
         ],
       ),
@@ -222,17 +248,27 @@ class _ImportScreenState extends State<ImportScreen> {
   // ── Import ────────────────────────────────────────────────────────────────
 
   /// Generic import: picks a file, decodes bytes via [parse], merges into pod.
+  /// When [backup] is true, status messages appear in the Backup & Restore
+  /// section rather than the Import section.
   Future<void> _import(
     BuildContext context, {
     required String dialogTitle,
     FileType fileType = FileType.any,
     List<String>? extensions,
+    bool backup = false,
     required List<Task> Function(List<int> bytes) parse,
   }) async {
     final provider = context.read<AppProvider>();
+    void setMsg(String msg, {bool error = false}) => backup
+        ? _setBackupMsg(msg, error: error)
+        : _setImportMsg(msg, error: error);
     setState(() {
       _loading = true;
-      _importMessage = null;
+      if (backup) {
+        _backupMessage = null;
+      } else {
+        _importMessage = null;
+      }
     });
     try {
       final result = await FilePicker.pickFiles(
@@ -245,23 +281,23 @@ class _ImportScreenState extends State<ImportScreen> {
       final file = result.files.first;
       final bytes = file.bytes;
       if (bytes == null) {
-        _setImportMsg('Could not read file.', error: true);
+        setMsg('Could not read file.', error: true);
         return;
       }
       final tasks = parse(bytes);
       if (tasks.isEmpty) {
-        _setImportMsg('No tasks found in "${file.name}".', error: true);
+        setMsg('No tasks found in "${file.name}".', error: true);
         return;
       }
       provider.importTasks(tasks);
       await provider.saveAllToPod();
-      _setImportMsg(
-        'Imported ${tasks.length} task${tasks.length == 1 ? '' : 's'} '
-        'from "${file.name}".',
+      setMsg(
+        '${backup ? 'Restored' : 'Imported'} ${tasks.length} '
+        'task${tasks.length == 1 ? '' : 's'} from "${file.name}".',
       );
     } catch (e, st) {
       debugPrint('[Import] error: $e\n$st');
-      _setImportMsg('Import failed: $e', error: true);
+      setMsg('${backup ? 'Restore' : 'Import'} failed: $e', error: true);
     } finally {
       setState(() => _loading = false);
     }
@@ -302,11 +338,11 @@ class _ImportScreenState extends State<ImportScreen> {
     final provider = context.read<AppProvider>();
     setState(() {
       _loading = true;
-      _exportMessage = null;
+      _backupMessage = null;
     });
     try {
       if (kIsWeb) {
-        _setExportMsg('Export to file is not supported on web.', error: true);
+        _setBackupMsg('Backup to file is not supported on web.', error: true);
         return;
       }
       final now = DateTime.now();
@@ -325,10 +361,10 @@ class _ImportScreenState extends State<ImportScreen> {
       await File(
         savePath,
       ).writeAsString(const JsonEncoder.withIndent('  ').convert(bundle));
-      _setExportMsg('Saved to $savePath');
+      _setBackupMsg('Backup saved to $savePath');
     } catch (e, st) {
       debugPrint('[ExportJSON] error: $e\n$st');
-      _setExportMsg('Export failed: $e', error: true);
+      _setBackupMsg('Backup failed: $e', error: true);
     } finally {
       setState(() => _loading = false);
     }

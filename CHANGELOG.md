@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 0.2 Basic Functionality
 
++ Reorganise IMPORT/EXPORT as BACKUP [0.1.43 20260611 gjw]
 + Updated solidui menus to bottom [0.1.42 20260606 gjw]
 + DONE will markup any notes [0.1.41 20260602 gjw]
 + ENTER in TITLE of NEW TASK will now ADD ATSK [0.1.40 20260528 gjw]

@@ -126,11 +126,12 @@ class AppScaffold extends StatelessWidget {
             child: DoneScreen(),
           ),
           const SolidMenuItem(
-            title: 'Import / Export',
-            icon: Icons.import_export,
+            title: 'Backup',
+            icon: Icons.save_alt,
             tooltip:
-                '**Import / Export**\n\n'
-                'Import from Todo.txt or export a backup.',
+                '**Backup**\n\n'
+                'Back up and restore all tasks, or import and export '
+                'Todo.txt files.',
             child: ImportScreen(),
           ),
           const SolidMenuItem(

@@ -116,6 +116,31 @@ class _TaskEditState extends State<TaskEdit> {
     _initDueDate = _dueDate;
     _initProjects = _projects.map((c) => c.text).toList();
     _initContexts = _contexts.map((c) => c.text).toList();
+
+    // Rebuild on any text change so the Save button enables/disables live.
+    for (final c in [
+      _description,
+      _notes,
+      _duration,
+      ..._projects,
+      ..._contexts,
+    ]) {
+      c.addListener(_onFieldChanged);
+    }
+  }
+
+  // Triggers a rebuild so the Save button reflects the current change state.
+  void _onFieldChanged() {
+    if (mounted) setState(() {});
+  }
+
+  /// True when the task can be saved: there is a non-empty description AND
+  /// (for an existing task) at least one change has been made. New tasks
+  /// only require a non-empty description.
+  bool get _canSave {
+    if (_description.text.trim().isEmpty) return false;
+    if (_isNew) return true;
+    return _hasChanges;
   }
 
   @override
@@ -428,7 +453,9 @@ class _TaskEditState extends State<TaskEdit> {
               focusLast: _focusNewProject,
               onFocusConsumed: () => _focusNewProject = false,
               onAdd: () => setState(() {
-                _projects.add(TextEditingController());
+                _projects.add(
+                  TextEditingController()..addListener(_onFieldChanged),
+                );
                 _focusNewProject = true;
               }),
               onRemove: (i) => setState(() {
@@ -451,7 +478,9 @@ class _TaskEditState extends State<TaskEdit> {
               focusLast: _focusNewContext,
               onFocusConsumed: () => _focusNewContext = false,
               onAdd: () => setState(() {
-                _contexts.add(TextEditingController());
+                _contexts.add(
+                  TextEditingController()..addListener(_onFieldChanged),
+                );
                 _focusNewContext = true;
               }),
               onRemove: (i) => setState(() {
@@ -476,10 +505,9 @@ class _TaskEditState extends State<TaskEdit> {
             TextButton(onPressed: _confirmDiscard, child: const Text('Cancel')),
             const Spacer(),
             FilledButton(
-              onPressed: () {
-                if (_description.text.trim().isEmpty) return;
-                Navigator.of(context).pop(_buildTask());
-              },
+              onPressed: _canSave
+                  ? () => Navigator.of(context).pop(_buildTask())
+                  : null,
               child: Text(_isNew ? 'Add Task' : 'Save'),
             ),
           ],

@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 0.2 Basic Functionality
 
++ SAVE button enabled on change [0.1.44 20260611 gjw]
 + Reorganise IMPORT/EXPORT as BACKUP [0.1.43 20260611 gjw]
 + Updated solidui menus to bottom [0.1.42 20260606 gjw]
 + DONE will markup any notes [0.1.41 20260602 gjw]

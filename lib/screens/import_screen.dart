@@ -11,7 +11,6 @@
 library;
 
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +18,6 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:gap/gap.dart';
 import 'package:markdown_tooltip/markdown_tooltip.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
 
@@ -29,6 +26,8 @@ import 'package:todopod/models/task_parser.dart';
 import 'package:todopod/screens/import_widgets/export_filter_sheet.dart';
 import 'package:todopod/screens/import_widgets/import_action_card.dart';
 import 'package:todopod/screens/import_widgets/import_message_banner.dart';
+import 'package:todopod/screens/import_widgets/pdf_export.dart';
+import 'package:todopod/screens/import_widgets/task_file_export.dart';
 import 'package:todopod/services/app_provider.dart';
 
 class ImportScreen extends StatefulWidget {
@@ -348,7 +347,7 @@ class _ImportScreenState extends State<ImportScreen> {
 
   // ── Export ────────────────────────────────────────────────────────────────
 
-  Future<void> _exportTxt({required List tasks, required String prefix}) async {
+  Future<void> _exportTxt({required List<Task> tasks, required String prefix}) async {
     setState(() {
       _loading = true;
       _exportMessage = null;
@@ -358,17 +357,12 @@ class _ImportScreenState extends State<ImportScreen> {
         _setExportMsg('Export to file is not supported on web.', error: true);
         return;
       }
-      final now = DateTime.now();
-      final savePath = await FilePicker.saveFile(
-        dialogTitle: 'Save $prefix.txt',
-        fileName: '${prefix}_${_ts(now)}.txt',
-        type: FileType.any,
+      final path = await saveTasksTxt(
+        tasks: tasks,
+        prefix: prefix,
+        timestamp: _ts(DateTime.now()),
       );
-      if (savePath == null) return;
-      await File(
-        savePath,
-      ).writeAsBytes(utf8.encode(tasks.map((t) => t.toTodoTxt()).join('\n')));
-      _setExportMsg('Saved to $savePath');
+      if (path != null) _setExportMsg('Saved to $path');
     } catch (e, st) {
       debugPrint('[Export] error: $e\n$st');
       _setExportMsg('Export failed: $e', error: true);
@@ -388,23 +382,12 @@ class _ImportScreenState extends State<ImportScreen> {
         _setBackupMsg('Backup to file is not supported on web.', error: true);
         return;
       }
-      final now = DateTime.now();
-      final bundle = {
-        'exported_at': now.toIso8601String(),
-        'tasks': provider.tasks.map((t) => t.toJson()).toList(),
-        'done': provider.doneTasks.map((t) => t.toJson()).toList(),
-      };
-      final savePath = await FilePicker.saveFile(
-        dialogTitle: 'Save JSON Backup',
-        fileName: 'todopod_backup_${_ts(now)}.json',
-        type: FileType.custom,
-        allowedExtensions: ['json'],
+      final path = await saveTasksJsonBackup(
+        tasks: provider.tasks,
+        done: provider.doneTasks,
+        timestamp: _ts(DateTime.now()),
       );
-      if (savePath == null) return;
-      await File(
-        savePath,
-      ).writeAsString(const JsonEncoder.withIndent('  ').convert(bundle));
-      _setBackupMsg('Backup saved to $savePath');
+      if (path != null) _setBackupMsg('Backup saved to $path');
     } catch (e, st) {
       debugPrint('[ExportJSON] error: $e\n$st');
       _setBackupMsg('Backup failed: $e', error: true);
@@ -454,7 +437,7 @@ class _ImportScreenState extends State<ImportScreen> {
   }
 
   Future<void> _exportPdf({
-    required List tasks,
+    required List<Task> tasks,
     required String title,
     required String prefix,
     String filterLabel = '',
@@ -464,75 +447,10 @@ class _ImportScreenState extends State<ImportScreen> {
       _viewMessage = null;
     });
     try {
-      final now = DateTime.now();
-      final dateStr =
-          '${now.day.toString().padLeft(2, '0')}/'
-          '${now.month.toString().padLeft(2, '0')}/'
-          '${now.year}';
-      // Load Unicode-capable fonts so characters outside basic Latin
-      // (e.g. ·, –, —, accented letters) render without the pdf package
-      // falling back to Helvetica, which has no Unicode support.
-      final base = await PdfGoogleFonts.notoSansRegular();
-      final bold = await PdfGoogleFonts.notoSansBold();
-      final italic = await PdfGoogleFonts.notoSansItalic();
-      final boldItalic = await PdfGoogleFonts.notoSansBoldItalic();
-
-      final doc = pw.Document(
-        theme: pw.ThemeData.withFont(
-          base: base,
-          bold: bold,
-          italic: italic,
-          boldItalic: boldItalic,
-        ),
-      );
-      doc.addPage(
-        pw.MultiPage(
-          pageFormat: PdfPageFormat.a4,
-          margin: const pw.EdgeInsets.all(40),
-          header: (ctx) => pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              pw.Text(
-                title,
-                style: pw.TextStyle(
-                  fontSize: 20,
-                  fontWeight: pw.FontWeight.bold,
-                ),
-              ),
-              pw.Text(
-                'Generated $dateStr  ·  '
-                '${tasks.length} task${tasks.length == 1 ? '' : 's'}',
-                style: const pw.TextStyle(
-                  fontSize: 10,
-                  color: PdfColors.grey600,
-                ),
-              ),
-              pw.Divider(),
-              pw.SizedBox(height: 4),
-            ],
-          ),
-          build: (ctx) => [
-            pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: tasks
-                  .map<pw.Widget>(
-                    (t) => pw.Padding(
-                      padding: const pw.EdgeInsets.only(bottom: 6),
-                      child: pw.Text(
-                        t.toTodoTxt(),
-                        style: const pw.TextStyle(fontSize: 11),
-                      ),
-                    ),
-                  )
-                  .toList(),
-            ),
-          ],
-        ),
-      );
+      final pdfBytes = await buildTasksPdf(tasks: tasks, title: title);
       final labelPart = filterLabel.isNotEmpty ? '_$filterLabel' : '';
       final pdfName =
-          'todopod_${prefix.toLowerCase()}${labelPart}_${_ts(now)}.pdf';
-      final pdfBytes = await doc.save();
+          'todopod_${prefix.toLowerCase()}${labelPart}_${_ts(DateTime.now())}.pdf';
       if (!mounted) return;
       // Open an on-screen preview of the actual PDF. PdfPreview renders the
       // document and provides toolbar actions to save, print or share.

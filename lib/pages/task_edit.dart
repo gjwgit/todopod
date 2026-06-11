@@ -23,6 +23,7 @@ import 'package:todopod/models/task.dart';
 import 'package:todopod/pages/edit_fields/priority_due_date_row.dart';
 import 'package:todopod/pages/edit_fields/tag_list_editor.dart';
 import 'package:todopod/services/app_provider.dart';
+import 'package:todopod/widgets/confirm_discard_dialog.dart';
 import 'package:todopod/widgets/tag_autocomplete.dart';
 
 const _uuid = Uuid();
@@ -187,25 +188,7 @@ class _TaskEditState extends State<TaskEdit> {
       return;
     }
 
-    final discard = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Discard changes?'),
-        content: const Text(
-          'You have unsaved changes. Are you sure you want to discard them?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Keep editing'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Discard'),
-          ),
-        ],
-      ),
-    );
+    final discard = await showDiscardChangesDialog(context);
 
     if (discard == true && mounted) Navigator.of(context).pop();
   }

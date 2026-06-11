@@ -180,8 +180,9 @@ class ExportFilterSheetState extends State<ExportFilterSheet> {
                       ExportFilterChip(
                         label: d.$2,
                         selected: _due == d.$1,
-                        onTap: () =>
-                            setState(() => _due = _due == d.$1 ? null : d.$1),
+                        onTap: () => setState(
+                          () => _due = _due == d.$1 ? null : d.$1,
+                        ),
                         cs: cs,
                       ),
                   ],

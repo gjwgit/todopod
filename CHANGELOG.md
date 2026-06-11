@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 0.2 Basic Functionality
 
++ Refine PDF generation [0.1.45 20260611 gjw]
 + SAVE button enabled on change [0.1.44 20260611 gjw]
 + Reorganise IMPORT/EXPORT as BACKUP [0.1.43 20260611 gjw]
 + Updated solidui menus to bottom [0.1.42 20260606 gjw]

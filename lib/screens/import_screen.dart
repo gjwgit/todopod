@@ -1,6 +1,6 @@
 /// ImportScreen — import from todo.txt / JSON and export backups.
 ///
-// Time-stamp: <Friday 2026-04-24 19:58:58 +1000 Graham Williams>
+// Time-stamp: <Thursday 2026-06-11 20:52:13 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:gap/gap.dart';
+import 'package:markdown_tooltip/markdown_tooltip.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -45,6 +46,8 @@ class _ImportScreenState extends State<ImportScreen> {
   bool _exportError = false;
   String? _backupMessage;
   bool _backupError = false;
+  String? _viewMessage;
+  bool _viewError = false;
 
   void _setImportMsg(String msg, {bool error = false}) => setState(() {
     _importMessage = msg;
@@ -59,6 +62,11 @@ class _ImportScreenState extends State<ImportScreen> {
   void _setBackupMsg(String msg, {bool error = false}) => setState(() {
     _backupMessage = msg;
     _backupError = error;
+  });
+
+  void _setViewMsg(String msg, {bool error = false}) => setState(() {
+    _viewMessage = msg;
+    _viewError = error;
   });
 
   /// Zero-padded timestamp string for filenames: YYYYMMDD_HHMM.
@@ -96,39 +104,104 @@ class _ImportScreenState extends State<ImportScreen> {
             ),
           ],
           const Gap(16),
+          Row(
+            children: [
+              MarkdownTooltip(
+                message:
+                    '**Export Backup**\n\n'
+                    'Save all '
+                    '${provider.tasks.length + provider.doneTasks.length} '
+                    'tasks (active and completed) to a todopod JSON backup '
+                    'file on this device. Keep it somewhere safe so you can '
+                    'restore everything later.',
+                child: FilledButton.icon(
+                  icon: const Icon(Icons.download),
+                  label: const Text('Export Backup'),
+                  onPressed: _loading ? null : () => _exportJson(context),
+                ),
+              ),
+              const Gap(12),
+              MarkdownTooltip(
+                message:
+                    '**Import Backup**\n\n'
+                    'Restore tasks from a previously saved todopod JSON '
+                    'backup file. Restored tasks are merged with your '
+                    'existing task list.',
+                child: OutlinedButton.icon(
+                  icon: const Icon(Icons.upload),
+                  label: const Text('Import Backup'),
+                  onPressed: _loading
+                      ? null
+                      : () => _import(
+                          context,
+                          dialogTitle: 'Select JSON backup file',
+                          fileType: FileType.custom,
+                          extensions: ['json'],
+                          backup: true,
+                          parse: (b) {
+                            final bundle =
+                                jsonDecode(utf8.decode(b))
+                                    as Map<String, dynamic>;
+                            return [
+                              ...(bundle['tasks'] as List? ?? [])
+                                  .cast<Map<String, dynamic>>()
+                                  .map(Task.fromJson),
+                              ...(bundle['done'] as List? ?? [])
+                                  .cast<Map<String, dynamic>>()
+                                  .map(Task.fromJson),
+                            ];
+                          },
+                        ),
+                ),
+              ),
+            ],
+          ),
+
+          // ── View ────────────────────────────────────────────────────
+          const Gap(32),
+          Text('View', style: Theme.of(context).textTheme.titleLarge),
+          const Gap(8),
+          Text(
+            'Choose tasks and view them as a PDF on screen. You can save '
+            'or print from the preview.',
+            style: TextStyle(color: cs.onSurfaceVariant),
+          ),
+          if (_viewMessage != null) ...[
+            const Gap(12),
+            ImportMessageBanner(
+              message: _viewMessage!,
+              isError: _viewError,
+              cs: cs,
+            ),
+          ],
+          const Gap(16),
           ImportActionCard(
-            icon: Icons.save_alt,
-            title: 'Back up all tasks (JSON)',
+            icon: Icons.picture_as_pdf_outlined,
+            title: 'View Todo as PDF',
             subtitle:
-                'Save all ${provider.tasks.length + provider.doneTasks.length} '
-                'tasks to a todopod JSON backup file.',
+                'Choose tasks to view, save or print from '
+                '${provider.tasks.length} active tasks.',
             loading: _loading,
-            onTap: () => _exportJson(context),
+            onTap: () => _showFilterAndExportPdf(
+              context,
+              allTasks: provider.tasks,
+              title: 'Active Tasks',
+              prefix: 'todo',
+            ),
           ),
           const Gap(12),
           ImportActionCard(
-            icon: Icons.restore,
-            title: 'Restore from backup (JSON)',
-            subtitle: 'Restore tasks from a todopod JSON backup file.',
+            icon: Icons.picture_as_pdf_outlined,
+            title: 'View Done as PDF',
+            subtitle:
+                'Choose tasks to view, save or print from '
+                '${provider.doneTasks.length} completed tasks.',
             loading: _loading,
-            onTap: () => _import(
+            onTap: () => _showFilterAndExportPdf(
               context,
-              dialogTitle: 'Select JSON backup file',
-              fileType: FileType.custom,
-              extensions: ['json'],
-              backup: true,
-              parse: (b) {
-                final bundle =
-                    jsonDecode(utf8.decode(b)) as Map<String, dynamic>;
-                return [
-                  ...(bundle['tasks'] as List? ?? [])
-                      .cast<Map<String, dynamic>>()
-                      .map(Task.fromJson),
-                  ...(bundle['done'] as List? ?? [])
-                      .cast<Map<String, dynamic>>()
-                      .map(Task.fromJson),
-                ];
-              },
+              allTasks: provider.doneTasks,
+              title: 'Completed Tasks',
+              prefix: 'done',
             ),
           ),
 
@@ -137,7 +210,7 @@ class _ImportScreenState extends State<ImportScreen> {
           Text('Export', style: Theme.of(context).textTheme.titleLarge),
           const Gap(8),
           Text(
-            'Save a timestamped copy of your tasks as Todo.txt or PDF.',
+            'Save a timestamped copy of your tasks using the Todo.txt format or as PDF.',
             style: TextStyle(color: cs.onSurfaceVariant),
           ),
           if (_exportMessage != null) ...[
@@ -151,52 +224,22 @@ class _ImportScreenState extends State<ImportScreen> {
           const Gap(16),
           ImportActionCard(
             icon: Icons.download_outlined,
-            title: 'Export Todo.txt',
+            title: 'Export todo.txt',
             subtitle:
-                'Saves Todo_YYYYMMDD_HHMM.txt with '
+                'Saves todo_YYYYMMDD_HHMM.txt with '
                 '${provider.tasks.length} active tasks.',
             loading: _loading,
-            onTap: () => _exportTxt(tasks: provider.tasks, prefix: 'Todo'),
+            onTap: () => _exportTxt(tasks: provider.tasks, prefix: 'todo'),
           ),
           const Gap(12),
           ImportActionCard(
             icon: Icons.download_outlined,
-            title: 'Export Done.txt',
+            title: 'Export done.txt',
             subtitle:
-                'Saves Done_YYYYMMDD_HHMM.txt with '
+                'Saves done_YYYYMMDD_HHMM.txt with '
                 '${provider.doneTasks.length} completed tasks.',
             loading: _loading,
-            onTap: () => _exportTxt(tasks: provider.doneTasks, prefix: 'Done'),
-          ),
-          const Gap(12),
-          ImportActionCard(
-            icon: Icons.picture_as_pdf_outlined,
-            title: 'Export Todo.txt as PDF',
-            subtitle:
-                'Choose tasks to save or print from '
-                '${provider.tasks.length} active tasks.',
-            loading: _loading,
-            onTap: () => _showFilterAndExportPdf(
-              context,
-              allTasks: provider.tasks,
-              title: 'Active Tasks',
-              prefix: 'Todo',
-            ),
-          ),
-          const Gap(12),
-          ImportActionCard(
-            icon: Icons.picture_as_pdf_outlined,
-            title: 'Export Done.txt as PDF',
-            subtitle:
-                'Choose tasks to save or print from '
-                '${provider.doneTasks.length} completed tasks.',
-            loading: _loading,
-            onTap: () => _showFilterAndExportPdf(
-              context,
-              allTasks: provider.doneTasks,
-              title: 'Completed Tasks',
-              prefix: 'Done',
-            ),
+            onTap: () => _exportTxt(tasks: provider.doneTasks, prefix: 'done'),
           ),
 
           // ── Import ──────────────────────────────────────────────────
@@ -204,7 +247,7 @@ class _ImportScreenState extends State<ImportScreen> {
           Text('Import', style: Theme.of(context).textTheme.titleLarge),
           const Gap(8),
           Text(
-            'Import tasks from a Todo.txt file. Imported tasks are merged '
+            'Import tasks from a todo.txt file. Imported tasks are merged '
             'with your existing task list.',
             style: TextStyle(color: cs.onSurfaceVariant),
           ),
@@ -219,24 +262,24 @@ class _ImportScreenState extends State<ImportScreen> {
           const Gap(16),
           ImportActionCard(
             icon: Icons.upload_file_outlined,
-            title: 'Import Todo.txt',
-            subtitle: 'Select a Todo.txt file to import active tasks.',
+            title: 'Import todo.txt',
+            subtitle: 'Select a todo.txt file to import active tasks.',
             loading: _loading,
             onTap: () => _import(
               context,
-              dialogTitle: 'Select Todo.txt file',
+              dialogTitle: 'Select todo.txt file',
               parse: (b) => parseTodoTxt(utf8.decode(b)),
             ),
           ),
           const Gap(12),
           ImportActionCard(
             icon: Icons.upload_file_outlined,
-            title: 'Import Done.txt',
-            subtitle: 'Select a Done.txt file to import completed tasks.',
+            title: 'Import done.txt',
+            subtitle: 'Select a done.txt file to import completed tasks.',
             loading: _loading,
             onTap: () => _import(
               context,
-              dialogTitle: 'Select Done.txt file',
+              dialogTitle: 'Select done.txt file',
               parse: (b) => parseTodoTxt(utf8.decode(b)),
             ),
           ),
@@ -397,13 +440,12 @@ class _ImportScreenState extends State<ImportScreen> {
         contexts: contexts.toList()..sort(),
         todayDate: DateTime(today.year, today.month, today.day),
         title: title,
+        actionVerb: 'View',
       ),
     );
     if (result == null || !mounted) return;
     final (filtered, filterLabel) = result;
     await _exportPdf(
-      // ignore: use_build_context_synchronously — mounted checked above.
-      context,
       tasks: filtered,
       title: title,
       prefix: prefix,
@@ -411,8 +453,7 @@ class _ImportScreenState extends State<ImportScreen> {
     );
   }
 
-  Future<void> _exportPdf(
-    BuildContext context, {
+  Future<void> _exportPdf({
     required List tasks,
     required String title,
     required String prefix,
@@ -420,7 +461,7 @@ class _ImportScreenState extends State<ImportScreen> {
   }) async {
     setState(() {
       _loading = true;
-      _exportMessage = null;
+      _viewMessage = null;
     });
     try {
       final now = DateTime.now();
@@ -428,7 +469,22 @@ class _ImportScreenState extends State<ImportScreen> {
           '${now.day.toString().padLeft(2, '0')}/'
           '${now.month.toString().padLeft(2, '0')}/'
           '${now.year}';
-      final doc = pw.Document();
+      // Load Unicode-capable fonts so characters outside basic Latin
+      // (e.g. ·, –, —, accented letters) render without the pdf package
+      // falling back to Helvetica, which has no Unicode support.
+      final base = await PdfGoogleFonts.notoSansRegular();
+      final bold = await PdfGoogleFonts.notoSansBold();
+      final italic = await PdfGoogleFonts.notoSansItalic();
+      final boldItalic = await PdfGoogleFonts.notoSansBoldItalic();
+
+      final doc = pw.Document(
+        theme: pw.ThemeData.withFont(
+          base: base,
+          bold: bold,
+          italic: italic,
+          boldItalic: boldItalic,
+        ),
+      );
       doc.addPage(
         pw.MultiPage(
           pageFormat: PdfPageFormat.a4,
@@ -477,27 +533,27 @@ class _ImportScreenState extends State<ImportScreen> {
       final pdfName =
           'todopod_${prefix.toLowerCase()}${labelPart}_${_ts(now)}.pdf';
       final pdfBytes = await doc.save();
-      if (kIsWeb) {
-        await Printing.layoutPdf(
-          onLayout: (_) async => pdfBytes,
-          name: pdfName,
-        );
-        _setExportMsg('PDF ready — use the dialog to save or print.');
-      } else {
-        final savePath = await FilePicker.saveFile(
-          dialogTitle: 'Save PDF',
-          fileName: pdfName,
-          type: FileType.custom,
-          allowedExtensions: ['pdf'],
-        );
-        if (savePath != null) {
-          await File(savePath).writeAsBytes(pdfBytes);
-          _setExportMsg('Saved to $savePath');
-        }
-      }
+      if (!mounted) return;
+      // Open an on-screen preview of the actual PDF. PdfPreview renders the
+      // document and provides toolbar actions to save, print or share.
+      await Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => Scaffold(
+            appBar: AppBar(title: Text(title)),
+            body: PdfPreview(
+              build: (_) async => pdfBytes,
+              pdfFileName: pdfName,
+              canChangePageFormat: false,
+              canChangeOrientation: false,
+              canDebug: false,
+            ),
+          ),
+        ),
+      );
+      _setViewMsg('PDF generated.');
     } catch (e, st) {
-      debugPrint('[PDF Export] error: $e\n$st');
-      _setExportMsg('PDF export failed: $e', error: true);
+      debugPrint('[PDF View] error: $e\n$st');
+      _setViewMsg('PDF generation failed: $e', error: true);
     } finally {
       setState(() => _loading = false);
     }

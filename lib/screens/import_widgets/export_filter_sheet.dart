@@ -24,6 +24,9 @@ class ExportFilterSheet extends StatefulWidget {
   final DateTime todayDate;
   final String title;
 
+  /// Verb shown on the action button, e.g. 'View' or 'Export'.
+  final String actionVerb;
+
   const ExportFilterSheet({
     super.key,
     required this.allTasks,
@@ -31,6 +34,7 @@ class ExportFilterSheet extends StatefulWidget {
     required this.contexts,
     required this.todayDate,
     required this.title,
+    this.actionVerb = 'Export',
   });
 
   @override
@@ -93,151 +97,165 @@ class ExportFilterSheetState extends State<ExportFilterSheet> {
     final cs = Theme.of(context).colorScheme;
     final count = _filtered.length;
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        24,
-        20,
-        24,
-        MediaQuery.of(context).viewInsets.bottom + 24,
+    return ConstrainedBox(
+      // Cap the sheet height so a long project/context list scrolls rather
+      // than mis-measuring on first open (which previously showed a
+      // collapsed sheet until tapped a second time).
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.85,
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header
-          Row(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            24,
+            20,
+            24,
+            MediaQuery.of(context).viewInsets.bottom + 24,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Text(
-                  'Filter — ${widget.title}',
-                  style: Theme.of(context).textTheme.titleMedium,
+              // Header
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Filter — ${widget.title}',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => setState(() {
+                      _priority = null;
+                      _project = null;
+                      _context = null;
+                      _due = null;
+                    }),
+                    child: const Text('Clear all'),
+                  ),
+                ],
+              ),
+              const Divider(),
+              const Gap(8),
+
+              // Priority
+              ExportFilterRow(
+                label: 'Priority',
+                child: Wrap(
+                  spacing: 6,
+                  children: [
+                    ExportFilterChip(
+                      label: 'All',
+                      selected: _priority == null,
+                      onTap: () => setState(() => _priority = null),
+                      cs: cs,
+                    ),
+                    for (final p in priorities)
+                      ExportFilterChip(
+                        label: priorityLabels[p] ?? p,
+                        selected: _priority == p,
+                        onTap: () => setState(
+                          () => _priority = _priority == p ? null : p,
+                        ),
+                        cs: cs,
+                      ),
+                  ],
                 ),
               ),
-              TextButton(
-                onPressed: () => setState(() {
-                  _priority = null;
-                  _project = null;
-                  _context = null;
-                  _due = null;
-                }),
-                child: const Text('Clear all'),
+              const Gap(12),
+
+              // Due
+              ExportFilterRow(
+                label: 'Due',
+                child: Wrap(
+                  spacing: 6,
+                  children: [
+                    for (final d in [
+                      ('past', 'Past due'),
+                      ('today', 'Today'),
+                      ('tomorrow', 'Tomorrow'),
+                      ('week', 'This week'),
+                    ])
+                      ExportFilterChip(
+                        label: d.$2,
+                        selected: _due == d.$1,
+                        onTap: () =>
+                            setState(() => _due = _due == d.$1 ? null : d.$1),
+                        cs: cs,
+                      ),
+                  ],
+                ),
+              ),
+
+              // Project
+              if (widget.projects.isNotEmpty) ...[
+                const Gap(12),
+                ExportFilterRow(
+                  label: 'Project',
+                  child: Wrap(
+                    spacing: 6,
+                    children: [
+                      for (final p in widget.projects)
+                        ExportFilterChip(
+                          label: '+$p',
+                          selected: _project == p,
+                          onTap: () => setState(
+                            () => _project = _project == p ? null : p,
+                          ),
+                          cs: cs,
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+
+              // Context
+              if (widget.contexts.isNotEmpty) ...[
+                const Gap(12),
+                ExportFilterRow(
+                  label: 'Context',
+                  child: Wrap(
+                    spacing: 6,
+                    children: [
+                      for (final c in widget.contexts)
+                        ExportFilterChip(
+                          label: '@$c',
+                          selected: _context == c,
+                          onTap: () => setState(
+                            () => _context = _context == c ? null : c,
+                          ),
+                          cs: cs,
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+
+              const Gap(20),
+
+              // Action button
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  icon: const Icon(Icons.picture_as_pdf_outlined),
+                  label: Text(
+                    count == 0
+                        ? 'No tasks match'
+                        : '${widget.actionVerb} $count '
+                              'task${count == 1 ? '' : 's'} as PDF',
+                  ),
+                  onPressed: count == 0
+                      ? null
+                      : () => Navigator.pop(context, (
+                          _filtered,
+                          _buildFilterLabel(),
+                        )),
+                ),
               ),
             ],
           ),
-          const Divider(),
-          const Gap(8),
-
-          // Priority
-          ExportFilterRow(
-            label: 'Priority',
-            child: Wrap(
-              spacing: 6,
-              children: [
-                ExportFilterChip(
-                  label: 'All',
-                  selected: _priority == null,
-                  onTap: () => setState(() => _priority = null),
-                  cs: cs,
-                ),
-                for (final p in priorities)
-                  ExportFilterChip(
-                    label: priorityLabels[p] ?? p,
-                    selected: _priority == p,
-                    onTap: () =>
-                        setState(() => _priority = _priority == p ? null : p),
-                    cs: cs,
-                  ),
-              ],
-            ),
-          ),
-          const Gap(12),
-
-          // Due
-          ExportFilterRow(
-            label: 'Due',
-            child: Wrap(
-              spacing: 6,
-              children: [
-                for (final d in [
-                  ('past', 'Past due'),
-                  ('today', 'Today'),
-                  ('tomorrow', 'Tomorrow'),
-                  ('week', 'This week'),
-                ])
-                  ExportFilterChip(
-                    label: d.$2,
-                    selected: _due == d.$1,
-                    onTap: () =>
-                        setState(() => _due = _due == d.$1 ? null : d.$1),
-                    cs: cs,
-                  ),
-              ],
-            ),
-          ),
-
-          // Project
-          if (widget.projects.isNotEmpty) ...[
-            const Gap(12),
-            ExportFilterRow(
-              label: 'Project',
-              child: Wrap(
-                spacing: 6,
-                children: [
-                  for (final p in widget.projects)
-                    ExportFilterChip(
-                      label: '+$p',
-                      selected: _project == p,
-                      onTap: () =>
-                          setState(() => _project = _project == p ? null : p),
-                      cs: cs,
-                    ),
-                ],
-              ),
-            ),
-          ],
-
-          // Context
-          if (widget.contexts.isNotEmpty) ...[
-            const Gap(12),
-            ExportFilterRow(
-              label: 'Context',
-              child: Wrap(
-                spacing: 6,
-                children: [
-                  for (final c in widget.contexts)
-                    ExportFilterChip(
-                      label: '@$c',
-                      selected: _context == c,
-                      onTap: () =>
-                          setState(() => _context = _context == c ? null : c),
-                      cs: cs,
-                    ),
-                ],
-              ),
-            ),
-          ],
-
-          const Gap(20),
-
-          // Export button
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton.icon(
-              icon: const Icon(Icons.picture_as_pdf_outlined),
-              label: Text(
-                count == 0
-                    ? 'No tasks match'
-                    : 'Export $count task${count == 1 ? '' : 's'} as PDF',
-              ),
-              onPressed: count == 0
-                  ? null
-                  : () => Navigator.pop(context, (
-                      _filtered,
-                      _buildFilterLabel(),
-                    )),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

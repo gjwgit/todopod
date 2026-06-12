@@ -11,8 +11,11 @@
 
 library;
 
-import 'dart:typed_data';
+import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -88,4 +91,34 @@ Future<Uint8List> buildTasksPdf({
   );
 
   return doc.save();
+}
+
+/// Prompt for a filename and location, then write the PDF [bytes] there.
+///
+/// Returns a status message to display: the saved path on success, null if
+/// the user cancelled, or an error string prefixed with 'error:'. On web,
+/// falls back to the printing share/save sheet and returns null.
+Future<String?> savePdfAs(List<int> bytes, String defaultName) async {
+  try {
+    if (kIsWeb) {
+      // No filesystem on web; fall back to the printing share/save sheet.
+      await Printing.sharePdf(
+        bytes: Uint8List.fromList(bytes),
+        filename: defaultName,
+      );
+      return null;
+    }
+    final savePath = await FilePicker.saveFile(
+      dialogTitle: 'Save PDF',
+      fileName: defaultName,
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
+    if (savePath == null) return null; // user cancelled
+    await File(savePath).writeAsBytes(bytes);
+    return 'Saved to $savePath';
+  } catch (e, st) {
+    debugPrint('[Save PDF] error: $e\n$st');
+    return 'error:Save failed: $e';
+  }
 }

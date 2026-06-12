@@ -11,7 +11,6 @@
 library;
 
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -475,7 +474,13 @@ class _ImportScreenState extends State<ImportScreen> {
                   icon: const Icon(Icons.save_alt),
                   onPressed: (ctx, build, pageFormat) async {
                     final bytes = await build(pageFormat);
-                    await _savePdfAs(bytes, pdfName);
+                    final msg = await savePdfAs(bytes, pdfName);
+                    if (msg == null || !mounted) return;
+                    if (msg.startsWith('error:')) {
+                      _setViewMsg(msg.substring(6), error: true);
+                    } else {
+                      _setViewMsg(msg);
+                    }
                   },
                 ),
               ],
@@ -489,32 +494,6 @@ class _ImportScreenState extends State<ImportScreen> {
       _setViewMsg('PDF generation failed: $e', error: true);
     } finally {
       setState(() => _loading = false);
-    }
-  }
-
-  /// Prompt for a filename and location, then write the PDF [bytes] there.
-  Future<void> _savePdfAs(List<int> bytes, String defaultName) async {
-    try {
-      if (kIsWeb) {
-        // No filesystem on web; fall back to the printing share/save sheet.
-        await Printing.sharePdf(
-          bytes: Uint8List.fromList(bytes),
-          filename: defaultName,
-        );
-        return;
-      }
-      final savePath = await FilePicker.saveFile(
-        dialogTitle: 'Save PDF',
-        fileName: defaultName,
-        type: FileType.custom,
-        allowedExtensions: ['pdf'],
-      );
-      if (savePath == null) return; // user cancelled
-      await File(savePath).writeAsBytes(bytes);
-      if (mounted) _setViewMsg('Saved to $savePath');
-    } catch (e, st) {
-      debugPrint('[Save PDF] error: $e\n$st');
-      if (mounted) _setViewMsg('Save failed: $e', error: true);
     }
   }
 }

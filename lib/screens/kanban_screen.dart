@@ -186,6 +186,13 @@ class _KanbanScreenState extends State<KanbanScreen> {
                   ),
                 ],
               ),
+              // Create a new task.
+              FilledButton.icon(
+                icon: const Icon(Icons.add),
+                label: const Text('Add Task'),
+                onPressed: () =>
+                    addTaskAction(context: context, provider: provider),
+              ),
             ],
           ),
         ),

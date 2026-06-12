@@ -38,6 +38,8 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 0.2 Basic Functionality
 
++ Sorting added to KANBAN [0.1.50 20260612 gjw]
++ Update solid_auth to fix token refresh bug [0.1.49 20260612 gjw]
 + Add SAVE to PDF VIEW in BACKUP [0.1.48 20260612 gjw]
 + Kanban based on CONTEXT as well as PRIORITY [0.1.47 20260612 gjw]
 + NEW TASK auto decide on priority based on date [0.1.46 20260612 gjw]

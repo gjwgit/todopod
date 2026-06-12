@@ -45,6 +45,9 @@ const _contextPalette = [
 /// How the board groups tasks into columns.
 enum KanbanGroupBy { priority, context }
 
+/// Direction to sort tasks within a column by due date.
+enum KanbanSort { oldestFirst, oldestLast }
+
 // ── Screen ────────────────────────────────────────────────────────────────────
 
 class KanbanScreen extends StatefulWidget {
@@ -56,6 +59,7 @@ class KanbanScreen extends StatefulWidget {
 
 class _KanbanScreenState extends State<KanbanScreen> {
   KanbanGroupBy _groupBy = KanbanGroupBy.priority;
+  KanbanSort _sort = KanbanSort.oldestFirst;
 
   /// Build the context columns from the contexts present across [tasks],
   /// sorted alphabetically, plus a trailing "No Context" column.
@@ -79,16 +83,34 @@ class _KanbanScreenState extends State<KanbanScreen> {
     return cols;
   }
 
-  /// Tasks belonging in [col] for the current grouping.
+  /// Tasks belonging in [col] for the current grouping, sorted by due date
+  /// in the selected direction with no-due-date tasks always last.
   List<Task> _tasksFor(KanbanCol col, List<Task> tasks) {
+    final List<Task> matched;
     if (_groupBy == KanbanGroupBy.priority) {
-      return tasks.where((t) => t.priority == col.priority).toList();
+      matched = tasks.where((t) => t.priority == col.priority).toList();
+    } else if (col.priority == null) {
+      // Context grouping, "No Context" column.
+      matched = tasks.where((t) => t.contexts.isEmpty).toList();
+    } else {
+      matched = tasks.where((t) => t.contexts.contains(col.priority)).toList();
     }
-    // Context grouping: the column key is stored in col.priority.
-    if (col.priority == null) {
-      return tasks.where((t) => t.contexts.isEmpty).toList();
-    }
-    return tasks.where((t) => t.contexts.contains(col.priority)).toList();
+    _sortByDueDate(matched);
+    return matched;
+  }
+
+  /// Sort [tasks] by due date according to [_sort]. Tasks with no due date
+  /// are always placed at the end, whichever direction is chosen.
+  void _sortByDueDate(List<Task> tasks) {
+    final oldestFirst = _sort == KanbanSort.oldestFirst;
+    tasks.sort((a, b) {
+      final ad = a.dueDate;
+      final bd = b.dueDate;
+      if (ad == null && bd == null) return 0;
+      if (ad == null) return 1; // no date → end
+      if (bd == null) return -1; // no date → end
+      return oldestFirst ? ad.compareTo(bd) : bd.compareTo(ad);
+    });
   }
 
   @override
@@ -103,28 +125,66 @@ class _KanbanScreenState extends State<KanbanScreen> {
 
     return Column(
       children: [
-        // Grouping selector.
+        // Grouping + sort selectors.
         Padding(
           padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-          child: Row(
+          child: Wrap(
+            spacing: 16,
+            runSpacing: 8,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              Text('Group by', style: Theme.of(context).textTheme.labelLarge),
-              const SizedBox(width: 12),
-              SegmentedButton<KanbanGroupBy>(
-                segments: const [
-                  ButtonSegment(
-                    value: KanbanGroupBy.priority,
-                    label: Text('Priority'),
-                    icon: Icon(Icons.flag_outlined),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Group by',
+                    style: Theme.of(context).textTheme.labelLarge,
                   ),
-                  ButtonSegment(
-                    value: KanbanGroupBy.context,
-                    label: Text('Context'),
-                    icon: Icon(Icons.alternate_email),
+                  const SizedBox(width: 12),
+                  SegmentedButton<KanbanGroupBy>(
+                    segments: const [
+                      ButtonSegment(
+                        value: KanbanGroupBy.priority,
+                        label: Text('Priority'),
+                        icon: Icon(Icons.flag_outlined),
+                      ),
+                      ButtonSegment(
+                        value: KanbanGroupBy.context,
+                        label: Text('Context'),
+                        icon: Icon(Icons.alternate_email),
+                      ),
+                    ],
+                    selected: {_groupBy},
+                    onSelectionChanged: (s) =>
+                        setState(() => _groupBy = s.first),
                   ),
                 ],
-                selected: {_groupBy},
-                onSelectionChanged: (s) => setState(() => _groupBy = s.first),
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Sort by',
+                    style: Theme.of(context).textTheme.labelLarge,
+                  ),
+                  const SizedBox(width: 12),
+                  SegmentedButton<KanbanSort>(
+                    segments: const [
+                      ButtonSegment(
+                        value: KanbanSort.oldestFirst,
+                        label: Text('Oldest first'),
+                        icon: Icon(Icons.arrow_upward),
+                      ),
+                      ButtonSegment(
+                        value: KanbanSort.oldestLast,
+                        label: Text('Oldest last'),
+                        icon: Icon(Icons.arrow_downward),
+                      ),
+                    ],
+                    selected: {_sort},
+                    onSelectionChanged: (s) => setState(() => _sort = s.first),
+                  ),
+                ],
               ),
             ],
           ),

@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 0.2 Basic Functionality
 
++ Add SAVE to PDF VIEW in BACKUP [0.1.48 20260612 gjw]
 + Kanban based on CONTEXT as well as PRIORITY [0.1.47 20260612 gjw]
 + NEW TASK auto decide on priority based on date [0.1.46 20260612 gjw]
 + Refine PDF generation [0.1.45 20260611 gjw]

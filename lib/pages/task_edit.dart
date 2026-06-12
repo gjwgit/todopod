@@ -23,6 +23,7 @@ import 'package:todopod/models/task.dart';
 import 'package:todopod/pages/edit_fields/priority_due_date_row.dart';
 import 'package:todopod/pages/edit_fields/tag_list_editor.dart';
 import 'package:todopod/services/app_provider.dart';
+import 'package:todopod/utils/priority_from_due_date.dart';
 import 'package:todopod/widgets/confirm_discard_dialog.dart';
 import 'package:todopod/widgets/tag_autocomplete.dart';
 
@@ -200,7 +201,7 @@ class _TaskEditState extends State<TaskEdit> {
     // the user hasn't manually changed it from the default. If they picked
     // a priority themselves, respect it.
     priority: (_isNew && _priority == _initPriority)
-        ? _priorityFromDueDate(_dueDate)
+        ? priorityFromDueDate(_dueDate)
         : _priority,
     creationDate: widget.task?.creationDate ?? DateTime.now(),
     description: _description.text.trim(),
@@ -216,30 +217,6 @@ class _TaskEditState extends State<TaskEdit> {
     duration: _duration.text.trim().isEmpty ? null : _duration.text.trim(),
     dueDate: _dueDate,
   );
-
-  /// Derive a task priority from its [due] date for new tasks:
-  ///   • today or no date  → B
-  ///   • later this week (up to and including Sunday) → C
-  ///   • the following week → D
-  ///   • later than that    → E
-  String _priorityFromDueDate(DateTime? due) {
-    if (due == null) return 'B';
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final dueDay = DateTime(due.year, due.month, due.day);
-
-    if (!dueDay.isAfter(today)) return 'B'; // today or earlier
-
-    // End of this week = the coming Sunday (DateTime weekday: Mon=1..Sun=7).
-    final endOfThisWeek = today.add(Duration(days: 7 - today.weekday));
-    if (!dueDay.isAfter(endOfThisWeek)) return 'C';
-
-    // End of next week = the Sunday after that.
-    final endOfNextWeek = endOfThisWeek.add(const Duration(days: 7));
-    if (!dueDay.isAfter(endOfNextWeek)) return 'D';
-
-    return 'E';
-  }
 
   Future<void> _pickDueDate() async {
     final picked = await showDatePicker(

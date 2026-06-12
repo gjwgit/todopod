@@ -347,7 +347,10 @@ class _ImportScreenState extends State<ImportScreen> {
 
   // ── Export ────────────────────────────────────────────────────────────────
 
-  Future<void> _exportTxt({required List<Task> tasks, required String prefix}) async {
+  Future<void> _exportTxt({
+    required List<Task> tasks,
+    required String prefix,
+  }) async {
     setState(() {
       _loading = true;
       _exportMessage = null;

@@ -196,7 +196,12 @@ class _TaskEditState extends State<TaskEdit> {
   Task _buildTask() => Task(
     id: widget.task?.id ?? _uuid.v4(),
     completed: _completed,
-    priority: _priority,
+    // For a new task, derive the priority from the due date — but only if
+    // the user hasn't manually changed it from the default. If they picked
+    // a priority themselves, respect it.
+    priority: (_isNew && _priority == _initPriority)
+        ? _priorityFromDueDate(_dueDate)
+        : _priority,
     creationDate: widget.task?.creationDate ?? DateTime.now(),
     description: _description.text.trim(),
     notes: _notes.text.trim().isEmpty ? null : _notes.text.trim(),
@@ -211,6 +216,30 @@ class _TaskEditState extends State<TaskEdit> {
     duration: _duration.text.trim().isEmpty ? null : _duration.text.trim(),
     dueDate: _dueDate,
   );
+
+  /// Derive a task priority from its [due] date for new tasks:
+  ///   • today or no date  → B
+  ///   • later this week (up to and including Sunday) → C
+  ///   • the following week → D
+  ///   • later than that    → E
+  String _priorityFromDueDate(DateTime? due) {
+    if (due == null) return 'B';
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final dueDay = DateTime(due.year, due.month, due.day);
+
+    if (!dueDay.isAfter(today)) return 'B'; // today or earlier
+
+    // End of this week = the coming Sunday (DateTime weekday: Mon=1..Sun=7).
+    final endOfThisWeek = today.add(Duration(days: 7 - today.weekday));
+    if (!dueDay.isAfter(endOfThisWeek)) return 'C';
+
+    // End of next week = the Sunday after that.
+    final endOfNextWeek = endOfThisWeek.add(const Duration(days: 7));
+    if (!dueDay.isAfter(endOfNextWeek)) return 'D';
+
+    return 'E';
+  }
 
   Future<void> _pickDueDate() async {
     final picked = await showDatePicker(

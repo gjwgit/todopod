@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 0.2 Basic Functionality
 
++ NEW TASK auto decide on priority based on date [0.1.46 20260612 gjw]
 + Refine PDF generation [0.1.45 20260611 gjw]
 + SAVE button enabled on change [0.1.44 20260611 gjw]
 + Reorganise IMPORT/EXPORT as BACKUP [0.1.43 20260611 gjw]

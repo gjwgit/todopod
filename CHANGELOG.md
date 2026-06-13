@@ -1,8 +1,7 @@
 # ToDoPod Change Log
 
 Noted here are the high level changes for the app.  Each update
-includes a short user-oriented description.  The next release is 0.2
-following incremental updates through the 0.1.n series.
+includes a short user-oriented description.
 
 You can run the app in your
 [**browser**](https://todopod.solidcommunity.au) or else download and
@@ -36,11 +35,15 @@ then please show some ❤️ and tap on the star at
 This app is authored by [Graham
 Williams](https://togaware.com/Graham.Williams.html).
 
-## 0.2 Basic Functionality
+## 1.0 New Secure Key Handling
 
-+ ADD TASK button for KANBAN page [0.1.51 20260612 gjw]
-+ Sorting added to KANBAN [0.1.50 20260612 gjw]
-+ Update solid_auth to fix token refresh bug [0.1.49 20260612 gjw]
++ Updated HOME messaging [1.0.3 20260613 gjw]
++ ADD TASK button for KANBAN page [1.0.2 20260612 gjw]
++ Sorting added to KANBAN [1.0.1 20260612 gjw]
++ Update solid_auth to fix token refresh bug [1.0.0 20260612 gjw]
+
+## 0.1 Basic Functionality
+
 + Add SAVE to PDF VIEW in BACKUP [0.1.48 20260612 gjw]
 + Kanban based on CONTEXT as well as PRIORITY [0.1.47 20260612 gjw]
 + NEW TASK auto decide on priority based on date [0.1.46 20260612 gjw]
@@ -89,7 +92,4 @@ Williams](https://togaware.com/Graham.Williams.html).
 + Support a NOTE field for entries [0.1.3 20260401 gjw]
 + Autocomplete ptoject/context [0.1.2 20260401 gjw]
 + Support basic import of Todo.txt [0.1.1 20260327 gjw]
-
-## 0.1 Initial App
-
 + Initial template app [0.1.0 20260327 gjw]

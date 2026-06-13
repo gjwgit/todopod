@@ -1,6 +1,6 @@
 /// TodoPod — home page with welcome card and security-key bootstrap.
 ///
-// Time-stamp: <2026-05-20>
+// Time-stamp: <Saturday 2026-06-13 20:53:33 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -36,9 +36,10 @@ import 'package:todopod/services/app_provider.dart';
 
 /// The landing page after login.
 ///
-/// Shows a welcome card describing the app, and on first build prompts the
-/// user for their security key (if not already cached) before triggering
-/// the initial load of tasks from the Pod.
+/// Shows a welcome card describing the app and on first build prompts the user
+/// for their security key (if not already cached) before triggering the initial
+/// load of tasks from the Pod.
+
 class Home extends StatefulWidget {
   const Home({super.key, required this.title});
 
@@ -52,17 +53,21 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+
     // Defer to the first frame so context is fully wired up before we
     // touch SolidPod APIs that may show a dialog.
+
     WidgetsBinding.instance.addPostFrameCallback((_) => _initKeys());
   }
 
   /// Prompt for the security key if it isn't already cached, then trigger
   /// the initial pull of tasks from the Pod. Updates [AppProvider.isKeySaved]
   /// so the status-bar badge in [AppScaffold] reflects the new state.
+
   Future<void> _initKeys() async {
     try {
       // Only proceed if actually logged in to a Pod.
+
       final webId = await getWebId();
       if (webId == null || webId.isEmpty) return;
       if (!mounted) return;
@@ -102,19 +107,28 @@ class _HomeState extends State<Home> {
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  'Welcome to TodoPod!\n\n'
-                  'TodoPod is a Trello-like task manager that stores '
-                  'your tasks encrypted in your personal Solid Pod, so '
-                  'your data stays under your control.\n\n'
-                  'Key features:\n\n'
-                  '• Tasks list ordered by priority\n'
-                  '• Kanban board, drag cards between priorities\n'
-                  '• Planner calendar by due date\n'
-                  '• Done list with one-tap restore\n'
-                  '• Import / export in the open todo.txt format\n'
-                  '• Share task lists with other Pod owners\n'
-                  '• Security key management for encrypted data\n'
-                  '• Theme switching (light / dark / system)\n\n'
+                  'Welcome to TodoPod!\n'
+                  '\n'
+                  'TodoPod is a Trello-like task manager that stores your '
+                  'tasks encrypted in your personal Solid Pod, so your data '
+                  'stays under your control.\n'
+                  '\n'
+                  'Your Solid Pod can be hosted on any Solid server and being '
+                  'encrypted it is protected against casual access to your '
+                  'data by anyone, including the server administrators or '
+                  'anyone who might breach the server.\n'
+                  '\n'
+                  'Key features:\n'
+                  '\n'
+                  '• Tasks list ordered by priority;\n'
+                  '• Kanban boards to drag cards between priorities/contexts;\n'
+                  '• Planner calendar by due date with tasks marked;\n'
+                  '• Done list with one-tap restore;\n'
+                  '• Import/export of the open todo.txt format;\n'
+                  '• Share task lists with other Pod owners;\n'
+                  '• Security key management for encrypted data;\n'
+                  '• Theme switching (light / dark / system).\n'
+                  '\n'
                   'Use the navigation menu to get started.',
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),

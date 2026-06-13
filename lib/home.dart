@@ -96,15 +96,21 @@ class _HomeState extends State<Home> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.checklist,
-                  size: 64,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  widget.title,
-                  style: Theme.of(context).textTheme.headlineMedium,
+                Row(
+                  children: [
+                    Icon(
+                      Icons.checklist,
+                      size: 48,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Text(
+                        widget.title,
+                        style: Theme.of(context).textTheme.headlineMedium,
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 24),
                 MarkdownBody(

@@ -1,7 +1,8 @@
 # ToDoPod Change Log
 
-Noted here are the high level changes for the app.  Each update
-includes a short user-oriented description.
+Noted below are the high level changes for the app.  Each update
+includes a short user-oriented description, version number, date, and
+developer.
 
 You can run the app in your
 [**browser**](https://todopod.solidcommunity.au) or else download and

@@ -212,7 +212,7 @@ class _TasksScreenState extends State<TasksScreen> {
             TaskFilterChips(provider: provider, cs: cs),
           const Divider(height: 1),
           // ── Task list ─────────────────────────────────────────────────
-          if (provider.loading)
+          if (provider.busy)
             const Expanded(child: Center(child: CircularProgressIndicator()))
           else if (tasks.isEmpty)
             Expanded(

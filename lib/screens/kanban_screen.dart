@@ -196,43 +196,48 @@ class _KanbanScreenState extends State<KanbanScreen> {
             ],
           ),
         ),
-        Expanded(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final availableHeight = constraints.maxHeight;
-              return Scrollbar(
-                controller: scrollCtrl,
-                thumbVisibility: true,
-                child: SingleChildScrollView(
+        if (provider.busy)
+          const Expanded(child: Center(child: CircularProgressIndicator()))
+        else
+          Expanded(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final availableHeight = constraints.maxHeight;
+                return Scrollbar(
                   controller: scrollCtrl,
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 20),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: cols.map((col) {
-                      return KanbanColumn(
-                        col: col,
-                        tasks: _tasksFor(col, tasks),
-                        height: availableHeight - 32,
-                        onDropTask: (task) =>
-                            _moveTo(context, provider, task, col),
-                        onEditTask: (task) => editTaskAction(
-                          context: context,
-                          provider: provider,
-                          task: task,
-                        ),
-                        onCompleteTask: (task) =>
-                            completeTaskAction(provider: provider, task: task),
-                        onDeleteTask: (task) =>
-                            _deleteTask(context, provider, task),
-                      );
-                    }).toList(),
+                  thumbVisibility: true,
+                  child: SingleChildScrollView(
+                    controller: scrollCtrl,
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.fromLTRB(12, 12, 12, 20),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: cols.map((col) {
+                        return KanbanColumn(
+                          col: col,
+                          tasks: _tasksFor(col, tasks),
+                          height: availableHeight - 32,
+                          onDropTask: (task) =>
+                              _moveTo(context, provider, task, col),
+                          onEditTask: (task) => editTaskAction(
+                            context: context,
+                            provider: provider,
+                            task: task,
+                          ),
+                          onCompleteTask: (task) => completeTaskAction(
+                            provider: provider,
+                            task: task,
+                          ),
+                          onDeleteTask: (task) =>
+                              _deleteTask(context, provider, task),
+                        );
+                      }).toList(),
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
       ],
     );
   }

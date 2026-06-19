@@ -34,6 +34,7 @@ import 'package:solidui/solidui.dart';
 
 import 'package:todopod/constants/app.dart';
 import 'package:todopod/services/app_provider.dart';
+import 'package:todopod/widgets/startup_overlay.dart';
 
 /// The landing page after login.
 ///
@@ -66,6 +67,10 @@ class _HomeState extends State<Home> {
   /// so the status-bar badge in [AppScaffold] reflects the new state.
 
   Future<void> _initKeys() async {
+    final provider = context.read<AppProvider>();
+    // Mark busy immediately so no screen shows an empty state before the first
+    // load completes.
+    provider.setStartupPhase(StartupPhase.unlocking);
     try {
       // Only proceed if actually logged in to a Pod.
 
@@ -75,80 +80,91 @@ class _HomeState extends State<Home> {
 
       await getKeyFromUserIfRequired(context, widget);
       if (!mounted) return;
-
-      final provider = context.read<AppProvider>();
       provider.setKeySaved(true);
+
+      // Phase 2: pull tasks from the Pod.
+      provider.setStartupPhase(StartupPhase.loading);
       await provider.loadFromPod();
-    } on Exception catch (e) {
+    } catch (e) {
+      // Catch everything (not just Exception) so an Error can't leave the app
+      // stuck on the busy indicator.
       debugPrint('[Home] key/load error: $e');
+    } finally {
+      // Always clear the busy state, however startup exited — otherwise the
+      // spinner would hang forever.
+      provider.setStartupPhase(StartupPhase.ready);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24.0),
-      child: Center(
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.checklist,
-                      size: 48,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Text(
-                        widget.title,
-                        style: Theme.of(context).textTheme.headlineMedium,
+    final phase = context.watch<AppProvider>().startupPhase;
+    return StartupOverlay(
+      phase: phase,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24.0),
+        child: Center(
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(32.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.checklist,
+                        size: 48,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                MarkdownBody(
-                  data:
-                      '## Welcome to TodoPod!\n'
-                      '\n'
-                      'TodoPod is a Trello-like task manager that stores your '
-                      'tasks encrypted in your personal Solid Pod, so your '
-                      'data stays under your control.\n'
-                      '\n'
-                      'Your Solid Pod can be hosted on any Solid server and '
-                      'being encrypted it is protected against casual access '
-                      'to your data by anyone, including the server '
-                      'administrators or anyone who might breach the server.\n'
-                      '\n'
-                      '### Key features\n'
-                      '\n'
-                      '- Tasks list ordered by priority;\n'
-                      '- Kanban boards to drag cards between '
-                      'priorities/contexts;\n'
-                      '- Planner calendar by due date with tasks marked;\n'
-                      '- Done list with one-tap restore;\n'
-                      '- Import/export of the open todo.txt format;\n'
-                      '- Share task lists with other Pod owners;\n'
-                      '- Security key management for encrypted data;\n'
-                      '- Theme switching (light / dark / system).\n'
-                      '\n'
-                      'Use the navigation menu to get started.',
-                  styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  appName,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Text(
+                          widget.title,
+                          style: Theme.of(context).textTheme.headlineMedium,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                  const SizedBox(height: 24),
+                  MarkdownBody(
+                    data:
+                        '## Welcome to TodoPod!\n'
+                        '\n'
+                        'TodoPod is a Trello-like task manager that stores your '
+                        'tasks encrypted in your personal Solid Pod, so your '
+                        'data stays under your control.\n'
+                        '\n'
+                        'Your Solid Pod can be hosted on any Solid server and '
+                        'being encrypted it is protected against casual access '
+                        'to your data by anyone, including the server '
+                        'administrators or anyone who might breach the server.\n'
+                        '\n'
+                        '### Key features\n'
+                        '\n'
+                        '- Tasks list ordered by priority;\n'
+                        '- Kanban boards to drag cards between '
+                        'priorities/contexts;\n'
+                        '- Planner calendar by due date with tasks marked;\n'
+                        '- Done list with one-tap restore;\n'
+                        '- Import/export of the open todo.txt format;\n'
+                        '- Share task lists with other Pod owners;\n'
+                        '- Security key management for encrypted data;\n'
+                        '- Theme switching (light / dark / system).\n'
+                        '\n'
+                        'Use the navigation menu to get started.',
+                    styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    appName,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

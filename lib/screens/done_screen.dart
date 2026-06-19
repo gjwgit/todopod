@@ -119,7 +119,7 @@ class _DoneScreenState extends State<DoneScreen> {
           ),
           const Divider(height: 1),
           // ── Done task list ────────────────────────────────────────────
-          if (provider.loading)
+          if (provider.busy)
             const Expanded(child: Center(child: CircularProgressIndicator()))
           else if (tasks.isEmpty)
             Expanded(

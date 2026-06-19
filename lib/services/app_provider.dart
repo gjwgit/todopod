@@ -359,6 +359,33 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// A stable content signature of the current in-memory tasks, used to detect
+  /// whether a reload from the Pod actually changed anything. Order-independent
+  /// (sorted) so a mere reordering is not reported as a change.
+  String _tasksSignature() {
+    final entries = [..._tasks, ..._done]
+        .map((t) => jsonEncode(t.toJson()))
+        .toList()
+      ..sort();
+    return entries.join('\u0001');
+  }
+
+  /// Reloads tasks from the Pod, replacing the in-memory data, and reports
+  /// whether the Pod copy differed from what was held in memory.
+  ///
+  /// Returns true if the reload changed the data (the Pod was updated by
+  /// another instance/app), false if the data was already up to date.
+  ///
+  /// This is the reusable "refresh from Pod" pattern: snapshot a signature,
+  /// reload, compare. Throws are left to the caller to surface; on error the
+  /// in-memory data is left as the reload left it and [_error] is set.
+  Future<bool> refreshFromPod() async {
+    final before = _tasksSignature();
+    await loadFromPod();
+    final after = _tasksSignature();
+    return before != after;
+  }
+
   /// When true, all pod save operations are silently skipped.
   /// Set via [loadFromContent] to keep test output clean.
   bool _testMode = false;

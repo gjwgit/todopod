@@ -363,10 +363,10 @@ class AppProvider extends ChangeNotifier {
   /// whether a reload from the Pod actually changed anything. Order-independent
   /// (sorted) so a mere reordering is not reported as a change.
   String _tasksSignature() {
-    final entries = [..._tasks, ..._done]
-        .map((t) => jsonEncode(t.toJson()))
-        .toList()
-      ..sort();
+    final entries = [
+      ..._tasks,
+      ..._done,
+    ].map((t) => jsonEncode(t.toJson())).toList()..sort();
     return entries.join('\u0001');
   }
 

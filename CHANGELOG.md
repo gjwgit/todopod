@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.0 New Secure Key Handling
 
++ Add a refresh button [1.0.5 20260619 gjw]
 + HOME uses markdown now [1.0.4 20260614 gjw]
 + Updated HOME messaging [1.0.3 20260613 gjw]
 + ADD TASK button for KANBAN page [1.0.2 20260612 gjw]

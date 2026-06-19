@@ -77,7 +77,8 @@ Future<void> handlePodRefresh({
     await _showRefreshDialog(
       context,
       title: 'Data updated',
-      message: 'Your data has been updated from changes made in your Pod '
+      message:
+          'Your data has been updated from changes made in your Pod '
           'outside this app.',
       icon: Icons.cloud_download_outlined,
       iconColor: Colors.green,
@@ -86,7 +87,8 @@ Future<void> handlePodRefresh({
     await _showRefreshDialog(
       context,
       title: 'Already up to date',
-      message: 'Your data is already up to date with your Pod. No changes were '
+      message:
+          'Your data is already up to date with your Pod. No changes were '
           'found.',
       icon: Icons.check_circle_outline,
       iconColor: Colors.blue,

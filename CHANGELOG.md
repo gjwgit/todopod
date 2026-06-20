@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.0 New Secure Key Handling
 
++ Restore refresh button [1.0.7 20260620 gjw]
 + Ensure busy animation on startup [1.0.6 20260619 gjw]
 + Add a refresh button [1.0.5 20260619 gjw]
 + HOME uses markdown now [1.0.4 20260614 gjw]

@@ -39,6 +39,7 @@ import 'package:todopod/screens/planner_screen.dart';
 import 'package:todopod/screens/settings_screen.dart';
 import 'package:todopod/screens/tasks_screen.dart';
 import 'package:todopod/services/app_provider.dart';
+import 'package:todopod/widgets/pod_refresh_action.dart';
 
 const appScaffold = AppScaffold();
 
@@ -86,6 +87,12 @@ class AppScaffold extends StatelessWidget {
             changelogUrl:
                 'https://github.com/gjwgit/todopod/blob/dev/CHANGELOG.md',
           ),
+          actions: [
+            buildPodRefreshAction(
+              context: context,
+              onRefresh: context.read<AppProvider>().refreshFromPod,
+            ),
+          ],
         ),
         menu: [
           SolidMenuItem(

@@ -367,6 +367,22 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Reusable "refresh from Pod" pattern: snapshot a signature, reload, compare.
+  /// Returns true if the data changed (Pod was updated elsewhere), false if
+  /// already current.
+  Future<bool> refreshFromPod() async {
+    if (_testMode) return false;
+    final before = _tasksSignature();
+    await loadFromPod();
+    return _tasksSignature() != before;
+  }
+
+  /// Stable content signature for change detection.
+  String _tasksSignature() => [
+    ..._tasks,
+    ..._done,
+  ].map((t) => '${t.id}:${t.completed}:${t.description}').join(',');
+
   Future<void> loadFromPod() async {
     _loading = true;
     _error = null;

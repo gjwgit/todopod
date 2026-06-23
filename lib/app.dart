@@ -1,6 +1,6 @@
 /// TodoPod — the primary [MaterialApp] widget.
 ///
-// Time-stamp: <Wednesday 2026-06-10 08:26:59 +1000 Graham Williams>
+// Time-stamp: <Wednesday 2026-06-24 07:47:34 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -61,10 +61,9 @@ class App extends StatelessWidget {
         image: const AssetImage('assets/images/app_image.jpg'),
         logo: const AssetImage('assets/images/app_icon.png'),
         link: 'https://github.com/gjwgit/todopod',
-        clientId:
-            'https://solidcommunity.au/apps/todopod/client-profile.jsonld',
+        clientId: 'https://gjwgit.github.io/todopod/client-profile.jsonld',
         redirectUris: [
-          'https://solidcommunity.au/apps/todopod/redirect.html',
+          'https://gjwgit.github.io/todopod/redirect.html',
           'com.togaware.todopod://redirect',
           'http://localhost:4400/redirect',
         ],

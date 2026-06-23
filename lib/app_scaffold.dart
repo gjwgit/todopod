@@ -28,23 +28,53 @@ library;
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:solidpod/solidpod.dart';
 import 'package:solidui/solidui.dart';
 
 import 'package:todopod/constants/app.dart';
-import 'package:todopod/home.dart';
 import 'package:todopod/screens/done_screen.dart';
 import 'package:todopod/screens/import_screen.dart';
 import 'package:todopod/screens/kanban_screen.dart';
 import 'package:todopod/screens/planner_screen.dart';
 import 'package:todopod/screens/settings_screen.dart';
 import 'package:todopod/screens/tasks_screen.dart';
-import 'package:todopod/services/app_provider.dart';
+import 'package:todopod/services/app_provider.dart'
+    show AppProvider, StartupPhase;
 import 'package:todopod/widgets/pod_refresh_action.dart';
 
 const appScaffold = AppScaffold();
 
-class AppScaffold extends StatelessWidget {
+class AppScaffold extends StatefulWidget {
   const AppScaffold({super.key});
+
+  @override
+  State<AppScaffold> createState() => _AppScaffoldState();
+}
+
+class _AppScaffoldState extends State<AppScaffold> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initKeys());
+  }
+
+  Future<void> _initKeys() async {
+    final provider = context.read<AppProvider>();
+    provider.setStartupPhase(StartupPhase.unlocking);
+    try {
+      final webId = await getWebId();
+      if (webId == null || webId.isEmpty) return;
+      if (!mounted) return;
+      await getKeyFromUserIfRequired(context, widget);
+      if (!mounted) return;
+      provider.setStartupPhase(StartupPhase.loading);
+      await provider.loadFromPod();
+    } on Exception catch (e) {
+      debugPrint('[AppScaffold] key/load error: $e');
+    } finally {
+      provider.setStartupPhase(StartupPhase.ready);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,10 +98,22 @@ class AppScaffold extends StatelessWidget {
           ''',
           text: '''
 
-          TodoPod is a Trello-like personal task manager that allows you to manage
-          your tasks as a list, a kanban, or a planner/calendar. All data is
-          stored securely and privately on your personal online data store (Pod)
-          hosted on a Solid server.
+          TodoPod is a Trello-like personal task manager that stores your tasks
+          encrypted in your personal Solid Pod, so your data stays under your
+          control. Your Solid Pod can be hosted on any Solid server and being
+          encrypted it is protected against casual access to your data by
+          anyone, including the server administrators.
+
+          ### Key features
+
+          - Tasks list ordered by priority
+          - Kanban boards to drag cards between priorities/contexts
+          - Planner calendar by due date with tasks marked
+          - Done list with one-tap restore
+          - Import/export of the open todo.txt format
+          - Share task lists with other Pod owners
+          - Security key management for encrypted data
+          - Theme switching (light / dark / system)
 
           For more information, visit the
           [TodoPod](https://github.com/gjwgit/todopod) GitHub repository and our
@@ -95,16 +137,10 @@ class AppScaffold extends StatelessWidget {
           ],
         ),
         menu: [
-          SolidMenuItem(
+          const SolidMenuItem(
             title: 'Home',
             icon: Icons.home,
-            tooltip: '**Home**\n\nWelcome page with an overview of TodoPod.',
-            child: Home(title: appTitle.split(' - ')[0]),
-          ),
-          const SolidMenuItem(
-            title: 'Tasks',
-            icon: Icons.checklist,
-            tooltip: '**Tasks**\n\nYour todo list.',
+            tooltip: '**Home**\n\nYour todo list.',
             child: TasksScreen(),
           ),
           const SolidMenuItem(

@@ -1,6 +1,6 @@
 /// TodoPod — application scaffold configuration.
 ///
-// Time-stamp: <Tuesday 2026-05-26 05:58:35 +1000 Graham Williams>
+// Time-stamp: <Sunday 2026-06-28 08:42:48 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -138,9 +138,9 @@ class _AppScaffoldState extends State<AppScaffold> {
         ),
         menu: [
           const SolidMenuItem(
-            title: 'Home',
+            title: 'Tasks',
             icon: Icons.home,
-            tooltip: '**Home**\n\nYour todo list.',
+            tooltip: '**Tasks**\n\nYour todo list.',
             child: TasksScreen(),
           ),
           const SolidMenuItem(

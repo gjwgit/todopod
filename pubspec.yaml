@@ -1,7 +1,7 @@
 name: todopod
 description: "Todo Pod - Task Management with Secure and Private Storage"
 publish_to: 'none'
-version: 1.0.8+4
+version: 1.0.9+4
 
 environment:
   sdk: ^3.11.3

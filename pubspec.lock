@@ -1069,10 +1069,10 @@ packages:
     dependency: "direct main"
     description:
       name: solidpod
-      sha256: c76c60099bbc2b77c024642daf78c1ecc64de2bbb5c9fa72cb4782c9b9296583
+      sha256: f053325b1472f784f1faad383427d512f36d25565d11aa62d24e4343cdd329b2
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.10"
+    version: "1.0.11"
   solidui:
     dependency: "direct main"
     description:

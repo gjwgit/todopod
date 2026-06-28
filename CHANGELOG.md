@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.0 New Secure Key Handling
 
++ HOME -> TASKS [1.0.9 20260628 gjw]
 + HOME -> ABOUT and TASKS -> HOME [1.0.8 20260623 gjw]
 + Restore refresh button [1.0.7 20260620 gjw]
 + Ensure busy animation on startup [1.0.6 20260619 gjw]

@@ -92,15 +92,17 @@ https://anusii.github.io/mypod/
 https://anusii.github.io/mypod/client-profile.jsonld
 https://anusii.github.io/mypod/redirect.html
 https://your-solid-server/
+https://dev.empwr.au/mypod/
 
 # 20260605 gjw Failing solid servers
 
-https://trinpod.eu/>
+https://trinpod.eu/
 
 # 20260620 gjw geopod failures
 
 https://raw.githubusercontent.com/gjwgit/geopod/dev/
 https://api.open-meteo.com/v1/forecast
+https://photon.komoot.io/api/
 
 # 20260619 gjw konapod failures
 
@@ -110,3 +112,8 @@ https://blog.kumo.dev/2024/05/22/reverse_engineering_hkg_apps.html
 
 https://papertrail.anu.edu.au/
 https://papertrail.anu.edu.au/
+
+# 20260630 gjw rattle
+
+https://www.reddit.com/r/SAI_Rattle/
+https://rdrr.io/rforge/tm/man/stopwords.html

@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.0 New Secure Key Handling
 
++ Add emacs_text_field bug fix for web [1.0.11 20260707 gjw]
 + Update soludui/solidpod dependencies [1.0.10 20260703 gjw]
 + HOME -> TASKS [1.0.9 20260628 gjw]
 + HOME -> ABOUT and TASKS -> HOME [1.0.8 20260623 gjw]

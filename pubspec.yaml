@@ -1,7 +1,7 @@
 name: todopod
 description: "Todo Pod - Task Management with Secure and Private Storage"
 publish_to: 'none'
-version: 1.0.10+4
+version: 1.0.11+4
 
 environment:
   sdk: ^3.11.3
@@ -15,7 +15,7 @@ environment:
 #   flutter pub outdated
 
 dependencies:
-  emacs_text_field: ^0.1.0
+  emacs_text_field: ^0.1.3
   file_picker: ^11.0.2
   flutter:
     sdk: flutter

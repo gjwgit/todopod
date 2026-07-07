@@ -24,6 +24,10 @@ import 'package:todopod/services/pod_service.dart';
 
 const _uuid = Uuid();
 
+/// Phases of app startup, used to show phase-aware busy feedback while the Pod
+/// is unlocked and the initial data is pulled.
+enum StartupPhase { idle, unlocking, loading, ready }
+
 /// App-level state: tasks, done tasks, sort/filter, pod sync.
 
 class AppProvider extends ChangeNotifier {
@@ -38,9 +42,32 @@ class AppProvider extends ChangeNotifier {
   String? _filterPriority;
   bool _showCompleted = false;
 
+  // Startup progress, so the UI can show phase-aware busy feedback while the
+  // app unlocks the Pod (security key) and then pulls data. Reusable pattern.
+  StartupPhase _startupPhase = StartupPhase.idle;
+
   // ── Getters ───────────────────────────────────────────────────────────────
 
   bool get loading => _loading;
+  StartupPhase get startupPhase => _startupPhase;
+
+  /// True while the app is unlocking the Pod or loading initial data.
+  bool get isStartingUp =>
+      _startupPhase == StartupPhase.unlocking ||
+      _startupPhase == StartupPhase.loading;
+
+  /// Single source of truth for "show a busy indicator, not content". True
+  /// during the security-key unlock phase, the initial load, AND any later
+  /// load. Screens should branch on this (not [loading]) so the empty state
+  /// never flashes between startup phases.
+  bool get busy => _loading || isStartingUp;
+
+  /// Sets the current startup phase and notifies listeners.
+  void setStartupPhase(StartupPhase phase) {
+    _startupPhase = phase;
+    notifyListeners();
+  }
+
   bool get isKeySaved => _isKeySaved;
   String? get error => _error;
   SortOrder get sortOrder => _sortOrder;
@@ -340,23 +367,46 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Reusable "refresh from Pod" pattern: snapshot a signature, reload, compare.
+  /// Returns true if the data changed (Pod was updated elsewhere), false if
+  /// already current.
+  Future<bool> refreshFromPod() async {
+    if (_testMode) return false;
+    final before = _tasksSignature();
+    await loadFromPod();
+    return _tasksSignature() != before;
+  }
+
+  /// Stable content signature for change detection.
+  String _tasksSignature() => [
+    ..._tasks,
+    ..._done,
+  ].map((t) => '${t.id}:${t.completed}:${t.description}').join(',');
+
   Future<void> loadFromPod() async {
     _loading = true;
     _error = null;
     notifyListeners();
 
-    final todo = await PodService.loadTasks(todoFileName);
-    final done = await PodService.loadTasks(doneFileName);
+    try {
+      final todo = await PodService.loadTasks(todoFileName);
+      final done = await PodService.loadTasks(doneFileName);
 
-    // Partition by completion status so that a completed task in todo.ttl,
-    // or an active task in done.ttl, ends up in the correct list. Bad data
-    // from earlier bugs (or hand-edited Pod files) is self-healed on load
-    // and re-saved correctly on the next save.
-    final all = [...?todo, ...?done];
-    _tasks = all.where((t) => !t.completed).toList();
-    _done = all.where((t) => t.completed).toList();
-    _loading = false;
-    notifyListeners();
+      // Partition by completion status so that a completed task in todo.ttl,
+      // or an active task in done.ttl, ends up in the correct list. Bad data
+      // from earlier bugs (or hand-edited Pod files) is self-healed on load
+      // and re-saved correctly on the next save.
+      final all = [...?todo, ...?done];
+      _tasks = all.where((t) => !t.completed).toList();
+      _done = all.where((t) => t.completed).toList();
+    } catch (e) {
+      _error = 'Could not load tasks from Pod.';
+      debugPrint('[AppProvider] loadFromPod error: $e');
+    } finally {
+      // Always clear loading so the UI can't hang on the busy indicator.
+      _loading = false;
+      notifyListeners();
+    }
   }
 
   /// When true, all pod save operations are silently skipped.

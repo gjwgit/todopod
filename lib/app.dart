@@ -1,6 +1,6 @@
 /// TodoPod — the primary [MaterialApp] widget.
 ///
-// Time-stamp: <Sunday 2026-05-31 06:25:43 +1000 Graham Williams>
+// Time-stamp: <Tuesday 2026-07-07 10:41:16 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -44,7 +44,8 @@ class App extends StatelessWidget {
     return SolidThemeApp(
       // 20260429 gjw We can manually turn off the debug banner. It is turned
       // off automatically for a `flutter --release`.
-      debugShowCheckedModeBanner: false,
+      //
+      debugShowCheckedModeBanner: true,
 
       title: appTitle,
 
@@ -60,8 +61,7 @@ class App extends StatelessWidget {
         image: const AssetImage('assets/images/app_image.jpg'),
         logo: const AssetImage('assets/images/app_icon.png'),
         link: 'https://github.com/gjwgit/todopod',
-        clientId:
-            'https://solidcommunity.au/apps/todopod/client-profile.jsonld',
+        clientId: 'https://gjwgit.github.io/todopod/client-profile.jsonld',
         redirectUris: [
           'https://todopod.solidcommunity.au/redirect.html',
           'com.togaware.todopod://redirect',

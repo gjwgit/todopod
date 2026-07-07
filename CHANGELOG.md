@@ -1,8 +1,8 @@
 # ToDoPod Change Log
 
-Noted here are the high level changes for the app.  Each update
-includes a short user-oriented description.  The next release is 0.2
-following incremental updates through the 0.1.n series.
+Noted below are the high level changes for the app.  Each update
+includes a short user-oriented description, version number, date, and
+developer.
 
 You can run the app in your
 [**browser**](https://todopod.solidcommunity.au) or else download and
@@ -36,8 +36,28 @@ then please show some ❤️ and tap on the star at
 This app is authored by [Graham
 Williams](https://togaware.com/Graham.Williams.html).
 
-## 0.2 Basic Functionality
+## 1.0 New Secure Key Handling
 
++ Update soludui/solidpod dependencies [1.0.10 20260703 gjw]
++ HOME -> TASKS [1.0.9 20260628 gjw]
++ HOME -> ABOUT and TASKS -> HOME [1.0.8 20260623 gjw]
++ Restore refresh button [1.0.7 20260620 gjw]
++ Ensure busy animation on startup [1.0.6 20260619 gjw]
++ Add a refresh button [1.0.5 20260619 gjw]
++ HOME uses markdown now [1.0.4 20260614 gjw]
++ Updated HOME messaging [1.0.3 20260613 gjw]
++ ADD TASK button for KANBAN page [1.0.2 20260612 gjw]
++ Sorting added to KANBAN [1.0.1 20260612 gjw]
++ Update solid_auth to fix token refresh bug [1.0.0 20260612 gjw]
+
+## 0.1 Basic Functionality
+
++ Add SAVE to PDF VIEW in BACKUP [0.1.48 20260612 gjw]
++ Kanban based on CONTEXT as well as PRIORITY [0.1.47 20260612 gjw]
++ NEW TASK auto decide on priority based on date [0.1.46 20260612 gjw]
++ Refine PDF generation [0.1.45 20260611 gjw]
++ SAVE button enabled on change [0.1.44 20260611 gjw]
++ Reorganise IMPORT/EXPORT as BACKUP [0.1.43 20260611 gjw]
 + Updated solidui menus to bottom [0.1.42 20260606 gjw]
 + DONE will markup any notes [0.1.41 20260602 gjw]
 + ENTER in TITLE of NEW TASK will now ADD ATSK [0.1.40 20260528 gjw]
@@ -80,7 +100,4 @@ Williams](https://togaware.com/Graham.Williams.html).
 + Support a NOTE field for entries [0.1.3 20260401 gjw]
 + Autocomplete ptoject/context [0.1.2 20260401 gjw]
 + Support basic import of Todo.txt [0.1.1 20260327 gjw]
-
-## 0.1 Initial App
-
 + Initial template app [0.1.0 20260327 gjw]

@@ -1,6 +1,6 @@
 {
   "@context": "https://www.w3.org/ns/solid/oidc-context.jsonld",
-  "client_id": "https://anusii.github.io/todopod/client-profile.jsonld",
+  "client_id": "https://gjwgit.github.io/todopod/client-profile.jsonld",
   "client_name": "TodoPod",
   "application_type": "native",
   "redirect_uris": [

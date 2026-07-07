@@ -51,6 +51,13 @@ class _PlannerScreenState extends State<PlannerScreen> {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final provider = context.watch<AppProvider>();
+
+    // Show a busy indicator during startup/loading so the calendar doesn't
+    // render before tasks are available.
+    if (provider.busy) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     final allTasks = provider.tasks;
     final eventMap = _buildEventMap(allTasks);
     final selectedTasks = _tasksForDay(eventMap, _selectedDay);

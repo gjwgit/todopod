@@ -27,6 +27,7 @@ import 'package:todopod/screens/tasks_widgets/task_filter_chips.dart';
 import 'package:todopod/screens/tasks_widgets/task_sort_button.dart';
 import 'package:todopod/services/app_provider.dart';
 import 'package:todopod/services/task_actions.dart';
+import 'package:todopod/widgets/startup_overlay.dart';
 import 'package:todopod/widgets/task_list_item.dart';
 
 class TasksScreen extends StatefulWidget {
@@ -126,6 +127,11 @@ class _TasksScreenState extends State<TasksScreen> {
   Widget build(BuildContext context) {
     final provider = context.watch<AppProvider>();
     final cs = Theme.of(context).colorScheme;
+    final phase = provider.startupPhase;
+
+    if (provider.isStartingUp) {
+      return StartupOverlay(phase: phase, child: const SizedBox.expand());
+    }
 
     final allTasks = provider.tasks;
     final tasks = _filterTasks(allTasks, _query);
@@ -212,7 +218,7 @@ class _TasksScreenState extends State<TasksScreen> {
             TaskFilterChips(provider: provider, cs: cs),
           const Divider(height: 1),
           // ── Task list ─────────────────────────────────────────────────
-          if (provider.loading)
+          if (provider.busy)
             const Expanded(child: Center(child: CircularProgressIndicator()))
           else if (tasks.isEmpty)
             Expanded(

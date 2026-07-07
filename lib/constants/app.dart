@@ -1,6 +1,6 @@
 /// TodoPod - app-wide constants.
 ///
-// Time-stamp: <Wednesday 2026-04-29 15:15:37 +1000 Graham Williams>
+// Time-stamp: <Saturday 2026-07-04 08:45:39 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -74,13 +74,6 @@ const priorityLabels = {
 const priorities = ['A', 'B', 'C', 'D', 'E', 'F'];
 
 /// Colours for each priority badge.
-///
-/// A = Red        — Now (urgent)
-/// B = DeepOrange — Today
-/// C = Teal       — This Week
-/// D = Blue       — Next Week
-/// E = Purple     — Later
-/// F = BlueGrey   — Parked
 
 const priorityColors = {
   'A': Color(0xFFC62828), // red.shade800     — Now (urgent, deep red)

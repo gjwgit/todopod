@@ -23,6 +23,8 @@ import 'package:todopod/models/task.dart';
 import 'package:todopod/pages/edit_fields/priority_due_date_row.dart';
 import 'package:todopod/pages/edit_fields/tag_list_editor.dart';
 import 'package:todopod/services/app_provider.dart';
+import 'package:todopod/utils/priority_from_due_date.dart';
+import 'package:todopod/widgets/confirm_discard_dialog.dart';
 import 'package:todopod/widgets/tag_autocomplete.dart';
 
 const _uuid = Uuid();
@@ -116,6 +118,31 @@ class _TaskEditState extends State<TaskEdit> {
     _initDueDate = _dueDate;
     _initProjects = _projects.map((c) => c.text).toList();
     _initContexts = _contexts.map((c) => c.text).toList();
+
+    // Rebuild on any text change so the Save button enables/disables live.
+    for (final c in [
+      _description,
+      _notes,
+      _duration,
+      ..._projects,
+      ..._contexts,
+    ]) {
+      c.addListener(_onFieldChanged);
+    }
+  }
+
+  // Triggers a rebuild so the Save button reflects the current change state.
+  void _onFieldChanged() {
+    if (mounted) setState(() {});
+  }
+
+  /// True when the task can be saved: there is a non-empty description AND
+  /// (for an existing task) at least one change has been made. New tasks
+  /// only require a non-empty description.
+  bool get _canSave {
+    if (_description.text.trim().isEmpty) return false;
+    if (_isNew) return true;
+    return _hasChanges;
   }
 
   @override
@@ -162,25 +189,7 @@ class _TaskEditState extends State<TaskEdit> {
       return;
     }
 
-    final discard = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Discard changes?'),
-        content: const Text(
-          'You have unsaved changes. Are you sure you want to discard them?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Keep editing'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Discard'),
-          ),
-        ],
-      ),
-    );
+    final discard = await showDiscardChangesDialog(context);
 
     if (discard == true && mounted) Navigator.of(context).pop();
   }
@@ -188,7 +197,12 @@ class _TaskEditState extends State<TaskEdit> {
   Task _buildTask() => Task(
     id: widget.task?.id ?? _uuid.v4(),
     completed: _completed,
-    priority: _priority,
+    // For a new task, derive the priority from the due date — but only if
+    // the user hasn't manually changed it from the default. If they picked
+    // a priority themselves, respect it.
+    priority: (_isNew && _priority == _initPriority)
+        ? priorityFromDueDate(_dueDate)
+        : _priority,
     creationDate: widget.task?.creationDate ?? DateTime.now(),
     description: _description.text.trim(),
     notes: _notes.text.trim().isEmpty ? null : _notes.text.trim(),
@@ -428,7 +442,9 @@ class _TaskEditState extends State<TaskEdit> {
               focusLast: _focusNewProject,
               onFocusConsumed: () => _focusNewProject = false,
               onAdd: () => setState(() {
-                _projects.add(TextEditingController());
+                _projects.add(
+                  TextEditingController()..addListener(_onFieldChanged),
+                );
                 _focusNewProject = true;
               }),
               onRemove: (i) => setState(() {
@@ -451,7 +467,9 @@ class _TaskEditState extends State<TaskEdit> {
               focusLast: _focusNewContext,
               onFocusConsumed: () => _focusNewContext = false,
               onAdd: () => setState(() {
-                _contexts.add(TextEditingController());
+                _contexts.add(
+                  TextEditingController()..addListener(_onFieldChanged),
+                );
                 _focusNewContext = true;
               }),
               onRemove: (i) => setState(() {
@@ -476,10 +494,9 @@ class _TaskEditState extends State<TaskEdit> {
             TextButton(onPressed: _confirmDiscard, child: const Text('Cancel')),
             const Spacer(),
             FilledButton(
-              onPressed: () {
-                if (_description.text.trim().isEmpty) return;
-                Navigator.of(context).pop(_buildTask());
-              },
+              onPressed: _canSave
+                  ? () => Navigator.of(context).pop(_buildTask())
+                  : null,
               child: Text(_isNew ? 'Add Task' : 'Save'),
             ),
           ],

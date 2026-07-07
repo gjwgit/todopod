@@ -48,3 +48,19 @@ void completeTaskAction({required AppProvider provider, required Task task}) {
   provider.completeTask(task.id);
   provider.saveAllToPod();
 }
+
+/// Open the editor to create a new task, add it, and persist.
+Future<void> addTaskAction({
+  required BuildContext context,
+  required AppProvider provider,
+}) async {
+  final task = await showDialog<Task>(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => const TaskEdit(),
+  );
+  if (task != null) {
+    provider.addTask(task);
+    await provider.saveTodoToPod();
+  }
+}

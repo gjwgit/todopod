@@ -61,11 +61,11 @@ class App extends StatelessWidget {
         image: const AssetImage('assets/images/app_image.jpg'),
         logo: const AssetImage('assets/images/app_icon.png'),
         link: 'https://github.com/gjwgit/todopod',
-        clientId: 'https://gjwgit.github.io/todopod/client-profile.jsonld',
+        clientId: 'https://todopod.solidcommunity.au/client-profile.jsonld',
         redirectUris: [
           'https://todopod.solidcommunity.au/redirect.html',
           'com.togaware.todopod://redirect',
-          'http://localhost:4400/redirect',
+          'http://localhost:4400/redirect.html',
         ],
         child: appScaffold,
       ),

@@ -63,7 +63,7 @@ class App extends StatelessWidget {
         clientId:
             'https://solidcommunity.au/apps/todopod/client-profile.jsonld',
         redirectUris: [
-          'https://solidcommunity.au/apps/todopod/redirect.html',
+          'https://todopod.solidcommunity.au/redirect.html',
           'com.togaware.todopod://redirect',
           'http://localhost:4400/redirect',
         ],

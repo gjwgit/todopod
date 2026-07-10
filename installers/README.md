@@ -17,8 +17,9 @@ Run the app online: [**web**](https://todopod.solidcommunity.au).
 Download the latest version:
 
 + **Android**
-  [aab](https://solidcommunity.au/installers/todopod.aab) or
-  [apk](https://solidcommunity.au/installers/todopod.apk);
+  [apk](https://solidcommunity.au/installers/todopod.apk) or
+  [aab](https://solidcommunity.au/installers/todopod.aab);
+
 + **GNU/Linux**
   [deb](https://solidcommunity.au/installers/todopod_amd64.deb) or
   [snap](https://solidcommunity.au/installers/todopod_amd64.snap) or

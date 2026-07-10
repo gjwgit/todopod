@@ -1,6 +1,6 @@
 /// TodoPod — the primary [MaterialApp] widget.
 ///
-// Time-stamp: <Tuesday 2026-07-07 10:41:16 +1000 Graham Williams>
+// Time-stamp: <Friday 2026-07-10 17:24:31 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -25,6 +25,7 @@
 
 library;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
 import 'package:solidui/solidui.dart';
@@ -62,11 +63,12 @@ class App extends StatelessWidget {
         logo: const AssetImage('assets/images/app_icon.png'),
         link: 'https://github.com/gjwgit/todopod',
         clientId: 'https://gjwgit.github.io/todopod/client-profile.jsonld',
-        redirectUris: [
-          'https://todopod.solidcommunity.au/redirect.html',
-          'com.togaware.todopod://redirect',
-          'http://localhost:4400/redirect',
-        ],
+        redirectUris: kIsWeb
+            ? ['${Uri.base.origin}/redirect.html']
+            : const [
+                'com.togaware.todopod://redirect',
+                'http://localhost:4400/redirect.html',
+              ],
         child: appScaffold,
       ),
     );

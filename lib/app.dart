@@ -25,6 +25,7 @@
 
 library;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
 import 'package:solidui/solidui.dart';
@@ -61,12 +62,13 @@ class App extends StatelessWidget {
         image: const AssetImage('assets/images/app_image.jpg'),
         logo: const AssetImage('assets/images/app_icon.png'),
         link: 'https://github.com/gjwgit/todopod',
-        clientId: 'https://todopod.solidcommunity.au/client-profile.jsonld',
-        redirectUris: [
-          'https://todopod.solidcommunity.au/redirect.html',
-          'com.togaware.todopod://redirect',
-          'http://localhost:4400/redirect.html',
-        ],
+        clientId: 'https://gjwgit.github.io/todopod/client-profile.jsonld',
+        redirectUris: kIsWeb
+            ? ['${Uri.base.origin}/redirect.html']
+            : const [
+                'com.togaware.todopod://redirect',
+                'http://localhost:4400/redirect.html',
+              ],
         child: appScaffold,
       ),
     );

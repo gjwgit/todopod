@@ -57,7 +57,7 @@ AU](https://solidcommunity.au) repository:
   [dmg](https://solidcommunity.au/installers/todopod-macos.dmg) or
   [zip](https://solidcommunity.au/installers/todopod-macos.zip);
 + **Windows**
-  [inno](https://solidcommunity.au/installers/todopod-windows-inno.exe) or
+  [exe](https://solidcommunity.au/installers/todopod-windows-inno.exe) or
   [zip](https://solidcommunity.au/installers/todopod-windows.zip).
 
 [Installation

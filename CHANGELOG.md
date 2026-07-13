@@ -20,7 +20,7 @@ AU](https://solidcommunity.au) or directly:
 [dmg](https://solidcommunity.au/installers/todopod-macos.dmg) or
 [zip](https://solidcommunity.au/installers/todopod-macos.zip);
 + **Windows** as
-[inno](https://solidcommunity.au/installers/todopod-windows-inno.exe)
+[exe](https://solidcommunity.au/installers/todopod-windows-inno.exe)
 or [zip](https://solidcommunity.au/installers/todopod-windows.zip).
 
 Contributions are welcome. Visit

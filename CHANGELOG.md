@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.0 New Secure Key Handling
 
++ BACKUP -> Export [1.0.14 20260717 gjw]
 + OIDC update for chrome/web [1.0.13 20260713 tonypioneer]
 + Updated oidc and appid handling [1.0.12 20260710 gjw]
 + Add emacs_text_field bug fix for web [1.0.11 20260707 gjw]

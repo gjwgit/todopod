@@ -336,9 +336,9 @@ jobs:
 
   package-macos-dmg-zip-original:
     if: |
-      contains(github.event.head_commit.message, 'bump version') ||
-      contains(github.event.head_commit.message, 'build installers') ||
-      contains(github.event.head_commit.message, 'build macos basic')
+      contains(github.event.head_commit.message, 'bump version x') ||
+      contains(github.event.head_commit.message, 'build installers x') ||
+      contains(github.event.head_commit.message, 'build macos original')
 
     # Later versions of macos (macos-15 and macos-latest) complain:
     # Error: Xcode failed to resolve Swift Package Manager dependencies

@@ -1,6 +1,6 @@
 /// ImportScreen — import from todo.txt / JSON and export backups.
 ///
-// Time-stamp: <Thursday 2026-06-11 20:52:13 +1000 Graham Williams>
+// Time-stamp: <Friday 2026-07-17 09:02:35 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -85,7 +85,7 @@ class _ImportScreenState extends State<ImportScreen> {
         children: [
           // ── Backup & Restore ────────────────────────────────────────
           Text(
-            'Backup & Restore',
+            'Export & Restore JSON',
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const Gap(8),
@@ -107,7 +107,7 @@ class _ImportScreenState extends State<ImportScreen> {
             children: [
               MarkdownTooltip(
                 message:
-                    '**Export Backup**\n\n'
+                    '**Export JSON**\n\n'
                     'Save all '
                     '${provider.tasks.length + provider.doneTasks.length} '
                     'tasks (active and completed) to a todopod JSON backup '
@@ -115,20 +115,20 @@ class _ImportScreenState extends State<ImportScreen> {
                     'restore everything later.',
                 child: FilledButton.icon(
                   icon: const Icon(Icons.download),
-                  label: const Text('Export Backup'),
+                  label: const Text('Export JSON'),
                   onPressed: _loading ? null : () => _exportJson(context),
                 ),
               ),
               const Gap(12),
               MarkdownTooltip(
                 message:
-                    '**Import Backup**\n\n'
+                    '**Import JSON**\n\n'
                     'Restore tasks from a previously saved todopod JSON '
                     'backup file. Restored tasks are merged with your '
                     'existing task list.',
                 child: OutlinedButton.icon(
                   icon: const Icon(Icons.upload),
-                  label: const Text('Import Backup'),
+                  label: const Text('Import JSON'),
                   onPressed: _loading
                       ? null
                       : () => _import(
@@ -382,7 +382,10 @@ class _ImportScreenState extends State<ImportScreen> {
     });
     try {
       if (kIsWeb) {
-        _setBackupMsg('Backup to file is not supported on web.', error: true);
+        _setBackupMsg(
+          'Export to JSON file is not supported on web.',
+          error: true,
+        );
         return;
       }
       final path = await saveTasksJsonBackup(
@@ -390,10 +393,10 @@ class _ImportScreenState extends State<ImportScreen> {
         done: provider.doneTasks,
         timestamp: _ts(DateTime.now()),
       );
-      if (path != null) _setBackupMsg('Backup saved to $path');
+      if (path != null) _setBackupMsg('JSON saved to $path');
     } catch (e, st) {
       debugPrint('[ExportJSON] error: $e\n$st');
-      _setBackupMsg('Backup failed: $e', error: true);
+      _setBackupMsg('Export to JSON failed: $e', error: true);
     } finally {
       setState(() => _loading = false);
     }

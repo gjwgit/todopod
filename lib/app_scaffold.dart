@@ -1,6 +1,6 @@
 /// TodoPod — application scaffold configuration.
 ///
-// Time-stamp: <Sunday 2026-06-28 08:42:48 +1000 Graham Williams>
+// Time-stamp: <Friday 2026-07-17 09:00:52 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -169,11 +169,11 @@ class _AppScaffoldState extends State<AppScaffold> {
             child: DoneScreen(),
           ),
           const SolidMenuItem(
-            title: 'Backup',
+            title: 'Export/Import',
             icon: Icons.save_alt,
             tooltip:
-                '**Backup**\n\n'
-                'Back up and restore all tasks, or import and export '
+                '**Export/Import**\n\n'
+                'Export and import all tasks to/from JSON, or import and export '
                 'Todo.txt files.',
             child: ImportScreen(),
           ),

@@ -1,6 +1,6 @@
 /// ImportScreen — import from todo.txt / JSON and export backups.
 ///
-// Time-stamp: <Friday 2026-07-17 09:02:35 +1000 Graham Williams>
+// Time-stamp: <Saturday 2026-07-18 20:52:05 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -91,7 +91,9 @@ class _ImportScreenState extends State<ImportScreen> {
           const Gap(8),
           Text(
             'Save a complete JSON backup of all your tasks, or restore '
-            'everything from a previously saved backup file.',
+            'everything from a previously saved backup file. '
+            'Also note the encrypted backup option available through '
+            'your profile menu.',
             style: TextStyle(color: cs.onSurfaceVariant),
           ),
           if (_backupMessage != null) ...[

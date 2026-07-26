@@ -35,6 +35,7 @@ import 'package:todopod/constants/app.dart';
 import 'package:todopod/screens/done_screen.dart';
 import 'package:todopod/screens/import_screen.dart';
 import 'package:todopod/screens/kanban_screen.dart';
+import 'package:todopod/screens/overdue_screen.dart';
 import 'package:todopod/screens/planner_screen.dart';
 import 'package:todopod/screens/settings_screen.dart';
 import 'package:todopod/screens/tasks_screen.dart';
@@ -109,6 +110,7 @@ class _AppScaffoldState extends State<AppScaffold> {
           - Tasks list ordered by priority
           - Kanban boards to drag cards between priorities/contexts
           - Planner calendar by due date with tasks marked
+          - Overdue list of tasks whose due date has passed
           - Done list with one-tap restore
           - Import/export of the open todo.txt format
           - Share task lists with other Pod owners
@@ -160,6 +162,16 @@ class _AppScaffoldState extends State<AppScaffold> {
                 'Calendar view of tasks by due date. '
                 'Tap a day to see what is due.',
             child: PlannerScreen(),
+          ),
+          const SolidMenuItem(
+            title: 'Overdue',
+            icon: Icons.event_busy,
+            tooltip:
+                '**Overdue**\n\n'
+                'Tasks whose due date has passed and that are not yet done, '
+                'oldest first. Tap a task to reschedule or edit it, or tap the '
+                'checkbox to mark it done.',
+            child: OverdueScreen(),
           ),
           const SolidMenuItem(
             title: 'Done',

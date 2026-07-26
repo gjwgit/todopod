@@ -1,6 +1,6 @@
 /// ImportScreen — import from todo.txt / JSON and export backups.
 ///
-// Time-stamp: <Saturday 2026-07-18 20:52:05 +1000 Graham Williams>
+// Time-stamp: <Sunday 2026-07-19 06:03:32 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -90,10 +90,11 @@ class _ImportScreenState extends State<ImportScreen> {
           ),
           const Gap(8),
           Text(
-            'Save a complete JSON backup of all your tasks, or restore '
-            'everything from a previously saved backup file. '
-            'Also note the encrypted backup option available through '
-            'your profile menu.',
+            'Here you can save a complete decrypted JSON backup of all your '
+            'tasks, and then restore from a previously saved JSON file. '
+            'An encrypted backup to your local device is available through '
+            'your profile menu and an encrypted backup within your Data Vault '
+            'is available through the MyPod app.',
             style: TextStyle(color: cs.onSurfaceVariant),
           ),
           if (_backupMessage != null) ...[

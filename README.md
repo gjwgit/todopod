@@ -104,7 +104,7 @@ The typical workflow is:
 
 ---
 
-## The six screens
+## The seven screens
 
 A left-hand menu (or bottom navigation on narrow screens) gives you:
 
@@ -128,6 +128,13 @@ A calendar view of tasks by due date. Tap a day to see what is due
 that day. Good for spotting a heavy week ahead.
 
 ![Planner view](./assets/screenshots/planner_view.png)
+
+### Overdue
+
+Tasks whose due date has passed and that are not yet done, oldest
+first, each labelled with how late it is. Tap a task to reschedule or
+edit it, or tap the checkbox to mark it done. A task due today is not
+overdue — there is still time.
 
 ### Done
 

@@ -21,6 +21,7 @@ import 'package:todopod/models/sort_order.dart';
 import 'package:todopod/models/task.dart';
 import 'package:todopod/models/task_parser.dart';
 import 'package:todopod/services/pod_service.dart';
+import 'package:todopod/utils/overdue.dart';
 
 const _uuid = Uuid();
 
@@ -86,6 +87,17 @@ class AppProvider extends ChangeNotifier {
 
   List<Task> get tasks => _sorted(_filtered(_tasks));
   List<Task> get doneTasks => _done;
+
+  /// Active tasks whose due date has already passed, earliest due date first.
+  ///
+  /// Drives the Overdue screen. Deliberately built from the raw active list and
+  /// NOT from [tasks], so the Tasks screen's current sort and filter choices
+  /// can never hide overdue work. Completed tasks are excluded — once done, a
+  /// task belongs on the Done screen regardless of its due date.
+
+  List<Task> get overdueTasks =>
+      _tasks.where((t) => isOverdue(t.dueDate)).toList()
+        ..sort((a, b) => a.dueDate!.compareTo(b.dueDate!));
 
   /// All unique projects across active tasks.
   List<String> get allProjects =>

@@ -25,6 +25,10 @@ class ReorderableTaskItem extends StatelessWidget {
   final Task task;
   final bool showHeader;
   final bool isFirstHeader;
+
+  /// Number of tasks in this task's priority section, shown in the header.
+
+  final int? headerCount;
   final VoidCallback onTap;
   final ValueChanged<bool?> onComplete;
   final VoidCallback? onDelete;
@@ -36,6 +40,7 @@ class ReorderableTaskItem extends StatelessWidget {
     required this.task,
     required this.showHeader,
     this.isFirstHeader = false,
+    this.headerCount,
     required this.onTap,
     required this.onComplete,
     this.onDelete,
@@ -55,6 +60,7 @@ class ReorderableTaskItem extends StatelessWidget {
             priority: task.priority,
             cs: cs,
             showDivider: !isFirstHeader,
+            count: headerCount,
           ),
         Dismissible(
           key: ValueKey('dismiss-${task.id}'),

@@ -17,18 +17,27 @@ class PriorityHeader extends StatelessWidget {
   final ColorScheme cs;
   final bool showDivider;
 
+  /// Number of tasks in this section, appended to the label. Omitted when
+  /// null, so callers that have no count still render a plain header.
+
+  final int? count;
+
   const PriorityHeader({
     super.key,
     required this.priority,
     required this.cs,
     this.showDivider = true,
+    this.count,
   });
 
   @override
   Widget build(BuildContext context) {
-    final label = priority != null
+    final name = priority != null
         ? '$priority — ${priorityLabels[priority] ?? priority}'
         : 'No Priority';
+    final label = count == null
+        ? name
+        : '$name — $count task${count == 1 ? '' : 's'}';
     final color = priority != null
         ? (priorityColors[priority] ?? cs.primary)
         : cs.onSurfaceVariant;

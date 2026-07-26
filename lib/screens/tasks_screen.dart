@@ -136,6 +136,15 @@ class _TasksScreenState extends State<TasksScreen> {
     final allTasks = provider.tasks;
     final tasks = _filterTasks(allTasks, _query);
 
+    // Tasks per priority in the VISIBLE list, so each section header can show
+    // its own count. Counted from the filtered list, not all tasks, so the
+    // number always matches what is on screen.
+
+    final sectionCounts = <String?, int>{};
+    for (final t in tasks) {
+      sectionCounts[t.priority] = (sectionCounts[t.priority] ?? 0) + 1;
+    }
+
     return Scaffold(
       body: Column(
         children: [
@@ -249,6 +258,7 @@ class _TasksScreenState extends State<TasksScreen> {
                     task: task,
                     showHeader: showHeader,
                     isFirstHeader: showHeader && i == 0,
+                    headerCount: sectionCounts[task.priority],
                     onTap: () => editTaskAction(
                       context: context,
                       provider: provider,

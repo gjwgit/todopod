@@ -134,7 +134,9 @@ that day. Good for spotting a heavy week ahead.
 Tasks whose due date has passed and that are not yet done, oldest
 first, each labelled with how late it is. Tap a task to reschedule or
 edit it, or tap the checkbox to mark it done. A task due today is not
-overdue — there is still time.
+overdue — there is still time. Use the reverse-order button to list the
+most recently overdue tasks first; the choice is remembered on this
+device.
 
 ### Done
 

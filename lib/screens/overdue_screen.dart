@@ -18,6 +18,7 @@ import 'package:provider/provider.dart';
 
 import 'package:todopod/services/app_provider.dart';
 import 'package:todopod/services/task_actions.dart';
+import 'package:todopod/services/view_prefs.dart';
 import 'package:todopod/utils/overdue.dart';
 import 'package:todopod/widgets/task_tile.dart';
 
@@ -29,11 +30,43 @@ class OverdueScreen extends StatefulWidget {
 }
 
 class _OverdueScreenState extends State<OverdueScreen> {
-  /// Sort direction for the list. Defaults to oldest due date first, so the
-  /// longest-overdue task is at the top. A view preference only — held here
-  /// rather than in AppProvider, so it is not persisted to the Pod.
+  /// Sort direction for the list. Starts oldest due date first, so the
+  /// longest-overdue task is at the top, then follows whatever direction was
+  /// last chosen on this device. A view preference only — kept in
+  /// SharedPreferences via ViewPrefs, never written to the Pod.
 
   bool _oldestFirst = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _restoreSortOrder();
+  }
+
+  /// Restore the last-chosen direction. The list paints immediately with the
+  /// default and flips once the stored preference arrives, so there is no
+  /// spinner for a single bool.
+
+  Future<void> _restoreSortOrder() async {
+    final oldestFirst = await ViewPrefs.getBool(
+      ViewPrefs.overdueOldestFirst,
+      orElse: true,
+    );
+    if (!mounted || oldestFirst == _oldestFirst) return;
+
+    setState(() => _oldestFirst = oldestFirst);
+  }
+
+  /// Reverse the direction and remember the choice.
+  ///
+  /// Saved here, on the toggle itself, rather than in dispose — Linux desktop
+  /// lifecycle callbacks are unreliable on window close.
+
+  Future<void> _toggleSortOrder() async {
+    final oldestFirst = !_oldestFirst;
+    setState(() => _oldestFirst = oldestFirst);
+    await ViewPrefs.setBool(ViewPrefs.overdueOldestFirst, oldestFirst);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,9 +104,7 @@ class _OverdueScreenState extends State<OverdueScreen> {
                   child: IconButton(
                     icon: const Icon(Icons.swap_vert, size: 20),
                     visualDensity: VisualDensity.compact,
-                    onPressed: canReverse
-                        ? () => setState(() => _oldestFirst = !_oldestFirst)
-                        : null,
+                    onPressed: canReverse ? _toggleSortOrder : null,
                   ),
                 ),
               ],

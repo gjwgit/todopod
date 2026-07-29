@@ -150,8 +150,11 @@ class _PlannerScreenState extends State<PlannerScreen> {
                       provider: provider,
                       task: t,
                     ),
-                    onComplete: () =>
-                        completeTaskAction(provider: provider, task: t),
+                    onComplete: () => completeTaskAction(
+                      context: context,
+                      provider: provider,
+                      task: t,
+                    ),
                   ),
                 ),
 
@@ -180,8 +183,11 @@ class _PlannerScreenState extends State<PlannerScreen> {
                       provider: provider,
                       task: t,
                     ),
-                    onComplete: () =>
-                        completeTaskAction(provider: provider, task: t),
+                    onComplete: () => completeTaskAction(
+                      context: context,
+                      provider: provider,
+                      task: t,
+                    ),
                   ),
                 ),
             ],

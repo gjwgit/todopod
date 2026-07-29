@@ -225,6 +225,7 @@ class _KanbanScreenState extends State<KanbanScreen> {
                             task: task,
                           ),
                           onCompleteTask: (task) => completeTaskAction(
+                            context: context,
                             provider: provider,
                             task: task,
                           ),

@@ -73,6 +73,29 @@ const priorityLabels = {
 
 const priorities = ['A', 'B', 'C', 'D', 'E', 'F'];
 
+/// SnackBar colours.
+///
+/// Deliberately understated: a soft pastel BAR carrying near-black text,
+/// rather than a saturated theme colour. Tune these to restyle every
+/// SnackBar. A negative/orange bar colour goes here when one is first needed.
+
+const snackBarPositive = Color(0xFFC8E6C9); // green.shade100 — bar colour
+const snackBarInk = Color(0xFF1B1B1B); // near-black text on a pastel bar
+
+/// How long a SnackBar stays on screen.
+///
+/// One standard time for every message, matching Flutter's own default.
+/// Do NOT extend it for an Undo action — the button rides along for the
+/// standard time and then the bar gets out of the way.
+
+const snackBarDuration = Duration(seconds: 4);
+
+/// Surface and text for a SnackBar with no positive or negative sense, e.g.
+/// one built directly rather than through app_snack_bar.dart.
+
+const snackBarSurface = Color(0xFF212121); // grey.shade900
+const snackBarNeutral = Color(0xFFE0E0E0); // grey.shade300
+
 /// Colours for each priority badge.
 
 const priorityColors = {

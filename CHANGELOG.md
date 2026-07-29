@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.0 New Secure Key Handling
 
++ Use softer snackbar colours and update tooltips [1.0.19 20260729 gjw]
 + Remember order for OVERDUE [1.0.18 20260728 gjw]
 + Add task counts to TASKS screen [1.0.17 20260726 gjw]
 + Add OVERDUE screen [1.0.16 20260726 gjw]

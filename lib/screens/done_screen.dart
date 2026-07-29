@@ -20,6 +20,7 @@ import 'package:provider/provider.dart';
 import 'package:todopod/models/task.dart';
 import 'package:todopod/screens/done_widgets/done_tile.dart';
 import 'package:todopod/services/app_provider.dart';
+import 'package:todopod/widgets/app_snack_bar.dart';
 
 class DoneScreen extends StatefulWidget {
   const DoneScreen({super.key});
@@ -165,18 +166,14 @@ class _DoneScreenState extends State<DoneScreen> {
   void _uncomplete(Task task, AppProvider provider) {
     provider.uncompleteTask(task.id);
     provider.saveAllToPod();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('"${task.description}" moved back to active.'),
-        duration: const Duration(seconds: 5),
-        action: SnackBarAction(
-          label: 'Undo',
-          onPressed: () {
-            provider.completeTask(task.id);
-            provider.saveAllToPod();
-          },
-        ),
-      ),
+    showPositiveSnackBar(
+      context,
+      '"${task.description}" moved back to active.',
+      actionLabel: 'Undo',
+      onAction: () {
+        provider.completeTask(task.id);
+        provider.saveAllToPod();
+      },
     );
   }
 

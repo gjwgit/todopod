@@ -133,6 +133,7 @@ class _OverdueScreenState extends State<OverdueScreen> {
                           task: tasks[i],
                         ),
                         onComplete: (_) => completeTaskAction(
+                          context: context,
                           provider: provider,
                           task: tasks[i],
                         ),

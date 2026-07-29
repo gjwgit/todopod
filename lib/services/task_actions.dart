@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:todopod/models/task.dart';
 import 'package:todopod/pages/task_edit.dart';
 import 'package:todopod/services/app_provider.dart';
+import 'package:todopod/widgets/app_snack_bar.dart';
 
 /// Open the task editor for [task], save any returned changes, and persist
 /// to the Pod.
@@ -44,9 +45,29 @@ Future<void> editTaskAction({
 }
 
 /// Mark [task] complete (moves it from active to done) and persist.
-void completeTaskAction({required AppProvider provider, required Task task}) {
+///
+/// Confirms with a SnackBar offering Restore, which puts the task straight
+/// back on the active list — the same wording the Done screen uses for the
+/// same operation. Shown here rather than at each call site so Tasks,
+/// Overdue, Planner and Kanban all behave identically. The bar auto-dismisses
+/// whether or not Restore is used.
+void completeTaskAction({
+  required BuildContext context,
+  required AppProvider provider,
+  required Task task,
+}) {
   provider.completeTask(task.id);
   provider.saveAllToPod();
+
+  showPositiveSnackBar(
+    context,
+    '"${task.description}" marked done.',
+    actionLabel: 'Restore',
+    onAction: () {
+      provider.uncompleteTask(task.id);
+      provider.saveAllToPod();
+    },
+  );
 }
 
 /// Open the editor to create a new task, add it, and persist.

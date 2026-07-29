@@ -48,10 +48,29 @@ class TaskTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Checkbox
-            Checkbox(
-              value: isDone,
-              onChanged: isDone ? null : onComplete,
-              shape: const CircleBorder(),
+            MarkdownTooltip(
+              message: isDone
+                  ? '''
+
+**Task Done**
+
+This task is already complete. Restore it from the Done screen if you need
+it back on the active list.
+
+'''
+                  : '''
+
+**Mark Done**
+
+Complete this task. It moves to the Done list, and the confirmation offers
+*Restore* if you change your mind.
+
+''',
+              child: Checkbox(
+                value: isDone,
+                onChanged: isDone ? null : onComplete,
+                shape: const CircleBorder(),
+              ),
             ),
             const Gap(4),
             Expanded(
@@ -138,7 +157,6 @@ class TaskTile extends StatelessWidget {
                     color: Colors.red.withValues(alpha: 0.6),
                   ),
                   visualDensity: VisualDensity.compact,
-                  tooltip: 'Delete task',
                   onPressed: onDelete,
                 ),
               ),

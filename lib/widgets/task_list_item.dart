@@ -91,8 +91,14 @@ class ReorderableTaskItem extends StatelessWidget {
                 ),
               ),
               MarkdownTooltip(
-                message:
-                    '**Delete task**\n\nSwipe left on the task to delete it.',
+                message: '''
+
+**Reorder Task**
+
+Drag this handle to move the task within its priority group. To delete a
+task instead, swipe it to the left.
+
+''',
                 child: ReorderableDragStartListener(
                   index: index,
                   child: Padding(

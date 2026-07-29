@@ -53,6 +53,20 @@ class App extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF3A6B3A)),
         useMaterial3: true,
+
+        // 20260729 gjw Understated SnackBars: floating, rounded, and quiet.
+        // This is the neutral fallback for a SnackBar built directly; the
+        // helpers in lib/widgets/app_snack_bar.dart override the background
+        // with a soft green or orange bar.
+        snackBarTheme: const SnackBarThemeData(
+          backgroundColor: snackBarSurface,
+          contentTextStyle: TextStyle(color: snackBarNeutral, fontSize: 14),
+          behavior: SnackBarBehavior.floating,
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+        ),
       ),
 
       home: SolidLogin(

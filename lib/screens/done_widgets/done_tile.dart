@@ -160,8 +160,15 @@ class DoneTile extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Tooltip(
-              message: 'Mark as active again',
+            MarkdownTooltip(
+              message: '''
+
+**Restore Task**
+
+Mark this task as active again. It moves back to the Tasks list with its
+priority, dates and tags intact.
+
+''',
               child: Checkbox(
                 value: true,
                 onChanged: (_) => onUncomplete(),
@@ -207,9 +214,14 @@ class DoneTile extends StatelessWidget {
               ),
             ),
             MarkdownTooltip(
-              message:
-                  '**Delete permanently**\n\n'
-                  'Remove this task from the Done list. This cannot be undone.',
+              message: '''
+
+**Delete Permanently**
+
+Remove this task from the Done list. This cannot be undone, so use *Restore*
+instead if you only want it back on the active list.
+
+''',
               child: IconButton(
                 icon: Icon(Icons.delete_outline, size: 18, color: cs.error),
                 onPressed: onDelete,

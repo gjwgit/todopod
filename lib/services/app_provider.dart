@@ -227,7 +227,9 @@ class AppProvider extends ChangeNotifier {
   /// section automatically changes the task's priority to match.
 
   void reorderTask(int oldIndex, int newIndex, {List<Task>? visibleTasks}) {
-    if (oldIndex < newIndex) newIndex--;
+    // The screen wires this to ReorderableListView's onReorderItem, which
+    // (unlike the deprecated onReorder) already adjusts newIndex for the
+    // removed item — do not subtract 1 again here.
     if (oldIndex == newIndex) return;
 
     // Use the caller-supplied visible list (which may be further filtered by

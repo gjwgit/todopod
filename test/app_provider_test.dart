@@ -366,8 +366,9 @@ void main() {
       p.addTask(makeTask(id: 'b', description: 'Second'));
       p.addTask(makeTask(id: 'c', description: 'Third'));
 
-      // Visible order: [c, b, a] — move index 0 (c) to end (index 3).
-      p.reorderTask(0, 3);
+      // Visible order: [c, b, a] — move index 0 (c) to end (index 2, the
+      // already-adjusted newIndex that onReorderItem delivers post-removal).
+      p.reorderTask(0, 2);
 
       final ids = p.tasks.map((t) => t.id).toList();
       expect(ids, ['b', 'a', 'c']);
@@ -384,8 +385,9 @@ void main() {
       final allTasks = p.tasks;
       // Pass subset: first and third items [c, a] as the visible list.
       final visible = [allTasks[0], allTasks[2]]; // c and a
-      // Move index 0 (c) to after index 1 (a) — index 2 in ReorderableListView.
-      p.reorderTask(0, 2, visibleTasks: visible);
+      // Move index 0 (c) to after index 1 (a) — index 1 is the
+      // already-adjusted newIndex onReorderItem delivers post-removal.
+      p.reorderTask(0, 1, visibleTasks: visible);
 
       // 'c' should now come after 'a' in the full list.
       final ids = p.tasks.map((t) => t.id).toList();

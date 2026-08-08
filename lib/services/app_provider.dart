@@ -447,8 +447,14 @@ class AppProvider extends ChangeNotifier {
     return err;
   }
 
-  Future<void> saveAllToPod() async {
-    await saveTodoToPod();
-    await saveDoneToPod();
+  /// Saves both lists, returning the first error message, or null on success.
+  ///
+  /// Both halves are always attempted; the errors are not swallowed here so
+  /// that an unawaited caller can hand the failure to `SolidWriteFailures`.
+
+  Future<String?> saveAllToPod() async {
+    final todoErr = await saveTodoToPod();
+    final doneErr = await saveDoneToPod();
+    return todoErr ?? doneErr;
   }
 }

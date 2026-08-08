@@ -335,7 +335,16 @@ class _ImportScreenState extends State<ImportScreen> {
         return;
       }
       provider.importTasks(tasks);
-      await provider.saveAllToPod();
+      final saveError = await provider.saveAllToPod();
+      if (saveError != null) {
+        // Do not claim success: the tasks are listed but not on the Pod.
+        setMsg(
+          '${backup ? 'Restore' : 'Import'} failed to save: $saveError',
+          error: true,
+        );
+
+        return;
+      }
       setMsg(
         '${backup ? 'Restored' : 'Imported'} ${tasks.length} '
         'task${tasks.length == 1 ? '' : 's'} from "${file.name}".',

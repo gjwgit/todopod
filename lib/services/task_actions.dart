@@ -14,6 +14,8 @@ library;
 
 import 'package:flutter/material.dart';
 
+import 'package:solidui/solidui.dart';
+
 import 'package:todopod/models/task.dart';
 import 'package:todopod/pages/task_edit.dart';
 import 'package:todopod/services/app_provider.dart';
@@ -41,7 +43,10 @@ Future<void> editTaskAction({
       focusField: focusField,
       onSave: (updated) async {
         provider.updateTask(updated);
-        await provider.saveAllToPod();
+        SolidWriteFailures.reportIfFailed(
+          await provider.saveAllToPod(),
+          during: 'saving the task',
+        );
       },
     ),
   );
@@ -60,7 +65,10 @@ void completeTaskAction({
   required Task task,
 }) {
   provider.completeTask(task.id);
-  provider.saveAllToPod();
+  SolidWriteFailures.watch(
+    provider.saveAllToPod(),
+    during: 'marking the task done',
+  );
 
   showPositiveSnackBar(
     context,
@@ -68,7 +76,10 @@ void completeTaskAction({
     actionLabel: 'Restore',
     onAction: () {
       provider.uncompleteTask(task.id);
-      provider.saveAllToPod();
+      SolidWriteFailures.watch(
+        provider.saveAllToPod(),
+        during: 'restoring the task',
+      );
     },
   );
 }
@@ -84,7 +95,10 @@ Future<void> addTaskAction({
     builder: (_) => TaskEdit(
       onSave: (task) async {
         provider.addTask(task);
-        await provider.saveTodoToPod();
+        SolidWriteFailures.reportIfFailed(
+          await provider.saveTodoToPod(),
+          during: 'adding the task',
+        );
       },
     ),
   );

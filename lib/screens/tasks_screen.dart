@@ -17,6 +17,7 @@ import 'package:emacs_text_field/emacs_text_field.dart'
 import 'package:gap/gap.dart';
 import 'package:markdown_tooltip/markdown_tooltip.dart';
 import 'package:provider/provider.dart';
+import 'package:solidui/solidui.dart';
 
 import 'package:todopod/models/sort_order.dart';
 import 'package:todopod/models/task.dart';
@@ -244,7 +245,10 @@ class _TasksScreenState extends State<TasksScreen> {
                 buildDefaultDragHandles: false,
                 onReorderItem: (oldIndex, newIndex) {
                   provider.reorderTask(oldIndex, newIndex, visibleTasks: tasks);
-                  provider.saveTodoToPod();
+                  SolidWriteFailures.watch(
+                    provider.saveTodoToPod(),
+                    during: 'reordering tasks',
+                  );
                 },
                 itemCount: tasks.length,
                 itemBuilder: (context, i) {
@@ -307,7 +311,13 @@ class _TasksScreenState extends State<TasksScreen> {
         // this fired even when the editor was cancelled.
         onSave: (task) async {
           provider.addTask(task);
-          await provider.saveTodoToPod();
+          final error = await provider.saveTodoToPod();
+          if (error != null) {
+            // Do not confirm success: the task is listed but not on the Pod.
+            SolidWriteFailures.reportIfFailed(error, during: 'adding the task');
+
+            return;
+          }
           if (!context.mounted) return;
           showPositiveSnackBar(context, 'Task added');
         },
@@ -328,7 +338,10 @@ class _TasksScreenState extends State<TasksScreen> {
         initialTitle: title,
         onSave: (task) async {
           provider.addTask(task);
-          await provider.saveTodoToPod();
+          SolidWriteFailures.reportIfFailed(
+            await provider.saveTodoToPod(),
+            during: 'adding the task',
+          );
           // Clear search only after a task was actually saved.
           _search.clear();
           setState(() => _query = '');
@@ -341,6 +354,9 @@ class _TasksScreenState extends State<TasksScreen> {
 
   void _deleteTask(Task task, AppProvider provider) {
     provider.deleteTask(task.id);
-    provider.saveTodoToPod();
+    SolidWriteFailures.watch(
+      provider.saveTodoToPod(),
+      during: 'deleting the task',
+    );
   }
 }

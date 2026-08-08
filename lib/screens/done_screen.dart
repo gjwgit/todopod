@@ -16,6 +16,7 @@ import 'package:emacs_text_field/emacs_text_field.dart'
     show attachPrimarySelection;
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
+import 'package:solidui/solidui.dart';
 
 import 'package:todopod/models/task.dart';
 import 'package:todopod/screens/done_widgets/done_tile.dart';
@@ -165,14 +166,20 @@ class _DoneScreenState extends State<DoneScreen> {
 
   void _uncomplete(Task task, AppProvider provider) {
     provider.uncompleteTask(task.id);
-    provider.saveAllToPod();
+    SolidWriteFailures.watch(
+      provider.saveAllToPod(),
+      during: 'restoring the task',
+    );
     showPositiveSnackBar(
       context,
       '"${task.description}" moved back to active.',
       actionLabel: 'Undo',
       onAction: () {
         provider.completeTask(task.id);
-        provider.saveAllToPod();
+        SolidWriteFailures.watch(
+          provider.saveAllToPod(),
+          during: 'marking the task done',
+        );
       },
     );
   }
@@ -202,7 +209,10 @@ class _DoneScreenState extends State<DoneScreen> {
     ).then((confirmed) {
       if (confirmed == true) {
         provider.deleteDoneTask(task.id);
-        provider.saveDoneToPod();
+        SolidWriteFailures.watch(
+          provider.saveDoneToPod(),
+          during: 'deleting the task',
+        );
       }
     });
   }
@@ -233,7 +243,10 @@ class _DoneScreenState extends State<DoneScreen> {
     ).then((confirmed) {
       if (confirmed == true) {
         provider.clearDone();
-        provider.saveDoneToPod();
+        SolidWriteFailures.watch(
+          provider.saveDoneToPod(),
+          during: 'clearing completed tasks',
+        );
       }
     });
   }

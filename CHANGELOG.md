@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.0 New Secure Key Handling
 
++ Report failed task saves instead of failing silently [1.0.23 20260808 gjw]
 + Wait for in-flight Pod writes before closing [1.0.22 20260808 gjw]
 + Prompt to save unsaved task on window close [1.0.21 20260808 gjw]
 + Fix drag to reorder skipping adjacent moves [1.0.20 20260808 gjw]

@@ -83,7 +83,11 @@ class App extends StatelessWidget {
                 'com.togaware.todopod://redirect',
                 'http://localhost:4400/redirect.html',
               ],
-        child: appScaffold,
+        // 20260808 gjw Mounted here, inside the MaterialApp, so a Navigator
+        // exists for the dialog and the listener outlives individual screens.
+        // It reports Pod writes that nothing awaits — a drag-reorder or a
+        // Restore tap — which would otherwise fail silently.
+        child: const SolidWriteFailureListener(child: appScaffold),
       ),
     );
   }

@@ -11,6 +11,7 @@ library;
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:solidui/solidui.dart';
 
 import 'package:todopod/models/task.dart';
 import 'package:todopod/screens/kanban_widgets/kanban_col.dart';
@@ -252,7 +253,10 @@ class _KanbanScreenState extends State<KanbanScreen> {
     if (_groupBy == KanbanGroupBy.priority) {
       if (task.priority == col.priority) return;
       provider.updateTask(task.copyWith(priority: col.priority));
-      provider.saveAllToPod();
+      SolidWriteFailures.watch(
+        provider.saveAllToPod(),
+        during: 'moving the task',
+      );
       return;
     }
 
@@ -267,7 +271,10 @@ class _KanbanScreenState extends State<KanbanScreen> {
       if (task.contexts.length == 1 && task.contexts.first == target) return;
       provider.updateTask(task.copyWith(contexts: [target]));
     }
-    provider.saveAllToPod();
+    SolidWriteFailures.watch(
+      provider.saveAllToPod(),
+      during: 'moving the task',
+    );
   }
 
   Future<void> _deleteTask(
@@ -294,7 +301,10 @@ class _KanbanScreenState extends State<KanbanScreen> {
     );
     if (confirmed == true) {
       provider.deleteTask(task.id);
-      provider.saveAllToPod();
+      SolidWriteFailures.watch(
+        provider.saveAllToPod(),
+        during: 'deleting the task',
+      );
     }
   }
 }

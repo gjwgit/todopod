@@ -312,12 +312,10 @@ class _TasksScreenState extends State<TasksScreen> {
         onSave: (task) async {
           provider.addTask(task);
           final error = await provider.saveTodoToPod();
-          if (error != null) {
-            // Do not confirm success: the task is listed but not on the Pod.
-            SolidWriteFailures.reportIfFailed(error, during: 'adding the task');
-
-            return;
-          }
+          // Do not confirm success: the task is listed but not on the Pod.
+          // Thrown rather than reported here: TaskEdit must see the failure so
+          // it stays open with the work intact, and it does the reporting.
+          if (error != null) throw Exception(error);
           if (!context.mounted) return;
           showPositiveSnackBar(context, 'Task added');
         },
@@ -338,10 +336,10 @@ class _TasksScreenState extends State<TasksScreen> {
         initialTitle: title,
         onSave: (task) async {
           provider.addTask(task);
-          SolidWriteFailures.reportIfFailed(
-            await provider.saveTodoToPod(),
-            during: 'adding the task',
-          );
+          // Thrown rather than reported here: TaskEdit must see the failure so
+          // it stays open with the work intact, and it does the reporting.
+          final error = await provider.saveTodoToPod();
+          if (error != null) throw Exception(error);
           // Clear search only after a task was actually saved.
           _search.clear();
           setState(() => _query = '');

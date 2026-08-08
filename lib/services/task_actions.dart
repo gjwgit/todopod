@@ -43,10 +43,10 @@ Future<void> editTaskAction({
       focusField: focusField,
       onSave: (updated) async {
         provider.updateTask(updated);
-        SolidWriteFailures.reportIfFailed(
-          await provider.saveAllToPod(),
-          during: 'saving the task',
-        );
+        // Thrown rather than reported here: TaskEdit must see the failure so
+        // it stays open with the work intact, and it does the reporting.
+        final error = await provider.saveAllToPod();
+        if (error != null) throw Exception(error);
       },
     ),
   );
@@ -95,10 +95,10 @@ Future<void> addTaskAction({
     builder: (_) => TaskEdit(
       onSave: (task) async {
         provider.addTask(task);
-        SolidWriteFailures.reportIfFailed(
-          await provider.saveTodoToPod(),
-          during: 'adding the task',
-        );
+        // Thrown rather than reported here: TaskEdit must see the failure so
+        // it stays open with the work intact, and it does the reporting.
+        final error = await provider.saveTodoToPod();
+        if (error != null) throw Exception(error);
       },
     ),
   );

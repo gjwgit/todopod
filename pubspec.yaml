@@ -1,7 +1,7 @@
 name: todopod
 description: "Todo Pod - Task Management with Secure and Private Storage"
 publish_to: 'none'
-version: 1.0.23+4
+version: 1.0.24+4
 
 environment:
   sdk: ^3.11.3
@@ -56,7 +56,7 @@ dependencies:
   solidpod: ^1.0.13
 
   # Solid app scaffold, login flow, and shared settings/about UI.
-  solidui: ^1.0.29
+  solidui: ^1.0.30
 
   # Calendar grid widget backing the PLANNER screen.
   table_calendar: ^3.1.3
@@ -66,6 +66,10 @@ dependencies:
 
   # Restore the last window size/position on Linux/macOS/Windows desktop.
   window_manager: ^0.5.1
+
+# TEMPORARY local override to verify against unreleased solidui 1.0.30.
+# Remove once solidui 1.0.30 is published to pub.dev.
+
 
 dev_dependencies:
   flutter_test:

@@ -46,6 +46,10 @@ class TaskEdit extends StatefulWidget {
   /// awaited by the caller's implementation: closing the app window waits on
   /// this before quitting, so a fire-and-forget write would be killed
   /// mid-flight and the task silently lost.
+  ///
+  /// A failed write MUST throw rather than report and swallow: the editor
+  /// stays open on a failure, so closing over the top of unsaved work is
+  /// only avoided when the failure reaches it.
   final Future<void> Function(Task)? onSave;
 
   const TaskEdit({
@@ -199,17 +203,29 @@ class _TaskEditState extends State<TaskEdit> with UnsavedChangesMixin {
 
   // ── Saving ──────────────────────────────────────────────────────────────
 
-  /// Hand the current field values to [TaskEdit.onSave], which persists them.
+  /// Hand the current field values to [TaskEdit.onSave], which persists them,
+  /// and report whether the write actually reached the Pod.
   ///
   /// Awaited so a window close can wait for the Pod write to complete.
-  Future<void> _save() async {
-    await widget.onSave?.call(_buildTask());
+  Future<bool> _save() async {
+    try {
+      await widget.onSave?.call(_buildTask());
+
+      return true;
+    } catch (e) {
+      SolidWriteFailures.report('Failed saving the task.\n\n$e');
+
+      return false;
+    }
   }
 
   /// Save, then close the editor. Used by the Save/Add button and by Enter in
   /// the title field.
+  ///
+  /// Only closes once the write has landed: popping over a failed write loses
+  /// the task the user asked to keep.
   Future<void> _saveAndClose() async {
-    await _save();
+    if (!await _save()) return;
     if (mounted) Navigator.of(context).pop();
   }
 
@@ -224,7 +240,7 @@ class _TaskEditState extends State<TaskEdit> with UnsavedChangesMixin {
   bool get canSaveUnsavedChanges => _canSave;
 
   @override
-  Future<void> saveUnsavedChanges() => _save();
+  Future<bool> saveUnsavedChanges() => _save();
 
   /// Close the editor, but if there are unsaved changes first ask whether to
   /// save, discard, or keep editing.

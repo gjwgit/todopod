@@ -288,6 +288,26 @@ class _TaskEditState extends State<TaskEdit> with UnsavedChangesMixin {
     dueDate: _dueDate,
   );
 
+  /// Compact "Mark as done" checkbox shown on the Title row, mirroring the
+  /// Edit/Preview toggle on the Notes row.
+  Widget _buildMarkAsDoneToggle() => InkWell(
+    onTap: () => setState(() => _completed = !_completed),
+    borderRadius: BorderRadius.circular(4),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Checkbox(
+          value: _completed,
+          onChanged: (v) => setState(() => _completed = v ?? false),
+          visualDensity: VisualDensity.compact,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ),
+        const Gap(4),
+        const Text('Mark as done', style: TextStyle(fontSize: 13)),
+      ],
+    ),
+  );
+
   Future<void> _pickDueDate() async {
     final picked = await showDatePicker(
       context: context,
@@ -361,13 +381,22 @@ class _TaskEditState extends State<TaskEdit> with UnsavedChangesMixin {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            editSectionLabel(
-              context,
-              'Title',
-              tooltip:
-                  '**Title**\n\n'
-                  'A short summary of the task — what needs to be done.\n\n'
-                  'This is the main text that appears in the task list.',
+            Row(
+              children: [
+                Expanded(
+                  child: editSectionLabel(
+                    context,
+                    'Title',
+                    tooltip:
+                        '**Title**\n\n'
+                        'A short summary of the task — what needs to be '
+                        'done.\n\n'
+                        'This is the main text that appears in the task '
+                        'list.',
+                  ),
+                ),
+                _buildMarkAsDoneToggle(),
+              ],
             ),
             const Gap(8),
             TextField(
@@ -397,38 +426,10 @@ class _TaskEditState extends State<TaskEdit> with UnsavedChangesMixin {
             PriorityDueDateRow(
               priority: _priority,
               dueDate: _dueDate,
+              durationController: _duration,
               onPriorityChanged: (v) => setState(() => _priority = v),
               onPickDueDate: _pickDueDate,
               onClearDueDate: () => setState(() => _dueDate = null),
-            ),
-            const Gap(8),
-            CheckboxListTile(
-              value: _completed,
-              onChanged: (v) => setState(() => _completed = v ?? false),
-              title: const Text('Mark as done'),
-              controlAffinity: ListTileControlAffinity.leading,
-              contentPadding: EdgeInsets.zero,
-              dense: true,
-            ),
-            const Gap(16),
-            editSectionLabel(
-              context,
-              'Duration',
-              tooltip:
-                  '**Duration**\n\n'
-                  'Estimated time to complete the task.\n\n'
-                  'Free-text — common formats include '
-                  '*30m*, *1h*, *2h30m*, *15min*.',
-            ),
-            const Gap(8),
-            TextField(
-              controller: _duration,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                isDense: true,
-                hintText: 'e.g. 30m, 1h, 2h30m',
-                prefixText: '= ',
-              ),
             ),
             const Gap(16),
             TagListEditor(

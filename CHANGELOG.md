@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.0 New Secure Key Handling
 
++ Reorganise EDIT TASK layout for Mark as done and Duration [1.0.26 20260809 gjw]
 + Add a set due today button to the task list [1.0.25 20260808 gjw]
 + Keep the window open when a save fails on close [1.0.24 20260808 gjw]
 + Report failed task saves instead of failing silently [1.0.23 20260808 gjw]

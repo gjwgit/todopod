@@ -18,6 +18,7 @@ import 'package:todopod/widgets/tag_autocomplete.dart';
 class PriorityDueDateRow extends StatelessWidget {
   final String? priority;
   final DateTime? dueDate;
+  final TextEditingController durationController;
   final ValueChanged<String?> onPriorityChanged;
   final VoidCallback onPickDueDate;
   final VoidCallback onClearDueDate;
@@ -26,6 +27,7 @@ class PriorityDueDateRow extends StatelessWidget {
     super.key,
     required this.priority,
     required this.dueDate,
+    required this.durationController,
     required this.onPriorityChanged,
     required this.onPickDueDate,
     required this.onClearDueDate,
@@ -67,6 +69,7 @@ class PriorityDueDateRow extends StatelessWidget {
                     ),
                   ),
                 ],
+                isExpanded: true,
                 onChanged: onPriorityChanged,
               ),
             ],
@@ -113,6 +116,33 @@ class PriorityDueDateRow extends StatelessWidget {
                   onPressed: onClearDueDate,
                   child: const Text('Clear'),
                 ),
+            ],
+          ),
+        ),
+        const Gap(12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              editSectionLabel(
+                context,
+                'Duration',
+                tooltip:
+                    '**Duration**\n\n'
+                    'Estimated time to complete the task.\n\n'
+                    'Free-text — common formats include '
+                    '*30m*, *1h*, *2h30m*, *15min*.',
+              ),
+              const Gap(8),
+              TextField(
+                controller: durationController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  isDense: true,
+                  hintText: '30m, 1h, 2h30m',
+                  prefixText: '= ',
+                ),
+              ),
             ],
           ),
         ),

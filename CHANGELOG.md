@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.0 New Secure Key Handling
 
++ Add a set due today button to the task list [1.0.25 20260808 gjw]
 + Keep the window open when a save fails on close [1.0.24 20260808 gjw]
 + Report failed task saves instead of failing silently [1.0.23 20260808 gjw]
 + Wait for in-flight Pod writes before closing [1.0.22 20260808 gjw]

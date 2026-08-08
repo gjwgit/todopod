@@ -84,6 +84,40 @@ void completeTaskAction({
   );
 }
 
+/// Set [task]'s due date to today and persist.
+///
+/// Confirms with a SnackBar offering Undo, which restores the task's
+/// previous due date. Shown here rather than at each call site so any future
+/// caller behaves the same way as [completeTaskAction].
+void setDueTodayAction({
+  required BuildContext context,
+  required AppProvider provider,
+  required Task task,
+}) {
+  final previousDueDate = task.dueDate;
+  final today = DateTime.now();
+  provider.updateTask(
+    task.copyWith(dueDate: DateTime(today.year, today.month, today.day)),
+  );
+  SolidWriteFailures.watch(
+    provider.saveTodoToPod(),
+    during: 'updating the due date',
+  );
+
+  showPositiveSnackBar(
+    context,
+    '"${task.description}" due today.',
+    actionLabel: 'Undo',
+    onAction: () {
+      provider.updateTask(task.copyWith(dueDate: previousDueDate));
+      SolidWriteFailures.watch(
+        provider.saveTodoToPod(),
+        during: 'restoring the due date',
+      );
+    },
+  );
+}
+
 /// Open the editor to create a new task, add it, and persist.
 Future<void> addTaskAction({
   required BuildContext context,

@@ -25,6 +25,7 @@ class TaskTile extends StatelessWidget {
   final ValueChanged<bool?> onComplete;
   final ValueChanged<String>? onEditField;
   final VoidCallback? onDelete;
+  final VoidCallback? onSetDueToday;
 
   const TaskTile({
     super.key,
@@ -33,6 +34,7 @@ class TaskTile extends StatelessWidget {
     required this.onComplete,
     this.onEditField,
     this.onDelete,
+    this.onSetDueToday,
   });
 
   @override
@@ -146,6 +148,26 @@ Complete this task. It moves to the Done list, and the confirmation offers
                 ],
               ),
             ),
+            // Set due date to today.
+            if (onSetDueToday != null)
+              MarkdownTooltip(
+                message: '''
+
+**Set due today**
+
+Change this task's due date to today.
+
+''',
+                child: IconButton(
+                  icon: Icon(
+                    Icons.today_outlined,
+                    size: 16,
+                    color: cs.primary.withValues(alpha: 0.6),
+                  ),
+                  visualDensity: VisualDensity.compact,
+                  onPressed: onSetDueToday,
+                ),
+              ),
             // Delete button (replaces former notes-info icon).
             if (onDelete != null)
               MarkdownTooltip(

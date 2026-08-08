@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.0 New Secure Key Handling
 
++ Prompt to save unsaved task on window close [1.0.21 20260808 gjw]
 + Fix drag to reorder skipping adjacent moves [1.0.20 20260808 gjw]
 + Use softer snackbar colours and update tooltips [1.0.19 20260729 gjw]
 + Remember order for OVERDUE [1.0.18 20260728 gjw]

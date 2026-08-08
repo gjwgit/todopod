@@ -13,18 +13,18 @@ library;
 import 'package:flutter/material.dart';
 
 import 'package:emacs_text_field/emacs_text_field.dart'
-    show EmacsTextField, attachPrimarySelection, writePrimarySelection;
-import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+    show attachPrimarySelection;
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
+import 'package:solidui/solidui.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:todopod/models/task.dart';
 import 'package:todopod/pages/edit_fields/priority_due_date_row.dart';
 import 'package:todopod/pages/edit_fields/tag_list_editor.dart';
+import 'package:todopod/pages/edit_fields/task_notes_field.dart';
 import 'package:todopod/services/app_provider.dart';
 import 'package:todopod/utils/priority_from_due_date.dart';
-import 'package:todopod/widgets/confirm_discard_dialog.dart';
 import 'package:todopod/widgets/tag_autocomplete.dart';
 
 const _uuid = Uuid();
@@ -39,13 +39,28 @@ class TaskEdit extends StatefulWidget {
   /// Field to focus on open: 'projects', 'contexts', etc.
   final String? focusField;
 
-  const TaskEdit({super.key, this.task, this.initialTitle, this.focusField});
+  /// Called with the task built from the current field values when the user
+  /// saves. The caller is responsible for updating the provider and the Pod.
+  ///
+  /// Returns a future that completes when the Pod write is done. It MUST be
+  /// awaited by the caller's implementation: closing the app window waits on
+  /// this before quitting, so a fire-and-forget write would be killed
+  /// mid-flight and the task silently lost.
+  final Future<void> Function(Task)? onSave;
+
+  const TaskEdit({
+    super.key,
+    this.task,
+    this.initialTitle,
+    this.focusField,
+    this.onSave,
+  });
 
   @override
   State<TaskEdit> createState() => _TaskEditState();
 }
 
-class _TaskEditState extends State<TaskEdit> {
+class _TaskEditState extends State<TaskEdit> with UnsavedChangesMixin {
   late final TextEditingController _description;
   late final TextEditingController _notes;
   late final TextEditingController _duration;
@@ -182,6 +197,37 @@ class _TaskEditState extends State<TaskEdit> {
     return true;
   }
 
+  // ── Saving ──────────────────────────────────────────────────────────────
+
+  /// Hand the current field values to [TaskEdit.onSave], which persists them.
+  ///
+  /// Awaited so a window close can wait for the Pod write to complete.
+  Future<void> _save() async {
+    await widget.onSave?.call(_buildTask());
+  }
+
+  /// Save, then close the editor. Used by the Save/Add button and by Enter in
+  /// the title field.
+  Future<void> _saveAndClose() async {
+    await _save();
+    if (mounted) Navigator.of(context).pop();
+  }
+
+  // The window-close prompt comes from UnsavedChangesMixin, which needs to
+  // know what counts as unsaved and how to save it. Saving there must not pop
+  // the Navigator — the window is closing, not just this dialog.
+
+  @override
+  bool get hasUnsavedChanges => _hasChanges;
+
+  @override
+  bool get canSaveUnsavedChanges => _canSave;
+
+  @override
+  Future<void> saveUnsavedChanges() => _save();
+
+  /// Close the editor, but if there are unsaved changes first ask whether to
+  /// save, discard, or keep editing.
   Future<void> _confirmDiscard() async {
     if (!_hasChanges) {
       Navigator.of(context).pop();
@@ -189,9 +235,17 @@ class _TaskEditState extends State<TaskEdit> {
       return;
     }
 
-    final discard = await showDiscardChangesDialog(context);
+    final action = await showUnsavedChangesDialog(context);
+    if (!mounted) return;
 
-    if (discard == true && mounted) Navigator.of(context).pop();
+    switch (action) {
+      case UnsavedChangesAction.save:
+        if (_canSave) await _saveAndClose();
+      case UnsavedChangesAction.discard:
+        Navigator.of(context).pop();
+      case UnsavedChangesAction.keepEditing:
+        break;
+    }
   }
 
   Task _buildTask() => Task(
@@ -285,7 +339,6 @@ class _TaskEditState extends State<TaskEdit> {
       '${d.year}';
 
   Widget _buildForm(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     return Flexible(
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
@@ -310,7 +363,7 @@ class _TaskEditState extends State<TaskEdit> {
               onSubmitted: (_) {
                 if (!_isNew) return;
                 if (_description.text.trim().isEmpty) return;
-                Navigator.of(context).pop(_buildTask());
+                _saveAndClose();
               },
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
@@ -319,77 +372,11 @@ class _TaskEditState extends State<TaskEdit> {
               ),
             ),
             const Gap(16),
-            // Notes section header with Edit/Preview toggle.
-            Row(
-              children: [
-                Expanded(
-                  child: editSectionLabel(
-                    context,
-                    'Notes',
-                    tooltip:
-                        '**Notes**\n\n'
-                        'Additional details, links, or context for the task.\n\n'
-                        'Supports **markdown** formatting.\n\n'
-                        '**Emacs keys:** C-a/e line · C-f/b char · C-n/p line '
-                        '· M-f/b word · C-k kill · C-y yank · M-Enter bullet',
-                  ),
-                ),
-                TextButton.icon(
-                  onPressed: () => setState(() => _showPreview = !_showPreview),
-                  icon: Icon(
-                    _showPreview ? Icons.edit_outlined : Icons.preview_outlined,
-                    size: 16,
-                  ),
-                  label: Text(_showPreview ? 'Edit' : 'Preview'),
-                  style: TextButton.styleFrom(
-                    visualDensity: VisualDensity.compact,
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                  ),
-                ),
-              ],
+            TaskNotesField(
+              notes: _notes,
+              showPreview: _showPreview,
+              onToggle: () => setState(() => _showPreview = !_showPreview),
             ),
-            const Gap(8),
-            if (_showPreview)
-              Container(
-                width: double.infinity,
-                constraints: const BoxConstraints(minHeight: 80),
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  border: Border.all(color: cs.outline),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: _notes.text.trim().isEmpty
-                    ? Text(
-                        'Nothing to preview.',
-                        style: TextStyle(
-                          color: cs.onSurfaceVariant,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      )
-                    : SelectionArea(
-                        onSelectionChanged: (value) {
-                          final text = value?.plainText ?? '';
-                          if (text.isNotEmpty) writePrimarySelection(text);
-                        },
-                        child: MarkdownBody(
-                          data: _notes.text,
-                          shrinkWrap: true,
-                          styleSheet: MarkdownStyleSheet.fromTheme(
-                            Theme.of(context),
-                          ),
-                        ),
-                      ),
-              )
-            else
-              EmacsTextField(
-                controller: _notes,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  isDense: true,
-                  alignLabelWithHint: true,
-                  hintText: 'Details, links, markdown…',
-                ),
-              ),
             const Gap(16),
             PriorityDueDateRow(
               priority: _priority,
@@ -494,9 +481,7 @@ class _TaskEditState extends State<TaskEdit> {
             TextButton(onPressed: _confirmDiscard, child: const Text('Cancel')),
             const Spacer(),
             FilledButton(
-              onPressed: _canSave
-                  ? () => Navigator.of(context).pop(_buildTask())
-                  : null,
+              onPressed: _canSave ? _saveAndClose : null,
               child: Text(_isNew ? 'Add Task' : 'Save'),
             ),
           ],

@@ -296,23 +296,23 @@ class _TasksScreenState extends State<TasksScreen> {
     AppProvider provider, {
     String? initialTitle,
   }) async {
-    final task = await showDialog<Task>(
+    await showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (_) => TaskEdit(
         initialTitle: (initialTitle != null && initialTitle.isNotEmpty)
             ? initialTitle
             : null,
+        // 20260729 gjw Confirm only when a task was actually saved. Previously
+        // this fired even when the editor was cancelled.
+        onSave: (task) async {
+          provider.addTask(task);
+          await provider.saveTodoToPod();
+          if (!context.mounted) return;
+          showPositiveSnackBar(context, 'Task added');
+        },
       ),
     );
-    // 20260729 gjw Confirm only when a task was actually saved. Previously
-    // this fired even when the editor was cancelled.
-    if (task != null) {
-      provider.addTask(task);
-      await provider.saveTodoToPod();
-      if (!context.mounted) return;
-      showPositiveSnackBar(context, 'Task added');
-    }
   }
 
   Future<void> _addTaskFromSearch(
@@ -321,20 +321,22 @@ class _TasksScreenState extends State<TasksScreen> {
   ) async {
     final title = _search.text.trim();
 
-    final task = await showDialog<Task>(
+    await showDialog<void>(
       context: context,
       barrierDismissible: false,
-      builder: (_) => TaskEdit(initialTitle: title),
+      builder: (_) => TaskEdit(
+        initialTitle: title,
+        onSave: (task) async {
+          provider.addTask(task);
+          await provider.saveTodoToPod();
+          // Clear search only after a task was actually saved.
+          _search.clear();
+          setState(() => _query = '');
+          if (!context.mounted) return;
+          showPositiveSnackBar(context, 'Task added');
+        },
+      ),
     );
-    if (task != null) {
-      provider.addTask(task);
-      await provider.saveTodoToPod();
-      // Clear search only after a task was actually saved.
-      _search.clear();
-      setState(() => _query = '');
-      if (!context.mounted) return;
-      showPositiveSnackBar(context, 'Task added');
-    }
   }
 
   void _deleteTask(Task task, AppProvider provider) {

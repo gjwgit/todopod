@@ -33,15 +33,18 @@ Future<void> editTaskAction({
   required Task task,
   String? focusField,
 }) async {
-  final updated = await showDialog<Task>(
+  await showDialog<void>(
     context: context,
     barrierDismissible: false,
-    builder: (_) => TaskEdit(task: task, focusField: focusField),
+    builder: (_) => TaskEdit(
+      task: task,
+      focusField: focusField,
+      onSave: (updated) async {
+        provider.updateTask(updated);
+        await provider.saveAllToPod();
+      },
+    ),
   );
-  if (updated != null) {
-    provider.updateTask(updated);
-    await provider.saveAllToPod();
-  }
 }
 
 /// Mark [task] complete (moves it from active to done) and persist.
@@ -75,13 +78,14 @@ Future<void> addTaskAction({
   required BuildContext context,
   required AppProvider provider,
 }) async {
-  final task = await showDialog<Task>(
+  await showDialog<void>(
     context: context,
     barrierDismissible: false,
-    builder: (_) => const TaskEdit(),
+    builder: (_) => TaskEdit(
+      onSave: (task) async {
+        provider.addTask(task);
+        await provider.saveTodoToPod();
+      },
+    ),
   );
-  if (task != null) {
-    provider.addTask(task);
-    await provider.saveTodoToPod();
-  }
 }

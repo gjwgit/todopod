@@ -63,6 +63,13 @@ void main() async {
   if (isDesktop) {
     await windowManager.ensureInitialized();
 
+    // 20260808 gjw Route the title-bar close button through the solidui close
+    // guard instead of quitting immediately, so a task being edited with
+    // unsaved changes can be saved or discarded rather than silently lost.
+    // TaskEdit registers a resolver with the guard.
+
+    await SolidWindowCloseGuard.enable();
+
     // 20260520 gjw For our desktop app we tune various window oriented
     // settings.
 

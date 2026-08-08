@@ -24,6 +24,7 @@ import 'package:todopod/pages/edit_fields/priority_due_date_row.dart';
 import 'package:todopod/pages/edit_fields/tag_list_editor.dart';
 import 'package:todopod/pages/edit_fields/task_notes_field.dart';
 import 'package:todopod/services/app_provider.dart';
+import 'package:todopod/utils/normalize_duration.dart';
 import 'package:todopod/utils/priority_from_due_date.dart';
 import 'package:todopod/widgets/tag_autocomplete.dart';
 
@@ -284,7 +285,9 @@ class _TaskEditState extends State<TaskEdit> with UnsavedChangesMixin {
         .map((c) => c.text.trim())
         .where((s) => s.isNotEmpty)
         .toList(),
-    duration: _duration.text.trim().isEmpty ? null : _duration.text.trim(),
+    duration: _duration.text.trim().isEmpty
+        ? null
+        : normalizeDuration(_duration.text.trim()),
     dueDate: _dueDate,
   );
 

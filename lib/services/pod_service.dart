@@ -15,6 +15,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 import 'package:solidpod/solidpod.dart';
+import 'package:solidui/solidui.dart';
 
 import 'package:todopod/constants/app.dart'; // todoFileName, doneFileName
 import 'package:todopod/models/task.dart';
@@ -57,7 +58,7 @@ class PodService {
     try {
       final json = jsonEncode(tasks.map((t) => t.toJson()).toList());
       final ttl = _buildTtl(fileName, json);
-      await writePod(fileName, ttl, overwrite: true);
+      await SolidPendingWrites.track(writePod(fileName, ttl, overwrite: true));
       return null;
     } catch (e) {
       debugPrint('[PodService] saveTasks error: $e');

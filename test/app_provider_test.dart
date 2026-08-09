@@ -23,6 +23,7 @@ void main() {
     List<String> contexts = const [],
     DateTime? dueDate,
     DateTime? creationDate,
+    String? duration,
   }) => Task(
     id: id ?? 'id-${description.hashCode}',
     completed: completed,
@@ -32,6 +33,7 @@ void main() {
     contexts: contexts,
     dueDate: dueDate,
     creationDate: creationDate,
+    duration: duration,
   );
 
   AppProvider freshProvider() {
@@ -224,6 +226,68 @@ void main() {
       expect(sorted[1].description, 'Later');
       // No due date goes last.
       expect(sorted[2].description, 'No due date');
+    });
+
+    test('duration sort puts shortest tasks first', () {
+      final p = freshProvider();
+      p.addTask(makeTask(id: '1', description: 'Long', duration: '2h'));
+      p.addTask(makeTask(id: '2', description: 'Short', duration: '15m'));
+      p.addTask(makeTask(id: '3', description: 'No duration'));
+      p.setSortOrder(SortOrder.duration);
+
+      final sorted = p.tasks;
+      expect(sorted[0].description, 'Short');
+      expect(sorted[1].description, 'Long');
+      // No duration goes last.
+      expect(sorted[2].description, 'No duration');
+    });
+
+    test('sub-order breaks ties within the primary priority groups', () {
+      final p = freshProvider();
+      p.addTask(
+        makeTask(id: '1', description: 'A long', priority: 'A', duration: '2h'),
+      );
+      p.addTask(
+        makeTask(
+          id: '2',
+          description: 'A short',
+          priority: 'A',
+          duration: '15m',
+        ),
+      );
+      p.addTask(makeTask(id: '3', description: 'B task', priority: 'B'));
+      p.setSortOrder(SortOrder.priority);
+      p.setSubSortOrder(SortOrder.duration);
+
+      final sorted = p.tasks;
+      expect(sorted[0].description, 'A short');
+      expect(sorted[1].description, 'A long');
+      expect(sorted[2].description, 'B task');
+    });
+
+    test('null sub-order falls back to the default due-date tie-break', () {
+      final p = freshProvider();
+      p.addTask(
+        makeTask(
+          id: '1',
+          description: 'Later',
+          priority: 'A',
+          dueDate: DateTime(2026, 5, 1),
+        ),
+      );
+      p.addTask(
+        makeTask(
+          id: '2',
+          description: 'Earlier',
+          priority: 'A',
+          dueDate: DateTime(2026, 4, 1),
+        ),
+      );
+      p.setSortOrder(SortOrder.priority);
+
+      final sorted = p.tasks;
+      expect(sorted[0].description, 'Earlier');
+      expect(sorted[1].description, 'Later');
     });
   });
 

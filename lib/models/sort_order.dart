@@ -9,4 +9,26 @@
 library;
 
 /// How tasks are ordered in the active task list.
-enum SortOrder { priority, dueDate, project, context, creationDate, added }
+enum SortOrder {
+  priority,
+  dueDate,
+  duration,
+  project,
+  context,
+  creationDate,
+  added,
+}
+
+/// User-facing label for a [SortOrder], shared by the sort and "then by"
+/// menus so the two stay in sync.
+extension SortOrderLabel on SortOrder {
+  String get label => switch (this) {
+    SortOrder.priority => 'Priority',
+    SortOrder.dueDate => 'Due Date',
+    SortOrder.duration => 'Duration',
+    SortOrder.project => 'Project',
+    SortOrder.context => 'Context',
+    SortOrder.creationDate => 'Creation Date',
+    SortOrder.added => 'Date Added',
+  };
+}

@@ -21,6 +21,7 @@ import 'package:todopod/models/sort_order.dart';
 import 'package:todopod/models/task.dart';
 import 'package:todopod/models/task_parser.dart';
 import 'package:todopod/services/pod_service.dart';
+import 'package:todopod/utils/duration_minutes.dart';
 import 'package:todopod/utils/overdue.dart';
 
 const _uuid = Uuid();
@@ -38,6 +39,7 @@ class AppProvider extends ChangeNotifier {
   bool _isKeySaved = false;
   String? _error;
   SortOrder _sortOrder = SortOrder.priority;
+  SortOrder? _subSortOrder;
   String? _filterProject;
   String? _filterContext;
   String? _filterPriority;
@@ -72,6 +74,12 @@ class AppProvider extends ChangeNotifier {
   bool get isKeySaved => _isKeySaved;
   String? get error => _error;
   SortOrder get sortOrder => _sortOrder;
+
+  /// Tie-breaker applied within groups of the primary [sortOrder] — e.g.
+  /// Priority primary with Duration sub-order lists the shortest task in
+  /// each priority group first. Null means no extra tie-breaker beyond the
+  /// default due-date-then-description fallback.
+  SortOrder? get subSortOrder => _subSortOrder;
   String? get filterProject => _filterProject;
   String? get filterContext => _filterContext;
   String? get filterPriority => _filterPriority;
@@ -116,6 +124,11 @@ class AppProvider extends ChangeNotifier {
 
   void setSortOrder(SortOrder order) {
     _sortOrder = order;
+    notifyListeners();
+  }
+
+  void setSubSortOrder(SortOrder? order) {
+    _subSortOrder = order;
     notifyListeners();
   }
 
@@ -166,17 +179,24 @@ class AppProvider extends ChangeNotifier {
     if (_sortOrder == SortOrder.added) return copy;
 
     copy.sort((a, b) {
-      // Primary sort based on selected order.
+      // Primary sort based on the selected order.
 
-      final primary = _primaryCompare(a, b);
+      final primary = _compareBy(_sortOrder, a, b);
       if (primary != 0) return primary;
 
-      // Secondary: due date (earliest first, null last).
+      // Sub-order: user-chosen tie-breaker within the primary groups.
+
+      if (_subSortOrder != null) {
+        final sub = _compareBy(_subSortOrder!, a, b);
+        if (sub != 0) return sub;
+      }
+
+      // Fallback: due date (earliest first, null last).
 
       final dueCmp = _compareDueDate(a, b);
       if (dueCmp != 0) return dueCmp;
 
-      // Tertiary: alphabetic by description.
+      // Final tie-break: alphabetic by description.
 
       return a.description.toLowerCase().compareTo(b.description.toLowerCase());
     });
@@ -184,8 +204,8 @@ class AppProvider extends ChangeNotifier {
     return copy;
   }
 
-  int _primaryCompare(Task a, Task b) {
-    switch (_sortOrder) {
+  int _compareBy(SortOrder order, Task a, Task b) {
+    switch (order) {
       case SortOrder.priority:
         if (a.priority == null && b.priority == null) return 0;
         if (a.priority == null) return 1;
@@ -193,6 +213,8 @@ class AppProvider extends ChangeNotifier {
         return a.priority!.compareTo(b.priority!);
       case SortOrder.dueDate:
         return _compareDueDate(a, b);
+      case SortOrder.duration:
+        return _compareDuration(a, b);
       case SortOrder.project:
         final ap = a.projects.isNotEmpty ? a.projects.first : '';
         final bp = b.projects.isNotEmpty ? b.projects.first : '';
@@ -217,6 +239,17 @@ class AppProvider extends ChangeNotifier {
     if (b.dueDate == null) return -1;
 
     return a.dueDate!.compareTo(b.dueDate!);
+  }
+
+  /// Shortest first; tasks with no parseable duration sort last.
+  static int _compareDuration(Task a, Task b) {
+    final am = durationMinutes(a.duration);
+    final bm = durationMinutes(b.duration);
+    if (am == null && bm == null) return 0;
+    if (am == null) return 1;
+    if (bm == null) return -1;
+
+    return am.compareTo(bm);
   }
 
   // ── Reordering ──────────────────────────────────────────────────────────

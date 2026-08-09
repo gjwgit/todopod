@@ -26,6 +26,7 @@ import 'package:todopod/screens/tasks_widgets/task_empty_state.dart';
 import 'package:todopod/screens/tasks_widgets/task_filter_button.dart';
 import 'package:todopod/screens/tasks_widgets/task_filter_chips.dart';
 import 'package:todopod/screens/tasks_widgets/task_sort_button.dart';
+import 'package:todopod/screens/tasks_widgets/task_sub_sort_button.dart';
 import 'package:todopod/services/app_provider.dart';
 import 'package:todopod/services/task_actions.dart';
 import 'package:todopod/widgets/app_snack_bar.dart';
@@ -220,6 +221,7 @@ class _TasksScreenState extends State<TasksScreen> {
                 const Gap(8),
                 // Sort
                 TaskSortButton(provider: provider, cs: cs),
+                TaskSubSortButton(provider: provider, cs: cs),
                 // Filter
                 TaskFilterButton(provider: provider, cs: cs),
               ],

@@ -41,7 +41,7 @@ class TaskSortButton extends StatelessWidget {
                   else
                     const SizedBox(width: 16),
                   const Gap(8),
-                  Text(_sortLabel(order)),
+                  Text(order.label),
                 ],
               ),
             ),
@@ -49,13 +49,4 @@ class TaskSortButton extends StatelessWidget {
       ),
     );
   }
-
-  String _sortLabel(SortOrder o) => switch (o) {
-    SortOrder.priority => 'Priority',
-    SortOrder.dueDate => 'Due Date',
-    SortOrder.project => 'Project',
-    SortOrder.context => 'Context',
-    SortOrder.creationDate => 'Creation Date',
-    SortOrder.added => 'Date Added',
-  };
 }

@@ -3,10 +3,11 @@
 
 # Localhost OAuth callbacks used in integration tests
 
+http://localhost/
 http://localhost:3000/
 http://localhost:4400/
 http://localhost:8000/
-http://localhost/
+http://localhost:11434/
 
 # Used by oidc through solid_auth
 
@@ -110,8 +111,13 @@ https://blog.kumo.dev/2024/05/22/reverse_engineering_hkg_apps.html
 
 https://papertrail.anu.edu.au/
 https://papertrail.anu.edu.au/
+https://api.anthropic.com/v1/messages
 
 # 20260630 gjw rattle
 
 https://www.reddit.com/r/SAI_Rattle/
 https://rdrr.io/rforge/tm/man/stopwords.html
+
+# 20260809 gjw foliopod
+
+https://query1.finance.yahoo.com/

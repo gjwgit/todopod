@@ -15,7 +15,9 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:markdown_tooltip/markdown_tooltip.dart';
 
+import 'package:todopod/constants/app.dart';
 import 'package:todopod/models/task.dart';
+import 'package:todopod/utils/defer_task.dart';
 import 'package:todopod/widgets/priority_badge.dart';
 import 'package:todopod/widgets/tag_chip.dart';
 
@@ -25,7 +27,7 @@ class TaskTile extends StatelessWidget {
   final ValueChanged<bool?> onComplete;
   final ValueChanged<String>? onEditField;
   final VoidCallback? onDelete;
-  final VoidCallback? onSetDueToday;
+  final VoidCallback? onDefer;
 
   const TaskTile({
     super.key,
@@ -34,7 +36,7 @@ class TaskTile extends StatelessWidget {
     required this.onComplete,
     this.onEditField,
     this.onDelete,
-    this.onSetDueToday,
+    this.onDefer,
   });
 
   @override
@@ -148,24 +150,20 @@ Complete this task. It moves to the Done list, and the confirmation offers
                 ],
               ),
             ),
-            // Set due date to today.
-            if (onSetDueToday != null)
+            // Defer to the next Priority/Due-Date stage.
+            if (onDefer != null)
               MarkdownTooltip(
-                message: '''
-
-**Set due today**
-
-Change this task's due date to today.
-
-''',
+                message: _deferTooltip(),
                 child: IconButton(
                   icon: Icon(
-                    Icons.today_outlined,
+                    Icons.next_plan_outlined,
                     size: 16,
-                    color: cs.primary.withValues(alpha: 0.6),
+                    color: cs.primary.withValues(
+                      alpha: canDeferTask(task) ? 0.6 : 0.3,
+                    ),
                   ),
                   visualDensity: VisualDensity.compact,
-                  onPressed: onSetDueToday,
+                  onPressed: canDeferTask(task) ? onDefer : null,
                 ),
               ),
             // Delete button (replaces former notes-info icon).
@@ -204,6 +202,34 @@ Change this task's due date to today.
       buf.writeln(line);
     }
     return '$deleteBlurb\n\n---\n\n**Notes**\n\n${buf.toString().trimRight()}';
+  }
+
+  String _deferTooltip() {
+    const title = '**Defer**';
+    if (!canDeferTask(task)) {
+      final why = task.priority == null
+          ? "there's no priority set to advance from"
+          : 'Parked (F) is already the last stage';
+      return '$title\n\nNot available — $why.';
+    }
+    final blurb = switch (task.priority) {
+      'A' =>
+        'Moves this task to priority B (${priorityLabels['B']}), '
+            'due today.',
+      'B' =>
+        'Moves this task to priority C (${priorityLabels['C']}), '
+            'due tomorrow.',
+      'C' =>
+        'Moves this task to priority D (${priorityLabels['D']}), '
+            'pushing its due date out by a week.',
+      'D' =>
+        'Moves this task to priority E (${priorityLabels['E']}), '
+            'pushing its due date out by a week.',
+      _ =>
+        'Moves this task to priority F (${priorityLabels['F']}). '
+            'Its due date is left unchanged.',
+    };
+    return '$title\n\n$blurb';
   }
 
   bool _hasTags(Task t) =>

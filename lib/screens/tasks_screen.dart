@@ -277,7 +277,7 @@ class _TasksScreenState extends State<TasksScreen> {
                       task: task,
                     ),
                     onDelete: () => _deleteTask(task, provider),
-                    onSetDueToday: () => setDueTodayAction(
+                    onDefer: () => deferTaskAction(
                       context: context,
                       provider: provider,
                       task: task,

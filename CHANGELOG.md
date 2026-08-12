@@ -38,6 +38,8 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.0 New Secure Key Handling
 
++ Replace due-tomorrow button with priority-based Defer [1.0.30 20260813 gjw]
++ Change task list quick-due button to due tomorrow [1.0.29 20260813 gjw]
 + Add Duration sort and a Then By sub-order tie-breaker [1.0.28 20260809 gjw]
 + Responsive due date, clear via X, bare-minute duration [1.0.27 20260809 gjw]
 + Reorganise EDIT TASK layout for Mark as done and Duration [1.0.26 20260809 gjw]

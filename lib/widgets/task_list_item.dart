@@ -32,7 +32,7 @@ class ReorderableTaskItem extends StatelessWidget {
   final VoidCallback onTap;
   final ValueChanged<bool?> onComplete;
   final VoidCallback? onDelete;
-  final VoidCallback? onSetDueToday;
+  final VoidCallback? onDefer;
   final ValueChanged<String>? onEditField;
 
   const ReorderableTaskItem({
@@ -45,7 +45,7 @@ class ReorderableTaskItem extends StatelessWidget {
     required this.onTap,
     required this.onComplete,
     this.onDelete,
-    this.onSetDueToday,
+    this.onDefer,
     this.onEditField,
   });
 
@@ -83,7 +83,7 @@ class ReorderableTaskItem extends StatelessWidget {
                   onTap: onTap,
                   onComplete: onComplete,
                   onEditField: onEditField,
-                  onSetDueToday: onSetDueToday,
+                  onDefer: onDefer,
                   onDelete: onDelete == null
                       ? null
                       : () async {

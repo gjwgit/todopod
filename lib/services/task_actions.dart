@@ -19,6 +19,7 @@ import 'package:solidui/solidui.dart';
 import 'package:todopod/models/task.dart';
 import 'package:todopod/pages/task_edit.dart';
 import 'package:todopod/services/app_provider.dart';
+import 'package:todopod/utils/defer_task.dart';
 import 'package:todopod/widgets/app_snack_bar.dart';
 
 /// Open the task editor for [task], save any returned changes, and persist
@@ -84,35 +85,33 @@ void completeTaskAction({
   );
 }
 
-/// Set [task]'s due date to today and persist.
+/// Advance [task] to its next Priority/Due-Date stage (see [deferTask]) and
+/// persist.
 ///
 /// Confirms with a SnackBar offering Undo, which restores the task's
-/// previous due date. Shown here rather than at each call site so any future
-/// caller behaves the same way as [completeTaskAction].
-void setDueTodayAction({
+/// previous priority and due date. Callers must check [canDeferTask] first —
+/// there is no stage past F.
+void deferTaskAction({
   required BuildContext context,
   required AppProvider provider,
   required Task task,
 }) {
-  final previousDueDate = task.dueDate;
-  final today = DateTime.now();
-  provider.updateTask(
-    task.copyWith(dueDate: DateTime(today.year, today.month, today.day)),
-  );
+  final updated = deferTask(task);
+  provider.updateTask(updated);
   SolidWriteFailures.watch(
     provider.saveTodoToPod(),
-    during: 'updating the due date',
+    during: 'deferring the task',
   );
 
   showPositiveSnackBar(
     context,
-    '"${task.description}" due today.',
+    '"${task.description}" moved to ${updated.priority}.',
     actionLabel: 'Undo',
     onAction: () {
-      provider.updateTask(task.copyWith(dueDate: previousDueDate));
+      provider.updateTask(task);
       SolidWriteFailures.watch(
         provider.saveTodoToPod(),
-        during: 'restoring the due date',
+        during: 'restoring the task',
       );
     },
   );

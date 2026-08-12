@@ -11,12 +11,13 @@ import 'package:todopod/models/task.dart';
 import 'package:todopod/widgets/task_tile.dart';
 
 void main() {
-  const task = Task(id: '1', description: 'Water the plants');
+  const baseTask = Task(id: '1', description: 'Water the plants');
 
   Future<void> pumpTile(
     WidgetTester tester, {
+    Task task = baseTask,
     VoidCallback? onDelete,
-    VoidCallback? onSetDueToday,
+    VoidCallback? onDefer,
   }) async {
     await tester.pumpWidget(
       MaterialApp(
@@ -26,7 +27,7 @@ void main() {
             onTap: () {},
             onComplete: (_) {},
             onDelete: onDelete,
-            onSetDueToday: onSetDueToday,
+            onDefer: onDefer,
           ),
         ),
       ),
@@ -34,38 +35,75 @@ void main() {
   }
 
   group('TaskTile', () {
-    testWidgets('omits the due-today button when no callback is given', (
+    testWidgets('omits the defer button when no callback is given', (
       tester,
     ) async {
       await pumpTile(tester);
-      expect(find.byIcon(Icons.today_outlined), findsNothing);
+      expect(find.byIcon(Icons.next_plan_outlined), findsNothing);
     });
 
-    testWidgets('shows the due-today button when a callback is given', (
+    testWidgets('shows the defer button when a callback is given', (
       tester,
     ) async {
-      await pumpTile(tester, onSetDueToday: () {});
-      expect(find.byIcon(Icons.today_outlined), findsOneWidget);
+      await pumpTile(
+        tester,
+        task: baseTask.copyWith(priority: 'A'),
+        onDefer: () {},
+      );
+      expect(find.byIcon(Icons.next_plan_outlined), findsOneWidget);
     });
 
-    testWidgets('tapping the due-today button invokes the callback', (
+    testWidgets('tapping the defer button invokes the callback', (
       tester,
     ) async {
       var tapped = false;
-      await pumpTile(tester, onSetDueToday: () => tapped = true);
+      await pumpTile(
+        tester,
+        task: baseTask.copyWith(priority: 'A'),
+        onDefer: () => tapped = true,
+      );
 
-      await tester.tap(find.byIcon(Icons.today_outlined));
+      await tester.tap(find.byIcon(Icons.next_plan_outlined));
       await tester.pump();
 
       expect(tapped, isTrue);
     });
 
-    testWidgets('due-today and delete buttons can appear together', (
+    testWidgets('defer and delete buttons can appear together', (tester) async {
+      await pumpTile(
+        tester,
+        task: baseTask.copyWith(priority: 'A'),
+        onDelete: () {},
+        onDefer: () {},
+      );
+      expect(find.byIcon(Icons.next_plan_outlined), findsOneWidget);
+      expect(find.byIcon(Icons.delete_outline), findsOneWidget);
+    });
+
+    testWidgets('defer button is disabled with no priority set', (
       tester,
     ) async {
-      await pumpTile(tester, onDelete: () {}, onSetDueToday: () {});
-      expect(find.byIcon(Icons.today_outlined), findsOneWidget);
-      expect(find.byIcon(Icons.delete_outline), findsOneWidget);
+      var tapped = false;
+      await pumpTile(tester, onDefer: () => tapped = true);
+
+      await tester.tap(find.byIcon(Icons.next_plan_outlined));
+      await tester.pump();
+
+      expect(tapped, isFalse);
+    });
+
+    testWidgets('defer button is disabled once priority is F', (tester) async {
+      var tapped = false;
+      await pumpTile(
+        tester,
+        task: baseTask.copyWith(priority: 'F'),
+        onDefer: () => tapped = true,
+      );
+
+      await tester.tap(find.byIcon(Icons.next_plan_outlined));
+      await tester.pump();
+
+      expect(tapped, isFalse);
     });
   });
 }

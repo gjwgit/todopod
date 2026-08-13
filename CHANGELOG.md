@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.0 New Secure Key Handling
 
++ Add an Escalate button, the mirror of Defer [1.0.31 20260813 gjw]
 + Replace due-tomorrow button with priority-based Defer [1.0.30 20260813 gjw]
 + Change task list quick-due button to due tomorrow [1.0.29 20260813 gjw]
 + Add Duration sort and a Then By sub-order tie-breaker [1.0.28 20260809 gjw]

@@ -33,6 +33,7 @@ class ReorderableTaskItem extends StatelessWidget {
   final ValueChanged<bool?> onComplete;
   final VoidCallback? onDelete;
   final VoidCallback? onDefer;
+  final VoidCallback? onEscalate;
   final ValueChanged<String>? onEditField;
 
   const ReorderableTaskItem({
@@ -46,6 +47,7 @@ class ReorderableTaskItem extends StatelessWidget {
     required this.onComplete,
     this.onDelete,
     this.onDefer,
+    this.onEscalate,
     this.onEditField,
   });
 
@@ -84,6 +86,7 @@ class ReorderableTaskItem extends StatelessWidget {
                   onComplete: onComplete,
                   onEditField: onEditField,
                   onDefer: onDefer,
+                  onEscalate: onEscalate,
                   onDelete: onDelete == null
                       ? null
                       : () async {

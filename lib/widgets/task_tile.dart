@@ -18,6 +18,7 @@ import 'package:markdown_tooltip/markdown_tooltip.dart';
 import 'package:todopod/constants/app.dart';
 import 'package:todopod/models/task.dart';
 import 'package:todopod/utils/defer_task.dart';
+import 'package:todopod/utils/escalate_task.dart';
 import 'package:todopod/widgets/priority_badge.dart';
 import 'package:todopod/widgets/tag_chip.dart';
 
@@ -28,6 +29,7 @@ class TaskTile extends StatelessWidget {
   final ValueChanged<String>? onEditField;
   final VoidCallback? onDelete;
   final VoidCallback? onDefer;
+  final VoidCallback? onEscalate;
 
   const TaskTile({
     super.key,
@@ -37,6 +39,7 @@ class TaskTile extends StatelessWidget {
     this.onEditField,
     this.onDelete,
     this.onDefer,
+    this.onEscalate,
   });
 
   @override
@@ -150,6 +153,22 @@ Complete this task. It moves to the Done list, and the confirmation offers
                 ],
               ),
             ),
+            // Escalate to the previous Priority/Due-Date stage.
+            if (onEscalate != null)
+              MarkdownTooltip(
+                message: _escalateTooltip(),
+                child: IconButton(
+                  icon: Icon(
+                    Icons.priority_high_outlined,
+                    size: 16,
+                    color: cs.primary.withValues(
+                      alpha: canEscalateTask(task) ? 0.6 : 0.3,
+                    ),
+                  ),
+                  visualDensity: VisualDensity.compact,
+                  onPressed: canEscalateTask(task) ? onEscalate : null,
+                ),
+              ),
             // Defer to the next Priority/Due-Date stage.
             if (onDefer != null)
               MarkdownTooltip(
@@ -227,6 +246,34 @@ Complete this task. It moves to the Done list, and the confirmation offers
             'pushing its due date out by a week.',
       _ =>
         'Moves this task to priority F (${priorityLabels['F']}). '
+            'Its due date is left unchanged.',
+    };
+    return '$title\n\n$blurb';
+  }
+
+  String _escalateTooltip() {
+    const title = '**Escalate**';
+    if (!canEscalateTask(task)) {
+      final why = task.priority == null
+          ? "there's no priority set to bring forward"
+          : 'Now (A) is already the first stage';
+      return '$title\n\nNot available — $why.';
+    }
+    final blurb = switch (task.priority) {
+      'B' =>
+        'Moves this task to priority A (${priorityLabels['A']}), '
+            'due today.',
+      'C' =>
+        'Moves this task to priority B (${priorityLabels['B']}), '
+            'due today.',
+      'D' =>
+        'Moves this task to priority C (${priorityLabels['C']}). '
+            'Its due date is left unchanged.',
+      'E' =>
+        'Moves this task to priority D (${priorityLabels['D']}). '
+            'Its due date is left unchanged.',
+      _ =>
+        'Moves this task to priority E (${priorityLabels['E']}). '
             'Its due date is left unchanged.',
     };
     return '$title\n\n$blurb';

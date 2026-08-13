@@ -20,6 +20,7 @@ import 'package:todopod/models/task.dart';
 import 'package:todopod/pages/task_edit.dart';
 import 'package:todopod/services/app_provider.dart';
 import 'package:todopod/utils/defer_task.dart';
+import 'package:todopod/utils/escalate_task.dart';
 import 'package:todopod/widgets/app_snack_bar.dart';
 
 /// Open the task editor for [task], save any returned changes, and persist
@@ -101,6 +102,38 @@ void deferTaskAction({
   SolidWriteFailures.watch(
     provider.saveTodoToPod(),
     during: 'deferring the task',
+  );
+
+  showPositiveSnackBar(
+    context,
+    '"${task.description}" moved to ${updated.priority}.',
+    actionLabel: 'Undo',
+    onAction: () {
+      provider.updateTask(task);
+      SolidWriteFailures.watch(
+        provider.saveTodoToPod(),
+        during: 'restoring the task',
+      );
+    },
+  );
+}
+
+/// Move [task] back to its previous Priority/Due-Date stage (see
+/// [escalateTask]) and persist.
+///
+/// Confirms with a SnackBar offering Undo, which restores the task's
+/// previous priority and due date. Callers must check [canEscalateTask]
+/// first — there is no stage before A.
+void escalateTaskAction({
+  required BuildContext context,
+  required AppProvider provider,
+  required Task task,
+}) {
+  final updated = escalateTask(task);
+  provider.updateTask(updated);
+  SolidWriteFailures.watch(
+    provider.saveTodoToPod(),
+    during: 'escalating the task',
   );
 
   showPositiveSnackBar(

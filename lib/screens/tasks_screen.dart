@@ -282,6 +282,11 @@ class _TasksScreenState extends State<TasksScreen> {
                       provider: provider,
                       task: task,
                     ),
+                    onEscalate: () => escalateTaskAction(
+                      context: context,
+                      provider: provider,
+                      task: task,
+                    ),
                     onEditField: (field) => editTaskAction(
                       context: context,
                       provider: provider,

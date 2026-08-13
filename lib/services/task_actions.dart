@@ -22,6 +22,7 @@ import 'package:todopod/services/app_provider.dart';
 import 'package:todopod/utils/defer_task.dart';
 import 'package:todopod/utils/escalate_task.dart';
 import 'package:todopod/widgets/app_snack_bar.dart';
+import 'package:todopod/widgets/due_date_picker_dialog.dart';
 
 /// Open the task editor for [task], save any returned changes, and persist
 /// to the Pod.
@@ -86,18 +87,42 @@ void completeTaskAction({
   );
 }
 
+/// Starting priorities whose defer step has no fixed due-date rule — B, C, D
+/// and E are all "relative" stages (This Week, Next Week, Later, Parked)
+/// with no one obvious date, so the user is asked instead of guessing.
+/// A → B resolves to a concrete "today" and doesn't need asking.
+const _deferPromptPriorities = {'B', 'C', 'D', 'E'};
+
+/// Starting priorities whose escalate step has no fixed due-date rule — the
+/// mirror of [_deferPromptPriorities]. B → A and C → B resolve to a concrete
+/// "today" and don't need asking.
+const _escalatePromptPriorities = {'D', 'E', 'F'};
+
 /// Advance [task] to its next Priority/Due-Date stage (see [deferTask]) and
 /// persist.
 ///
+/// A (Now) → B is fully automatic (due today). For every other stage — B, C,
+/// D and E, which have no fixed date rule — this prompts for the new due
+/// date via [showDueDatePickerDialog] before applying the priority change.
 /// Confirms with a SnackBar offering Undo, which restores the task's
 /// previous priority and due date. Callers must check [canDeferTask] first —
 /// there is no stage past F.
-void deferTaskAction({
+Future<void> deferTaskAction({
   required BuildContext context,
   required AppProvider provider,
   required Task task,
-}) {
-  final updated = deferTask(task);
+}) async {
+  var updated = deferTask(task);
+  if (_deferPromptPriorities.contains(task.priority)) {
+    final choice = await showDueDatePickerDialog(
+      context,
+      initialDate: task.dueDate,
+    );
+    if (choice.cancelled) return;
+    if (!context.mounted) return;
+    updated = updated.copyWith(dueDate: choice.dueDate);
+  }
+
   provider.updateTask(updated);
   SolidWriteFailures.watch(
     provider.saveTodoToPod(),
@@ -121,15 +146,28 @@ void deferTaskAction({
 /// Move [task] back to its previous Priority/Due-Date stage (see
 /// [escalateTask]) and persist.
 ///
-/// Confirms with a SnackBar offering Undo, which restores the task's
-/// previous priority and due date. Callers must check [canEscalateTask]
-/// first — there is no stage before A.
-void escalateTaskAction({
+/// B → A and C → B are fully automatic (due today). For D, E and F — which
+/// have no fixed date rule — this prompts for the new due date via
+/// [showDueDatePickerDialog] before applying the priority change. Confirms
+/// with a SnackBar offering Undo, which restores the task's previous
+/// priority and due date. Callers must check [canEscalateTask] first — there
+/// is no stage before A.
+Future<void> escalateTaskAction({
   required BuildContext context,
   required AppProvider provider,
   required Task task,
-}) {
-  final updated = escalateTask(task);
+}) async {
+  var updated = escalateTask(task);
+  if (_escalatePromptPriorities.contains(task.priority)) {
+    final choice = await showDueDatePickerDialog(
+      context,
+      initialDate: task.dueDate,
+    );
+    if (choice.cancelled) return;
+    if (!context.mounted) return;
+    updated = updated.copyWith(dueDate: choice.dueDate);
+  }
+
   provider.updateTask(updated);
   SolidWriteFailures.watch(
     provider.saveTodoToPod(),

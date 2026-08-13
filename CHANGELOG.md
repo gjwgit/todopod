@@ -38,6 +38,8 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.0 New Secure Key Handling
 
++ Use up/down arrow icons for Escalate and Defer [1.0.33 20260813 gjw]
++ Prompt for a due date on Defer/Escalate relative stages [1.0.32 20260813 gjw]
 + Add an Escalate button, the mirror of Defer [1.0.31 20260813 gjw]
 + Replace due-tomorrow button with priority-based Defer [1.0.30 20260813 gjw]
 + Change task list quick-due button to due tomorrow [1.0.29 20260813 gjw]

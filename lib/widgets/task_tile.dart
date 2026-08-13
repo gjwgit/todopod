@@ -159,7 +159,7 @@ Complete this task. It moves to the Done list, and the confirmation offers
                 message: _escalateTooltip(),
                 child: IconButton(
                   icon: Icon(
-                    Icons.priority_high_outlined,
+                    Icons.arrow_upward_outlined,
                     size: 16,
                     color: cs.primary.withValues(
                       alpha: canEscalateTask(task) ? 0.6 : 0.3,
@@ -175,7 +175,7 @@ Complete this task. It moves to the Done list, and the confirmation offers
                 message: _deferTooltip(),
                 child: IconButton(
                   icon: Icon(
-                    Icons.next_plan_outlined,
+                    Icons.arrow_downward_outlined,
                     size: 16,
                     color: cs.primary.withValues(
                       alpha: canDeferTask(task) ? 0.6 : 0.3,
@@ -236,17 +236,17 @@ Complete this task. It moves to the Done list, and the confirmation offers
         'Moves this task to priority B (${priorityLabels['B']}), '
             'due today.',
       'B' =>
-        'Moves this task to priority C (${priorityLabels['C']}), '
-            'due tomorrow.',
+        'Moves this task to priority C (${priorityLabels['C']}) and asks '
+            'for a new due date.',
       'C' =>
-        'Moves this task to priority D (${priorityLabels['D']}), '
-            'pushing its due date out by a week.',
+        'Moves this task to priority D (${priorityLabels['D']}) and asks '
+            'for a new due date.',
       'D' =>
-        'Moves this task to priority E (${priorityLabels['E']}), '
-            'pushing its due date out by a week.',
+        'Moves this task to priority E (${priorityLabels['E']}) and asks '
+            'for a new due date.',
       _ =>
-        'Moves this task to priority F (${priorityLabels['F']}). '
-            'Its due date is left unchanged.',
+        'Moves this task to priority F (${priorityLabels['F']}) and asks '
+            'for a new due date.',
     };
     return '$title\n\n$blurb';
   }
@@ -267,14 +267,14 @@ Complete this task. It moves to the Done list, and the confirmation offers
         'Moves this task to priority B (${priorityLabels['B']}), '
             'due today.',
       'D' =>
-        'Moves this task to priority C (${priorityLabels['C']}). '
-            'Its due date is left unchanged.',
+        'Moves this task to priority C (${priorityLabels['C']}) and asks '
+            'for a new due date.',
       'E' =>
-        'Moves this task to priority D (${priorityLabels['D']}). '
-            'Its due date is left unchanged.',
+        'Moves this task to priority D (${priorityLabels['D']}) and asks '
+            'for a new due date.',
       _ =>
-        'Moves this task to priority E (${priorityLabels['E']}). '
-            'Its due date is left unchanged.',
+        'Moves this task to priority E (${priorityLabels['E']}) and asks '
+            'for a new due date.',
     };
     return '$title\n\n$blurb';
   }

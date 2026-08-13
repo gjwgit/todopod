@@ -41,7 +41,7 @@ void main() {
       tester,
     ) async {
       await pumpTile(tester);
-      expect(find.byIcon(Icons.next_plan_outlined), findsNothing);
+      expect(find.byIcon(Icons.arrow_downward_outlined), findsNothing);
     });
 
     testWidgets('shows the defer button when a callback is given', (
@@ -52,7 +52,7 @@ void main() {
         task: baseTask.copyWith(priority: 'A'),
         onDefer: () {},
       );
-      expect(find.byIcon(Icons.next_plan_outlined), findsOneWidget);
+      expect(find.byIcon(Icons.arrow_downward_outlined), findsOneWidget);
     });
 
     testWidgets('tapping the defer button invokes the callback', (
@@ -65,7 +65,7 @@ void main() {
         onDefer: () => tapped = true,
       );
 
-      await tester.tap(find.byIcon(Icons.next_plan_outlined));
+      await tester.tap(find.byIcon(Icons.arrow_downward_outlined));
       await tester.pump();
 
       expect(tapped, isTrue);
@@ -78,7 +78,7 @@ void main() {
         onDelete: () {},
         onDefer: () {},
       );
-      expect(find.byIcon(Icons.next_plan_outlined), findsOneWidget);
+      expect(find.byIcon(Icons.arrow_downward_outlined), findsOneWidget);
       expect(find.byIcon(Icons.delete_outline), findsOneWidget);
     });
 
@@ -88,7 +88,7 @@ void main() {
       var tapped = false;
       await pumpTile(tester, onDefer: () => tapped = true);
 
-      await tester.tap(find.byIcon(Icons.next_plan_outlined));
+      await tester.tap(find.byIcon(Icons.arrow_downward_outlined));
       await tester.pump();
 
       expect(tapped, isFalse);
@@ -102,7 +102,7 @@ void main() {
         onDefer: () => tapped = true,
       );
 
-      await tester.tap(find.byIcon(Icons.next_plan_outlined));
+      await tester.tap(find.byIcon(Icons.arrow_downward_outlined));
       await tester.pump();
 
       expect(tapped, isFalse);
@@ -112,7 +112,7 @@ void main() {
       tester,
     ) async {
       await pumpTile(tester);
-      expect(find.byIcon(Icons.priority_high_outlined), findsNothing);
+      expect(find.byIcon(Icons.arrow_upward_outlined), findsNothing);
     });
 
     testWidgets('shows the escalate button when a callback is given', (
@@ -123,7 +123,7 @@ void main() {
         task: baseTask.copyWith(priority: 'B'),
         onEscalate: () {},
       );
-      expect(find.byIcon(Icons.priority_high_outlined), findsOneWidget);
+      expect(find.byIcon(Icons.arrow_upward_outlined), findsOneWidget);
     });
 
     testWidgets('tapping the escalate button invokes the callback', (
@@ -136,7 +136,7 @@ void main() {
         onEscalate: () => tapped = true,
       );
 
-      await tester.tap(find.byIcon(Icons.priority_high_outlined));
+      await tester.tap(find.byIcon(Icons.arrow_upward_outlined));
       await tester.pump();
 
       expect(tapped, isTrue);
@@ -148,7 +148,7 @@ void main() {
       var tapped = false;
       await pumpTile(tester, onEscalate: () => tapped = true);
 
-      await tester.tap(find.byIcon(Icons.priority_high_outlined));
+      await tester.tap(find.byIcon(Icons.arrow_upward_outlined));
       await tester.pump();
 
       expect(tapped, isFalse);
@@ -164,7 +164,7 @@ void main() {
         onEscalate: () => tapped = true,
       );
 
-      await tester.tap(find.byIcon(Icons.priority_high_outlined));
+      await tester.tap(find.byIcon(Icons.arrow_upward_outlined));
       await tester.pump();
 
       expect(tapped, isFalse);
@@ -179,8 +179,8 @@ void main() {
         onDefer: () {},
         onEscalate: () {},
       );
-      expect(find.byIcon(Icons.next_plan_outlined), findsOneWidget);
-      expect(find.byIcon(Icons.priority_high_outlined), findsOneWidget);
+      expect(find.byIcon(Icons.arrow_downward_outlined), findsOneWidget);
+      expect(find.byIcon(Icons.arrow_upward_outlined), findsOneWidget);
     });
   });
 }

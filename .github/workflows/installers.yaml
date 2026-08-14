@@ -48,7 +48,7 @@ env:
   MACOS_APP_RELEASE_UNSIGNED_PATH: build/macos/Build/Products/Release-unsigned
   MACOS_APP_RELEASE_STAGING_PATH: build/macos/Build/Products/Release-staging
   MACOS_APP_RELEASE_DEV_PATH: build/macos/Build/Products/Release-dev
-  FLUTTER_VERSION: "3.44.9"
+  FLUTTER_VERSION: "3.47.0"
 
 jobs:
 
@@ -346,6 +346,19 @@ jobs:
       - name: Display OS Information
         run: |
           system_profiler SPSoftwareDataType
+
+      - name: Select the newest Xcode
+        # flutter_gemma's manifest needs Swift 6.1 (Xcode 16.3 or later).
+        # Chosen by sort order so this does not break when the image's Xcode
+        # versions change; the versions are logged to make any future
+        # toolchain failure diagnosable from the run alone.
+        run: |
+          ls -d /Applications/Xcode*.app
+          newest=$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)
+          echo "Selecting $newest"
+          sudo xcode-select -s "$newest"
+          xcodebuild -version
+          swift --version
 
       - name: Clone Repository
         uses: actions/checkout@v6

@@ -1,6 +1,7 @@
 /// Tests for ViewPrefs — device-local view preferences.
 ///
 library;
+
 // Run: flutter test test/view_prefs_test.dart
 
 import 'package:flutter_test/flutter_test.dart';

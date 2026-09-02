@@ -1,6 +1,7 @@
 /// Integration tests — Done screen.
 ///
 library;
+
 // Run: flutter test integration_test/done_screen_test.dart
 
 import 'package:flutter/material.dart';

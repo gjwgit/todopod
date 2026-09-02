@@ -1,6 +1,7 @@
 /// Tests for durationMinutes — parses free-text durations for sorting.
 ///
 library;
+
 // Run: flutter test test/duration_minutes_test.dart
 
 import 'package:flutter_test/flutter_test.dart';

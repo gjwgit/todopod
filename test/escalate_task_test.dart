@@ -2,6 +2,7 @@
 /// progression.
 ///
 library;
+
 // Run: flutter test test/escalate_task_test.dart
 
 import 'package:flutter_test/flutter_test.dart';

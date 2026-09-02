@@ -1,6 +1,7 @@
 /// Tests for normalizeDuration — bare-integer durations default to minutes.
 ///
 library;
+
 // Run: flutter test test/normalize_duration_test.dart
 
 import 'package:flutter_test/flutter_test.dart';

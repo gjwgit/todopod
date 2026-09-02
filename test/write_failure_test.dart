@@ -6,6 +6,7 @@
 /// successful save reports nothing.
 ///
 library;
+
 // Run: flutter test test/write_failure_test.dart
 
 import 'package:flutter_test/flutter_test.dart';

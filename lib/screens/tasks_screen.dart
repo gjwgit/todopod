@@ -59,8 +59,8 @@ class _TasksScreenState extends State<TasksScreen> {
   }
 
   /// Filters tasks by query. Supports:
-  ///   context:xxx  — tasks with that context tag
-  ///   project:yyy  — tasks with that project tag
+  ///   context:xxx, @xxx  — tasks with that context tag
+  ///   project:yyy, +yyy  — tasks with that project tag
   ///   due:today    — tasks due today
   ///   due:past     — tasks overdue
   ///   due:tomorrow — tasks due tomorrow
@@ -75,14 +75,18 @@ class _TasksScreenState extends State<TasksScreen> {
     final tomorrowDate = todayDate.add(const Duration(days: 1));
     final weekDate = todayDate.add(const Duration(days: 7));
 
-    if (q.startsWith('context:')) {
-      final tag = q.substring('context:'.length).trim();
+    if (q.startsWith('context:') || (q.startsWith('@') && q.length > 1)) {
+      final tag = q.startsWith('@')
+          ? q.substring(1).trim()
+          : q.substring('context:'.length).trim();
       return all
           .where((t) => t.contexts.any((c) => c.toLowerCase().contains(tag)))
           .toList();
     }
-    if (q.startsWith('project:')) {
-      final tag = q.substring('project:'.length).trim();
+    if (q.startsWith('project:') || (q.startsWith('+') && q.length > 1)) {
+      final tag = q.startsWith('+')
+          ? q.substring(1).trim()
+          : q.substring('project:'.length).trim();
       return all
           .where((t) => t.projects.any((p) => p.toLowerCase().contains(tag)))
           .toList();
@@ -208,8 +212,8 @@ class _TasksScreenState extends State<TasksScreen> {
 **Search tips**
 
 - Plain text — searches description, contexts and projects
-- `context:xxx` — tasks tagged `@xxx`
-- `project:yyy` — tasks tagged `+yyy`
+- `context:xxx` or `@xxx` — tasks tagged `@xxx`
+- `project:yyy` or `+yyy` — tasks tagged `+yyy`
 - `due:today` — tasks due today
 - `due:past` — overdue tasks
 - `due:tomorrow` — tasks due tomorrow

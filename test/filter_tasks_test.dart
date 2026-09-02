@@ -4,6 +4,7 @@
 /// by extracting it here as a standalone function matching the implementation.
 ///
 library;
+
 // Run: flutter test test/filter_tasks_test.dart
 
 import 'package:flutter_test/flutter_test.dart';
@@ -21,14 +22,18 @@ List<Task> filterTasks(List<Task> all, String query) {
   final tomorrowDate = todayDate.add(const Duration(days: 1));
   final weekDate = todayDate.add(const Duration(days: 7));
 
-  if (q.startsWith('context:')) {
-    final tag = q.substring('context:'.length).trim();
+  if (q.startsWith('context:') || (q.startsWith('@') && q.length > 1)) {
+    final tag = q.startsWith('@')
+        ? q.substring(1).trim()
+        : q.substring('context:'.length).trim();
     return all
         .where((t) => t.contexts.any((c) => c.toLowerCase().contains(tag)))
         .toList();
   }
-  if (q.startsWith('project:')) {
-    final tag = q.substring('project:'.length).trim();
+  if (q.startsWith('project:') || (q.startsWith('+') && q.length > 1)) {
+    final tag = q.startsWith('+')
+        ? q.substring(1).trim()
+        : q.substring('project:'.length).trim();
     return all
         .where((t) => t.projects.any((p) => p.toLowerCase().contains(tag)))
         .toList();
@@ -166,6 +171,34 @@ void main() {
     });
   });
 
+  // ── @ context shorthand ────────────────────────────────────────────────────
+
+  group('@ context shorthand', () {
+    final tasks = [
+      makeTask(description: 'Call Alice', contexts: ['phone']),
+      makeTask(description: 'Send email', contexts: ['email']),
+      makeTask(description: 'Buy food', contexts: ['errands', 'phone']),
+    ];
+
+    test('@xxx behaves like context:xxx', () {
+      expect(filterTasks(tasks, '@phone'), hasLength(2));
+    });
+
+    test('partial match works', () {
+      final result = filterTasks(tasks, '@err');
+      expect(result, hasLength(1));
+      expect(result.first.description, 'Buy food');
+    });
+
+    test('is case-insensitive', () {
+      expect(filterTasks(tasks, '@PHONE'), hasLength(2));
+    });
+
+    test('bare @ falls back to full-text search', () {
+      expect(filterTasks(tasks, '@'), isEmpty);
+    });
+  });
+
   // ── project: filter ────────────────────────────────────────────────────────
 
   group('project: filter', () {
@@ -190,6 +223,30 @@ void main() {
         filterTasks(tasks, 'project:work'),
         everyElement(predicate<Task>((t) => t.projects.isNotEmpty)),
       );
+    });
+  });
+
+  // ── + project shorthand ─────────────────────────────────────────────────────
+
+  group('+ project shorthand', () {
+    final tasks = [
+      makeTask(description: 'Write spec', projects: ['work', 'docs']),
+      makeTask(description: 'Clean room', projects: ['home']),
+      makeTask(description: 'No project'),
+    ];
+
+    test('+yyy behaves like project:yyy', () {
+      expect(filterTasks(tasks, '+work'), hasLength(1));
+    });
+
+    test('partial match works', () {
+      final result = filterTasks(tasks, '+doc');
+      expect(result, hasLength(1));
+      expect(result.first.description, 'Write spec');
+    });
+
+    test('bare + falls back to full-text search', () {
+      expect(filterTasks(tasks, '+'), isEmpty);
     });
   });
 

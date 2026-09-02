@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.0 New Secure Key Handling
 
++ Support @ and + in search [1.0.34 20260903 gjw]
 + Use up/down arrow icons for Escalate and Defer [1.0.33 20260813 gjw]
 + Prompt for a due date on Defer/Escalate relative stages [1.0.32 20260813 gjw]
 + Add an Escalate button, the mirror of Defer [1.0.31 20260813 gjw]

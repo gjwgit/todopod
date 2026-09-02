@@ -17,54 +17,19 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-  # Graham's own text field with Emacs-style keybindings, used for the task
-  # notes editor in TASKS, DONE and the task edit dialog.
   emacs_text_field: ^0.1.3
-
-  # Pick a Todo.txt/JSON file to import and choose a save location to export
-  # to, in the IMPORT/EXPORT screen.
   file_picker: ^11.0.2
-
-  # Small fixed-size spacing widget, used throughout the layout in place of
-  # bare SizedBoxes.
-  gap: ^3.0.1
-
-  # Graham's own drop-in Tooltip replacement with Markdown rendering and a
-  # popup delay, used for every tooltip in the app.
-  markdown_tooltip: ^0.0.10
-
-  # Render Markdown-formatted task notes in the DONE list and the task edit
-  # dialog.
   flutter_markdown_plus: ^1.0.7
-
-  # Build the PDF document for the BACKUP/EXPORT "save as PDF" option.
+  gap: ^3.0.1
+  markdown_tooltip: ^0.0.10
   pdf: ^3.11.1
-
-  # Preview and share the exported PDF from the IMPORT/EXPORT screen.
   printing: ^5.13.1
-
-  # State management: AppProvider is a ChangeNotifier read/watched via
-  # provider throughout the screens.
   provider: ^6.1.5
-
-  # Device-local display preferences (ViewPrefs), never synced to the Pod.
   shared_preferences: ^2.3.0
-
-  # Solid Pod storage and encryption: read/write the encrypted todo/done
-  # files on the user's Pod.
-  solidpod: ^1.0.13
-
-  # Solid app scaffold, login flow, and shared settings/about UI.
-  solidui: ^1.0.30
-
-  # Calendar grid widget backing the PLANNER screen.
+  solidpod: ^1.0.18
+  solidui: ^1.0.35
   table_calendar: ^3.1.3
-
-  # Generate stable unique identifiers for each task.
   uuid: ^4.5.3
-
-  # Restore the last window size/position on Linux/macOS/Windows desktop.
   window_manager: ^0.5.1
 
 # TEMPORARY local override to verify against unreleased solidui 1.0.30.

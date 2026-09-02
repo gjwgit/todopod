@@ -87,10 +87,15 @@ https://host/
 https://pods.au/me/app/data
 https://pub.dev/documentation/solidui/latest/solidui/SolidScaffold-class.html
 https://anusii.github.io/soliduieg/client-profile.jsonld
+https://github.com/anusii/mypod/blob/dev/CHANGELOG.md
+https://anusii.github.io/mypod/
+https://anusii.github.io/mypod/client-profile.jsonld
+https://anusii.github.io/mypod/redirect.html
 https://your-solid-server/
 https://gjwgit.github.io/rolopod/client-profile.jsonld
 https://github.com/anusii/
 https://anusii.github.io/
+https://dev.empwr.au/mypod/
 https://server/alice/
 
 # 20260605 gjw Failing solid servers
@@ -106,6 +111,11 @@ https://photon.komoot.io/api/
 # 20260619 gjw konapod failures
 
 https://blog.kumo.dev/2024/05/22/reverse_engineering_hkg_apps.html
+
+# 20260816 tonypioneer solidpod failures
+
+https://anushkavidanage.github.io/solidpod/example/redirect.html
+https://anushkavidanage.github.io/solidpod/example/client-profile.jsonld
 
 # 20260625 gjw papertrail
 

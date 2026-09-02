@@ -73,17 +73,17 @@ a Pull Request. The app is implemented in
 
 ## Introduction
 
-TodoPod is a Trello-like Solid Flutter app to manage todo/task lists
-based on the open standard todo.txt format. Tasks can be imported and
-exported from other apps using the todo.txt format. Each item has a
-title, notes, priority (A=now, B=today, C=this week, D=next week,
-E=later, and F=parked), together with optional due date, duration,
-project (to collect together related tasks), and a context (where the
-task is to be undertaken). You can view your tasks in an ordered list,
-a kanban board, or as a planner/calendar. The app is multi-platform so
-you can install it for your desktop or mobile device, or run it
-directly through a web browser, all accessing and updating the tasks
-encrypted within your Pod.
+TodoPod is a Solid Flutter app to manage todo/task lists based on the
+open standard todo.txt format. Tasks can be imported and exported from
+other apps using the todo.txt format. Each item has a title, notes,
+priority (A=now, B=today, C=this week, D=next week, E=later, and
+F=parked), together with optional due date, duration, project (to
+collect together related tasks), and a context (where the task is to
+be undertaken). You can view your tasks in an ordered list, a kanban
+board, or as a planner/calendar. The app is multi-platform so you can
+install it for your desktop or mobile device, or run it directly
+through a web browser, all accessing and updating the tasks encrypted
+within your Pod.
 
 ---
 

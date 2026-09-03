@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.0 New Secure Key Handling
 
++ Update solidui dependency [1.0.36 20260903 gjw]
 + Update dependency and use file_picker v12 API [1.0.35 20260903 gjw]
 + Support @ and + in search [1.0.34 20260903 gjw]
 + Use up/down arrow icons for Escalate and Defer [1.0.33 20260813 gjw]

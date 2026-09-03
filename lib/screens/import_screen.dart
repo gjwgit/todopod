@@ -316,19 +316,13 @@ class _ImportScreenState extends State<ImportScreen> {
       }
     });
     try {
-      final result = await FilePicker.pickFiles(
+      final file = await FilePicker.pickFile(
         dialogTitle: dialogTitle,
         type: fileType,
         allowedExtensions: extensions,
-        withData: true,
       );
-      if (result == null || result.files.isEmpty) return;
-      final file = result.files.first;
-      final bytes = file.bytes;
-      if (bytes == null) {
-        setMsg('Could not read file.', error: true);
-        return;
-      }
+      if (file == null) return;
+      final bytes = await file.readAsBytes();
       final tasks = parse(bytes);
       if (tasks.isEmpty) {
         setMsg('No tasks found in "${file.name}".', error: true);

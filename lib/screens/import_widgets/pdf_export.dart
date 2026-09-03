@@ -11,8 +11,6 @@
 
 library;
 
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 
 import 'package:file_picker/file_picker.dart';
@@ -60,7 +58,10 @@ Future<Uint8List> buildTasksPdf({
         children: [
           pw.Text(
             title,
-            style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold),
+            style: const pw.TextStyle(
+              fontSize: 20,
+              fontWeight: pw.FontWeight.bold,
+            ),
           ),
           pw.Text(
             'Generated $dateStr  ·  '
@@ -108,15 +109,15 @@ Future<String?> savePdfAs(List<int> bytes, String defaultName) async {
       );
       return null;
     }
-    final savePath = await FilePicker.saveFile(
+    final fileUri = await FilePicker.saveFile(
       dialogTitle: 'Save PDF',
       fileName: defaultName,
       type: FileType.custom,
       allowedExtensions: ['pdf'],
+      bytes: Uint8List.fromList(bytes),
     );
-    if (savePath == null) return null; // user cancelled
-    await File(savePath).writeAsBytes(bytes);
-    return 'Saved to $savePath';
+    if (fileUri == null) return null; // user cancelled
+    return 'Saved to ${fileUri.path}';
   } catch (e, st) {
     debugPrint('[Save PDF] error: $e\n$st');
     return 'error:Save failed: $e';

@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.0 New Secure Key Handling
 
++ Update solidui dependency [1.0.38 20260903 gjw]
 + Update Android Gradle Plugin 8->9 [1.0.37 20260904 gjw]
 + Update solidui dependency [1.0.36 20260903 gjw]
 + Update dependency and use file_picker v12 API [1.0.35 20260903 gjw]

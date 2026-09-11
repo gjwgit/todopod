@@ -32,6 +32,22 @@ dependencies:
   uuid: ^4.5.3
   window_manager: ^0.5.1
 
+# 20260911 gjw TEMPORARY. The published solidpod and solid_auth clear the
+# session on every start, so the login page always appears — see
+# anusii/solidpod#717 and anusii/solid_auth#53. These overrides pick up the
+# fixes from the GitHub fix branches. Remove this section once both are
+# released.
+
+dependency_overrides:
+  solid_auth:
+    git:
+      url: https://github.com/anusii/solid_auth.git
+      ref: gjw/52_secure_token_store
+  solidpod:
+    git:
+      url: https://github.com/anusii/solidpod.git
+      ref: gjw/716_single_flight_session_restore
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

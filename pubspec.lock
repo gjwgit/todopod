@@ -380,10 +380,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_secure_storage_linux
-      sha256: "76fa9c841b3b1619fc5b5bc36efc7d158fa2356f223b6caeb1d0c80a54168546"
+      sha256: caa75bd78f017422912e3a904933113b2428eb79f981ac37acd2dd2a700458ea
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.2"
+    version: "3.0.3"
   flutter_secure_storage_platform_interface:
     dependency: transitive
     description:
@@ -1086,19 +1086,19 @@ packages:
     description:
       path: "."
       ref: "gjw/52_secure_token_store"
-      resolved-ref: ce8206384cbbd360c55890d1a1c3747610b48d34
+      resolved-ref: "4487efe01607a629cea4c13793cbd5a3505a37a4"
       url: "https://github.com/anusii/solid_auth.git"
     source: git
-    version: "1.0.7"
+    version: "1.0.8"
   solidpod:
     dependency: "direct main"
     description:
       path: "."
       ref: "gjw/716_single_flight_session_restore"
-      resolved-ref: "3f040764f6bed4187fd39926fd69743985dfdd17"
+      resolved-ref: "81c6ab7b25d34a58d26d80d6942e724993825328"
       url: "https://github.com/anusii/solidpod.git"
     source: git
-    version: "1.0.21"
+    version: "1.0.22"
   solidui:
     dependency: "direct main"
     description:

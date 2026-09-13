@@ -364,10 +364,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_secure_storage
-      sha256: "2670c2a81a032080e779c015f4f775373605c4a364643ed371e78dea7781822c"
+      sha256: "6a79c298171e6165823c41db058e10ad0e0d1f10af361a7e7c8d74f058435f50"
       url: "https://pub.dev"
     source: hosted
-    version: "10.3.2"
+    version: "10.3.3"
   flutter_secure_storage_darwin:
     dependency: transitive
     description:
@@ -1103,10 +1103,10 @@ packages:
     dependency: "direct main"
     description:
       name: solidui
-      sha256: "4f2c9406c59d39d0affaf24877d92a5a63c034e94bfe922a9d87bf0fa58a479d"
+      sha256: f9a7b975cf5db858a3fa5de7df7d494e13519602b28fc0b7710cf229ebd54d8b
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.39"
+    version: "1.0.41"
   source_span:
     dependency: transitive
     description:

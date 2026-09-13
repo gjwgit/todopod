@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.0 New Secure Key Handling
 
++ Remember the window size between sessions [1.0.40 20260913 gjw]
 + Update file picker and apple config [1.0.39 20260911 gjw]
 + Update solidui dependency [1.0.38 20260903 gjw]
 + Update Android Gradle Plugin 8->9 [1.0.37 20260904 gjw]

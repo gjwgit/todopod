@@ -38,8 +38,8 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.0 New Secure Key Handling
 
-+ To solidui 1.0.45 for login offline bug fix errors [1.0.44 20260915 gjw]
-+ Update to solidui 1.0.44 for clearer login errors [1.0.43 20260915 gjw]
++ Report offline rather than doing nothing on Login [1.0.44 20260915 gjw]
++ Login errors name the cause: internet, address or server [1.0.43 20260915 gjw]
 + Revert Skia (not Impeller) smooth animation on linux [1.0.42 20260914 gjw]
 + Update to solidpod 1.0.22 and solidui 1.0.43 [1.0.41 20260914 gjw]
 + Remember the window size between sessions [1.0.40 20260913 gjw]

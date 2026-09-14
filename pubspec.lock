@@ -344,14 +344,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_markdown:
-    dependency: transitive
-    description:
-      name: flutter_markdown
-      sha256: "08fb8315236099ff8e90cb87bb2b935e0a724a3af1623000a9cec930468e0f27"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.7.7+1"
   flutter_markdown_plus:
     dependency: "direct main"
     description:
@@ -1101,10 +1093,10 @@ packages:
     dependency: "direct main"
     description:
       name: solidui
-      sha256: f9a7b975cf5db858a3fa5de7df7d494e13519602b28fc0b7710cf229ebd54d8b
+      sha256: "0e167d534eb361c6a4cba73585b748b83499d3eebccaf338fef5d2318fb598b8"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.41"
+    version: "1.0.43"
   source_span:
     dependency: transitive
     description:
@@ -1269,10 +1261,10 @@ packages:
     dependency: transitive
     description:
       name: version_widget
-      sha256: a504c7d0bfb789f9125d01a295d2d2ad6d31a7dadac92679ba04efc2edd419d4
+      sha256: "2e87ce5f42e50764b00d4417e4f4a68e02f6e3ccaf4d2e93b7cbb511c98f9676"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.10"
+    version: "1.1.0"
   vm_service:
     dependency: transitive
     description:

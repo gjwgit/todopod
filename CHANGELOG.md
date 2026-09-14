@@ -122,7 +122,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 + Project and context default focus to the text field [0.1.12 20260407 gjw]
 + Secondary sort by due date then alphabetic [0.1.11 20260407 gjw]
 + Add tooltips [0.1.10 20260406 gjw]
-+ Bug fix reorder function [01.9 20260406 gjw]
++ Bug fix reorder function [0.1.9 20260406 gjw]
 + All search bar text as new task title [0.1.8 20260406 gjw]
 + Tap on a DONE item to view it [0.1.7 20260402 gjw]
 + Support delete task with a swipe [0.1.6 20260402 gjw]

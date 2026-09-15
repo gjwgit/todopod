@@ -573,17 +573,43 @@ jobs:
       - name: Codesign app with hardened runtime
         run: |
           APP="build/macos/Build/Products/Release/${{ env.APP }}.app"
-          # Sign all internal frameworks / dylibs first (inside-out)
-          find "$APP/Contents/Frameworks" -type f \( -name "*.dylib" -o -name "*.framework" \) -print0 2>/dev/null | \
+
+          # 20260916 gjw Sign every nested binary, deepest first. The
+          # previous find looked for -type f -name "*.framework", but a
+          # framework is a DIRECTORY and the executable inside it has no
+          # extension, so nothing matched and the frameworks kept the
+          # ad-hoc signature from the build. Apple then rejects the
+          # submission because nested code is not signed with the
+          # Developer ID certificate.
+
+          # Loose libraries first.
+
+          find "$APP/Contents" -type f \( -name "*.dylib" -o -name "*.so" \) -print0 2>/dev/null | \
             while IFS= read -r -d '' f; do
               codesign --force --timestamp --options runtime \
                 --sign "$DEVELOPER_ID_APP_CERT_NAME" "$f"
             done
+
+          # Then the nested bundles themselves: -depth signs the
+          # innermost first, as codesign requires.
+
+          find "$APP/Contents" -depth \( -name "*.framework" -o -name "*.xpc" -o -name "*.app" \) -print0 2>/dev/null | \
+            while IFS= read -r -d '' b; do
+              codesign --force --timestamp --options runtime \
+                --sign "$DEVELOPER_ID_APP_CERT_NAME" "$b"
+            done
+
           # Then sign the whole app (with entitlements)
           codesign --force --timestamp --options runtime \
             --entitlements macos/Runner/Release.entitlements \
             --sign "$DEVELOPER_ID_APP_CERT_NAME" "$APP"
           codesign --verify --deep --strict --verbose=2 "$APP"
+
+          # 20260916 gjw Show what was actually signed, so a rejected
+          # notarisation can be traced to the binary that kept the wrong
+          # signature rather than guessing from Apple's log alone.
+
+          codesign --display --verbose=2 "$APP" 2>&1 | grep -i authority || true
 
       - name: Create DMG
         run: |
@@ -606,11 +632,29 @@ jobs:
           AC_API_KEY: ${{ secrets.AC_API_KEY }}
         run: |
           echo -n "$AC_API_KEY" | base64 --decode -o $RUNNER_TEMP/AuthKey.p8
+
+          # 20260916 gjw notarytool submit exits 0 even when Apple
+          # rejects the upload, so a failure used to surface later as a
+          # cryptic "Record not found" from the stapler. Capture the
+          # result, print Apple's own log listing each offending binary,
+          # and fail here when the status is not Accepted.
+
           xcrun notarytool submit "${{ env.APP }}-macos.dmg" \
             --key $RUNNER_TEMP/AuthKey.p8 \
             --key-id "$AC_API_KEY_ID" \
             --issuer "$AC_API_ISSUER_ID" \
-            --wait
+            --wait --output-format json | tee $RUNNER_TEMP/notary.json
+
+          SUBMISSION_ID=$(jq -r .id $RUNNER_TEMP/notary.json)
+          STATUS=$(jq -r .status $RUNNER_TEMP/notary.json)
+          echo "Notarisation $SUBMISSION_ID finished with status: $STATUS"
+
+          xcrun notarytool log "$SUBMISSION_ID" \
+            --key $RUNNER_TEMP/AuthKey.p8 \
+            --key-id "$AC_API_KEY_ID" \
+            --issuer "$AC_API_ISSUER_ID" || true
+
+          test "$STATUS" = "Accepted"
 
       # Staple the notarisation ticket onto the DMG so it passes Gatekeeper even offline
       - name: Staple ticket

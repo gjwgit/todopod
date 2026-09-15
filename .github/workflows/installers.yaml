@@ -501,26 +501,7 @@ jobs:
           path: ${{env.APP}}-macos.zip
 
   ########################################################################
-  # MACOS - Graham's attempt to use certificate and appstore
-  #
-  # From Claude 20260712
-  #
-  # 1. **Create a Developer ID Application certificate:** Apple
-  # Developer portal → Certificates → create a new "Developer ID
-  # Application" (requires Account Holder privileges, and each account
-  # is limited to a small number). Export it as a .p12 including the
-  # private key, then base64-encode it.
-  #
-  # 2. **Create an App Store Connect API Key (for notarytool to
-  # use):** App Store Connect → Users and Access → Integrations/Keys →
-  # create a new key. Download the .p8 (it can only be downloaded
-  # once), and note the Key ID and Issuer ID. Also base64-encode the
-  # .p8.
-  #
-  # 3. **Add the GitHub Secrets:** MACOS_DEVELOPER_ID_CERT,
-  # MACOS_DEVELOPER_ID_CERT_PWD, AC_API_KEY_ID, AC_API_ISSUER_ID,
-  # AC_API_KEY (the base64 of the .p8); reuse your existing
-  # MACOS_KEYCHAIN_PWD for the keychain password
+  # MACOS - Build a notarized installer for install outside of appstore
 
   package-macos-dmg-notarized:
     env:

@@ -551,18 +551,22 @@ jobs:
       # by the Developer ID codesign step below, which replaces this
       # one, so the build only needs to get as far as a valid app.
 
+      # 20260916 gjw Restored after the run without it failed with "No
+      # profiles for 'com.togaware.todopod' were found". Real
+      # certificates do not remove the need for this: the certificate
+      # we install is a Developer ID Application one, whereas the
+      # project file asks for automatic signing with an Apple
+      # Development identity and a Mac App Development provisioning
+      # profile. Developer ID distribution uses no profile at all, so
+      # Xcode fails before the certificate is ever consulted.
+
       - name: Build Flutter macOS app
         run: flutter build macos --release
-        #
-        # 20260915 gjw Remove this fix from Claude for now as I revert
-        # to Tony's fix which does not set the env as we try to get
-        # this working with actual certificates.
-        #
-        # env:
-        #   FLUTTER_XCODE_CODE_SIGN_STYLE: Manual
-        #   FLUTTER_XCODE_CODE_SIGN_IDENTITY: "-"
-        #   FLUTTER_XCODE_DEVELOPMENT_TEAM: ""
-        #   FLUTTER_XCODE_PROVISIONING_PROFILE_SPECIFIER: ""
+        env:
+          FLUTTER_XCODE_CODE_SIGN_STYLE: Manual
+          FLUTTER_XCODE_CODE_SIGN_IDENTITY: "-"
+          FLUTTER_XCODE_DEVELOPMENT_TEAM: ""
+          FLUTTER_XCODE_PROVISIONING_PROFILE_SPECIFIER: ""
 
       # Sign with Developer ID and enable the hardened runtime (--options runtime).
       # The hardened runtime is a mandatory requirement for notarisation.

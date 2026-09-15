@@ -316,12 +316,12 @@ jobs:
   #         release: stable
 
   ########################################################################
-  # MACOS - ORIGINAL - DEPRECATED EVENTUALLY
+  # MACOS - ORIGINAL - DEPRECATE EVENTUALLY
   #
   # 20251223 gjw This is the original script for building the macOS
   # dmg and zip files for Rattle. While the macOS and iOS installer
-  # builds are being set up and tested, they do not get build with a
-  # 'bump version' but do get build with 'bump version x' (all get
+  # builds are being set up and tested, they do not get built with a
+  # 'bump version' but do get built with 'bump version x' (all get
   # built) or 'build installers' (all get built) or a specific 'build
   # mac os unsigned' etc included in the commit message.
   #
@@ -330,6 +330,11 @@ jobs:
   # needs extra setup that I've not yet done for my template in geopod
   # and bookoflife, which needs to be done. Once that is done and the
   # steps have a template, this ORIGINAL build can be removed.
+  #
+  # 20260915 gjw This original version is now working properly and
+  # the dmg can be installed on macOS with a warning and override
+  # required. This is utilised for all apps for now while I work on
+  # getting a signed version.
 
   package-macos-dmg-zip-original:
     if: |
@@ -500,18 +505,19 @@ jobs:
   #
   # From Claude 20260712
   #
-  # 1. Create a Developer ID Application certificate: Apple Developer
-  # portal → Certificates → create a new "Developer ID Application"
-  # (requires Account Holder privileges, and each account is limited
-  # to a small number). Export it as a .p12 including the private key,
-  # then base64-encode it.
+  # 1. **Create a Developer ID Application certificate:** Apple
+  # Developer portal → Certificates → create a new "Developer ID
+  # Application" (requires Account Holder privileges, and each account
+  # is limited to a small number). Export it as a .p12 including the
+  # private key, then base64-encode it.
   #
-  # 2. Create an App Store Connect API Key (for notarytool to use):
-  # App Store Connect → Users and Access → Integrations/Keys → create
-  # a new key. Download the .p8 (it can only be downloaded once), and
-  # note the Key ID and Issuer ID. Also base64-encode the .p8.
+  # 2. **Create an App Store Connect API Key (for notarytool to
+  # use):** App Store Connect → Users and Access → Integrations/Keys →
+  # create a new key. Download the .p8 (it can only be downloaded
+  # once), and note the Key ID and Issuer ID. Also base64-encode the
+  # .p8.
   #
-  # 3. Add the GitHub Secrets: MACOS_DEVELOPER_ID_CERT,
+  # 3. **Add the GitHub Secrets:** MACOS_DEVELOPER_ID_CERT,
   # MACOS_DEVELOPER_ID_CERT_PWD, AC_API_KEY_ID, AC_API_ISSUER_ID,
   # AC_API_KEY (the base64 of the .p8); reuse your existing
   # MACOS_KEYCHAIN_PWD for the keychain password
@@ -522,7 +528,7 @@ jobs:
     if: |
       contains(github.event.head_commit.message, 'bump version x') ||
       contains(github.event.head_commit.message, 'build installers x') ||
-      contains(github.event.head_commit.message, 'build macos release')
+      contains(github.event.head_commit.message, 'build macos notarized')
     runs-on: macos-latest
     steps:
       - name: Clone Repository
@@ -566,11 +572,16 @@ jobs:
 
       - name: Build Flutter macOS app
         run: flutter build macos --release
-        env:
-          FLUTTER_XCODE_CODE_SIGN_STYLE: Manual
-          FLUTTER_XCODE_CODE_SIGN_IDENTITY: "-"
-          FLUTTER_XCODE_DEVELOPMENT_TEAM: ""
-          FLUTTER_XCODE_PROVISIONING_PROFILE_SPECIFIER: ""
+        #
+        # 20260915 gjw Remove this fix from Claude for now as I revert
+        # to Tony's fix which does not set the env as we try to get
+        # this working with actual certificates.
+        #
+        # env:
+        #   FLUTTER_XCODE_CODE_SIGN_STYLE: Manual
+        #   FLUTTER_XCODE_CODE_SIGN_IDENTITY: "-"
+        #   FLUTTER_XCODE_DEVELOPMENT_TEAM: ""
+        #   FLUTTER_XCODE_PROVISIONING_PROFILE_SPECIFIER: ""
 
       # Sign with Developer ID and enable the hardened runtime (--options runtime).
       # The hardened runtime is a mandatory requirement for notarisation.

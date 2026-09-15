@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.0 New Secure Key Handling
 
++ Updated macOS notarized build [1.0.45 20260916 gjw]
 + Report offline rather than doing nothing on Login [1.0.44 20260915 gjw]
 + Login errors name the cause: internet, address or server [1.0.43 20260915 gjw]
 + Revert Skia (not Impeller) smooth animation on linux [1.0.42 20260914 gjw]

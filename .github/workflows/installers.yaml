@@ -396,16 +396,6 @@ jobs:
         run: |
           rm -f macos/Podfile macos/project.yml
 
-      # 20260916 gjw Keep the entitlements as committed before the next
-      # step strips them. The ad-hoc build needs them stripped, but the
-      # Developer ID signature below must restore the full set, which is
-      # the whole point of the notarized build.
-
-      - name: Keep a pristine copy of the entitlements
-        run: |
-          cp macos/Runner/Release.entitlements \
-            $RUNNER_TEMP/Release.entitlements.orig
-
       # 20260712 gjw keychain-access-groups is a restricted
       # entitlement that requires a provisioning profile. With ad-hoc
       # signing AMFI kills the app at launch (SIGKILL Code Signature
@@ -416,9 +406,18 @@ jobs:
       # utilised by solidpod utilises, cannot persist to the keychain,
       # so the security key is not cached between sessions, resulting
       # in a "press twice" beahviour rather than remembering it,
-      # inherent to no-certificate distribution. The Developer ID
-      # signed build keeps the entitlement and hence no "press twice"
-      # problem.
+      # inherent to no-certificate distribution.
+      #
+      # 20260916 gjw The Developer ID build strips it too. A restricted
+      # entitlement needs an embedded provisioning profile whichever
+      # certificate signs the app, and Developer ID distribution
+      # normally embeds none, so AMFI refused to launch the notarized
+      # 1.0.45 build: Apple's malware check passed and then Finder said
+      # "The application todopod.app can't be opened". The array was
+      # empty in any case, granting nothing. A sandboxed app gets its
+      # own default keychain access group from a valid signature, so
+      # flutter_secure_storage keeps working and the "press twice"
+      # behaviour still goes away with a real signature.
 
       - name: Strip restricted entitlements (invalid with ad-hoc signing)
         run: |
@@ -587,14 +586,12 @@ jobs:
                 --sign "$DEVELOPER_ID_APP_CERT_NAME" "$b"
             done
 
-          # 20260916 gjw Sign the app with the entitlements AS COMMITTED,
-          # not the stripped copy the ad-hoc build used. The Developer ID
-          # signature is what makes keychain-access-groups legitimate, so
-          # the notarized app remembers the security key where the ad-hoc
-          # one cannot.
+          # Sign the app with the same stripped entitlements the ad-hoc
+          # build used - see the strip step above for why a restricted
+          # entitlement cannot ship without an embedded profile.
 
           codesign --force --timestamp --options runtime \
-            --entitlements $RUNNER_TEMP/Release.entitlements.orig \
+            --entitlements macos/Runner/Release.entitlements \
             --sign "$DEVELOPER_ID_APP_CERT_NAME" "$APP"
           codesign --verify --deep --strict --verbose=2 "$APP"
 
@@ -603,6 +600,18 @@ jobs:
           # signature rather than guessing from Apple's log alone.
 
           codesign --display --verbose=2 "$APP" 2>&1 | grep -i authority || true
+
+          # 20260916 gjw Refuse to ship an app carrying a restricted
+          # entitlement with no provisioning profile to authorise it.
+          # Notarisation does not check this, so without the guard the
+          # failure only shows up as "can't be opened" on a user's Mac.
+
+          if codesign --display --entitlements :- "$APP" 2>/dev/null | \
+               grep -q 'keychain-access-groups' && \
+             [ ! -f "$APP/Contents/embedded.provisionprofile" ]; then
+            echo "::error::Restricted entitlement without a provisioning profile - the app will not launch"
+            exit 1
+          fi
 
       - name: Create DMG
         if: env.HAS_DEVELOPER_ID == 'true'

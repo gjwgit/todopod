@@ -414,10 +414,27 @@ jobs:
       # normally embeds none, so AMFI refused to launch the notarized
       # 1.0.45 build: Apple's malware check passed and then Finder said
       # "The application todopod.app can't be opened". The array was
-      # empty in any case, granting nothing. A sandboxed app gets its
-      # own default keychain access group from a valid signature, so
-      # flutter_secure_storage keeps working and the "press twice"
-      # behaviour still goes away with a real signature.
+      # empty in any case, granting nothing.
+      #
+      # 20260916 tonypioneer The last sentence of that note used to claim a
+      # sandboxed app gets its own default keychain access group from a
+      # valid signature. It does not. The default group comes from the
+      # com.apple.application-identifier entitlement, which only an
+      # embedded provisioning profile supplies, so the notarized 1.0.45
+      # DMG had NO keychain at all: flutter_secure_storage failed, and
+      # because package:oidc keeps the PKCE code_verifier in that same
+      # secure store the code exchange went out without one. The Solid
+      # server answered invalid_grant and oidc_core relabelled it as the
+      # RFC 9207 "authorization error response is missing the iss
+      # parameter" mix-up error - the login failure reported against
+      # 1.0.45.
+      #
+      # The fix is in macos/Runner/Release.entitlements, which no longer
+      # enables the sandbox: notarisation only requires the hardened
+      # runtime, and an unsandboxed signed app has ordinary keychain
+      # access with no entitlement at all. The strip below is now a
+      # no-op (neither entitlements file declares the key any more) and
+      # is kept only so a re-added array cannot reach a signature.
 
       - name: Strip restricted entitlements (invalid with ad-hoc signing)
         run: |
@@ -610,6 +627,22 @@ jobs:
                grep -q 'keychain-access-groups' && \
              [ ! -f "$APP/Contents/embedded.provisionprofile" ]; then
             echo "::error::Restricted entitlement without a provisioning profile - the app will not launch"
+            exit 1
+          fi
+
+          # 20260916 And refuse to ship a sandboxed app that has no way
+          # to reach the keychain. Without a keychain access group -
+          # either declared, or defaulted from the
+          # com.apple.application-identifier an embedded profile brings -
+          # flutter_secure_storage silently fails, which takes the PKCE
+          # code_verifier with it and breaks login. That failure is
+          # invisible until someone tries to sign in, so catch it here.
+
+          ENTS=$(codesign --display --entitlements :- "$APP" 2>/dev/null || true)
+          if echo "$ENTS" | grep -q 'com.apple.security.app-sandbox' && \
+             ! echo "$ENTS" | grep -q 'keychain-access-groups' && \
+             [ ! -f "$APP/Contents/embedded.provisionprofile" ]; then
+            echo "::error::Sandboxed with no keychain access group and no provisioning profile - flutter_secure_storage will fail and login will break"
             exit 1
           fi
 

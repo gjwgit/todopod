@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.0 New Secure Key Handling
 
++ macOS: unsandbox the Release entitlements [1.0.46 20260918 tonypioneer]
 + Updated macOS notarized build [1.0.45 20260916 gjw]
 + Report offline rather than doing nothing on Login [1.0.44 20260915 gjw]
 + Login errors name the cause: internet, address or server [1.0.43 20260915 gjw]

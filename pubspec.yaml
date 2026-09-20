@@ -34,6 +34,25 @@ dependencies:
   uuid: ^4.5.3
   window_manager: ^0.5.1
 
+# 20260920 gjw TEMPORARY, remove once solid_auth 1.0.10 and solidpod 1.0.23
+# are published. They turn off the macOS data protection keychain, which a
+# Developer ID build cannot reach without a provisioning profile, and which
+# silently lost the PKCE code_verifier and so broke login in the notarized
+# DMG. Building against the branches proves the fix on a real Mac before
+# either package is published. When removing these, pin solidpod to ^1.0.23
+# and check that solidpod itself requires solid_auth ^1.0.10, otherwise the
+# fix arrives only halfway.
+
+dependency_overrides:
+  solid_auth:
+    git:
+      url: https://github.com/anusii/solid_auth.git
+      ref: dev
+  solidpod:
+    git:
+      url: https://github.com/anusii/solidpod.git
+      ref: dev
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

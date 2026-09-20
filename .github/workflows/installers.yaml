@@ -575,6 +575,8 @@ jobs:
       # The hardened runtime is a mandatory requirement for notarisation.
       - name: Codesign app with hardened runtime
         if: env.HAS_DEVELOPER_ID == 'true'
+        env:
+          DEVELOPER_ID_PROFILE: ${{ secrets.MACOS_DEVELOPER_ID_PROFILE }}
         run: |
           APP="build/macos/Build/Products/Release/${{ env.APP }}.app"
 
@@ -603,12 +605,59 @@ jobs:
                 --sign "$DEVELOPER_ID_APP_CERT_NAME" "$b"
             done
 
-          # Sign the app with the same stripped entitlements the ad-hoc
-          # build used - see the strip step above for why a restricted
-          # entitlement cannot ship without an embedded profile.
+          # 20260920 gjw Embed the Developer ID provisioning profile and
+          # sign with the keychain entitlements it authorises.
+          #
+          # macOS gates the data protection keychain, which
+          # flutter_secure_storage uses, on the app holding a keychain
+          # access group. That group comes from the
+          # com.apple.application-identifier entitlement, and only an
+          # embedded provisioning profile can authorise it: without one,
+          # every keychain call fails with errSecMissingEntitlement
+          # (-34018), so the security key and the DPoP key never persist
+          # and a POD cannot be initialised. Turning the data protection
+          # keychain off in solidpod was not enough, so the profile is now
+          # carried in the bundle. The profile must be in place BEFORE the
+          # app bundle is signed, since the signature seals it.
+          #
+          # $(AppIdentifierPrefix) is an Xcode build setting, and codesign
+          # does not expand it, so the team prefix is written out in full
+          # here. The committed entitlements stay free of these keys: the
+          # ad-hoc build above must not carry a restricted entitlement, or
+          # AMFI refuses to launch it.
+
+          ENTITLEMENTS=macos/Runner/Release.entitlements
+
+          if [ -n "$DEVELOPER_ID_PROFILE" ]; then
+            echo -n "$DEVELOPER_ID_PROFILE" | \
+              base64 --decode -o "$APP/Contents/embedded.provisionprofile"
+
+            TEAM_ID=$(echo "$DEVELOPER_ID_APP_CERT_NAME" | sed -E 's/.*\((.*)\)/\1/')
+            APP_ID="$TEAM_ID.$(/usr/libexec/PlistBuddy -c \
+              'Print :CFBundleIdentifier' "$APP/Contents/Info.plist")"
+
+            ENTITLEMENTS=$RUNNER_TEMP/developer_id.entitlements
+            cp macos/Runner/Release.entitlements "$ENTITLEMENTS"
+
+            /usr/libexec/PlistBuddy -c \
+              "Add :com.apple.application-identifier string $APP_ID" \
+              "$ENTITLEMENTS"
+            /usr/libexec/PlistBuddy -c \
+              "Add :com.apple.developer.team-identifier string $TEAM_ID" \
+              "$ENTITLEMENTS"
+            /usr/libexec/PlistBuddy -c \
+              'Add :keychain-access-groups array' "$ENTITLEMENTS"
+            /usr/libexec/PlistBuddy -c \
+              "Add :keychain-access-groups:0 string $APP_ID" "$ENTITLEMENTS"
+
+            echo "Signing with the Developer ID profile for $APP_ID"
+            /usr/libexec/PlistBuddy -c Print "$ENTITLEMENTS"
+          else
+            echo "::warning::No MACOS_DEVELOPER_ID_PROFILE secret - signing without a provisioning profile, so the keychain will be unavailable and login will fail"
+          fi
 
           codesign --force --timestamp --options runtime \
-            --entitlements macos/Runner/Release.entitlements \
+            --entitlements "$ENTITLEMENTS" \
             --sign "$DEVELOPER_ID_APP_CERT_NAME" "$APP"
           codesign --verify --deep --strict --verbose=2 "$APP"
 

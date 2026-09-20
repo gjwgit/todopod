@@ -1074,22 +1074,20 @@ packages:
     source: sdk
     version: "0.0.0"
   solid_auth:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: "."
-      ref: dev
-      resolved-ref: "3997b9407c987b1be58aeb97bfc12a507e6b2a0b"
-      url: "https://github.com/anusii/solid_auth.git"
-    source: git
+      name: solid_auth
+      sha256: "70ca49095df312cec370079a4924908af20b9861fc4983e54546068f38499d0e"
+      url: "https://pub.dev"
+    source: hosted
     version: "1.0.10"
   solidpod:
     dependency: "direct main"
     description:
-      path: "."
-      ref: dev
-      resolved-ref: c574f53713d66c3f3d095a699ef1bc781957a08a
-      url: "https://github.com/anusii/solidpod.git"
-    source: git
+      name: solidpod
+      sha256: c94f9f386dc74b3d77c7863592f41dea5ae83af9d18e362b08f3837e4ba46920
+      url: "https://pub.dev"
+    source: hosted
     version: "1.0.23"
   solidui:
     dependency: "direct main"

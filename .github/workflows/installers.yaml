@@ -76,7 +76,7 @@ jobs:
 
   package-linux-deb:
     if: |
-      contains(github.event.head_commit.message, 'bump version temparary ignore for macos') ||
+      contains(github.event.head_commit.message, 'bump version') ||
       contains(github.event.head_commit.message, 'build installers') ||
       contains(github.event.head_commit.message, 'build linux') ||
       contains(github.event.head_commit.message, 'build deb')
@@ -195,7 +195,7 @@ jobs:
 
   package-linux-zip:
     if: |
-      contains(github.event.head_commit.message, 'bump version temparary ignore for macos') ||
+      contains(github.event.head_commit.message, 'bump version') ||
       contains(github.event.head_commit.message, 'build installers') ||
       contains(github.event.head_commit.message, 'build linux')
 
@@ -258,7 +258,7 @@ jobs:
 
   package-linux-snap:
     if: |
-      contains(github.event.head_commit.message, 'bump version temparary ignore for macos') ||
+      contains(github.event.head_commit.message, 'bump version') ||
       contains(github.event.head_commit.message, 'build installers') ||
       contains(github.event.head_commit.message, 'build linux') ||
       contains(github.event.head_commit.message, 'build snap')
@@ -955,7 +955,7 @@ jobs:
 
   package-windows-zip-exe:
     if: |
-      contains(github.event.head_commit.message, 'bump version temparary ignore for macos') ||
+      contains(github.event.head_commit.message, 'bump version') ||
       contains(github.event.head_commit.message, 'build installers') ||
       contains(github.event.head_commit.message, 'build windows')
 

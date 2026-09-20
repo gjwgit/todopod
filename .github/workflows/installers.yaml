@@ -195,7 +195,7 @@ jobs:
 
   package-linux-zip:
     if: |
-      contains(github.event.head_commit.message, 'bump version') ||
+      contains(github.event.head_commit.message, 'bump version temparary ignore for macos') ||
       contains(github.event.head_commit.message, 'build installers') ||
       contains(github.event.head_commit.message, 'build linux')
 
@@ -258,7 +258,7 @@ jobs:
 
   package-linux-snap:
     if: |
-      contains(github.event.head_commit.message, 'bump version') ||
+      contains(github.event.head_commit.message, 'bump version temparary ignore for macos') ||
       contains(github.event.head_commit.message, 'build installers') ||
       contains(github.event.head_commit.message, 'build linux') ||
       contains(github.event.head_commit.message, 'build snap')
@@ -492,7 +492,7 @@ jobs:
       # Package the ad-hoc build. These artefacts are produced whether or
       # not any certificate is available.
 
-      - name: Create DMG Unsigned
+      - name: Create DMG Adhoc
         run: |
           mkdir -p dmg_temp
           cp -R "build/macos/Build/Products/Release/${{env.APP}}.app" dmg_temp/
@@ -500,7 +500,7 @@ jobs:
           hdiutil create -volname "${{env.APP}}" \
             -srcfolder dmg_temp \
             -ov -format UDZO \
-            "${{env.APP}}-unsigned-macos.dmg"
+            "${{env.APP}}-adhoc-macos.dmg"
 
       - name: Note the DMG created
         run: |
@@ -509,8 +509,8 @@ jobs:
       - name: Upload Artefact
         uses: actions/upload-artifact@v6
         with:
-          name: ${{env.APP}}-unsigned-macos-dmg
-          path: ${{env.APP}}-unsigned-macos.dmg
+          name: ${{env.APP}}-adhoc-macos-dmg
+          path: ${{env.APP}}-adhoc-macos.dmg
 
       # Package as ZIP
       #
@@ -521,20 +521,20 @@ jobs:
       # app is then SIGKILLed (Code Signature Invalid) on launch.
       # ditto preserves symlinks, resource forks and permissions.
 
-      - name: Create ZIP Unsigned
+      - name: Create ZIP Adhoc
         run: |
           ditto -c -k --sequesterRsrc --keepParent \
             "build/macos/Build/Products/Release/${{env.APP}}.app" \
-            "${{env.APP}}-unsigned-macos.zip"
+            "${{env.APP}}-adhoc-macos.zip"
 
       - name: Review ZIP exists
-        run: ls -lh ${{env.APP}}-unsigned-macos.zip
+        run: ls -lh ${{env.APP}}-adhoc-macos.zip
 
       - name: Upload Artefact
         uses: actions/upload-artifact@v6
         with:
-          name: ${{env.APP}}-unsigned-macos-zip
-          path: ${{env.APP}}-unsigned-macos.zip
+          name: ${{env.APP}}-adhoc-macos-zip
+          path: ${{env.APP}}-adhoc-macos.zip
 
       ####################################################################
       # Developer ID signing and notarisation. Every step below is
@@ -720,8 +720,8 @@ jobs:
         if: env.HAS_DEVELOPER_ID == 'true'
         uses: actions/upload-artifact@v6
         with:
-          name: ${{ env.APP }}-macos-dmg
-          path: ${{ env.APP }}-macos.dmg
+          name: ${{ env.APP }}-notarized-macos-dmg
+          path: ${{ env.APP }}-notarized-macos.dmg
 
       - name: Create ZIP
         if: env.HAS_DEVELOPER_ID == 'true'
@@ -738,8 +738,8 @@ jobs:
         if: env.HAS_DEVELOPER_ID == 'true'
         uses: actions/upload-artifact@v6
         with:
-          name: ${{env.APP}}-macos-zip
-          path: ${{env.APP}}-macos.zip
+          name: ${{env.APP}}-notarized-macos-zip
+          path: ${{env.APP}}-notarized-macos.zip
 
   ########################################################################
   # IOS
@@ -906,7 +906,7 @@ jobs:
 
   package-windows-zip-exe:
     if: |
-      contains(github.event.head_commit.message, 'bump version') ||
+      contains(github.event.head_commit.message, 'bump version temparary ignore for macos') ||
       contains(github.event.head_commit.message, 'build installers') ||
       contains(github.event.head_commit.message, 'build windows')
 

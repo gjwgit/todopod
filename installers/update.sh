@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+# set -x
 
 # 20260216 gjw Compare files.
 #
@@ -256,11 +256,11 @@ if [[ "${status}" == "completed" ]]; then
 	fname=$(unzip -l artifact.zip | awk 'NR==4 {print $4}')
 	touch ${fname} # Timestamp with current date/time
 	rm -f artifact.zip
-	echo  "Installing as ${DEST}${APP}-macos.zip"
-	rsync -avzh ${APP}-macos.zip ${DEST}
-	ssh ${HOST} "cd ${FLDR}; chmod 0644 ${APP}-macos.zip"
+	echo  "Installing as ${DEST}${fname}"
+	rsync -avzh ${fname} ${DEST}
+	ssh ${HOST} "cd ${FLDR}; chmod 0644 ${fname}"
 	echo  "Archive as installers/ARCHIVE/${APP}_${version}_macos.zip"
-	mv ${APP}-macos.zip ARCHIVE/${APP}_${version}_macos.zip
+	mv ${fname} ARCHIVE/${APP}_${version}_macos.zip
     fi
 
     echo ""

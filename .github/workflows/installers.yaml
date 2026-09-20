@@ -765,7 +765,7 @@ jobs:
           spctl -a -t open --context context:primary-signature -vvv "${{ env.APP }}-notarized-macos.dmg" || true
           xcrun stapler validate "${{ env.APP }}-notarized-macos.dmg"
 
-      - name: Upload Artefact
+      - name: Upload Artefact Notarized DMG
         if: env.HAS_DEVELOPER_ID == 'true'
         uses: actions/upload-artifact@v6
         with:
@@ -777,13 +777,13 @@ jobs:
         run: |
           ditto -c -k --sequesterRsrc --keepParent \
             "build/macos/Build/Products/Release/${{env.APP}}.app" \
-            "${{env.APP}}-macos.zip"
+            "${{env.APP}}-notarized-macos.zip"
 
       - name: Review ZIP exists
         if: env.HAS_DEVELOPER_ID == 'true'
-        run: ls -lh ${{env.APP}}-macos.zip
+        run: ls -lh ${{env.APP}}-notarized-macos.zip
 
-      - name: Upload Artefact
+      - name: Upload Artefact Notarized ZIP
         if: env.HAS_DEVELOPER_ID == 'true'
         uses: actions/upload-artifact@v6
         with:

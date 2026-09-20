@@ -1078,7 +1078,7 @@ packages:
     description:
       path: "."
       ref: dev
-      resolved-ref: "44f326e2606500cf6f9e6d925580e9465d025d89"
+      resolved-ref: c29ecf1ea1784bc1794da67d427cb300fe52ffc2
       url: "https://github.com/anusii/solid_auth.git"
     source: git
     version: "1.0.10"

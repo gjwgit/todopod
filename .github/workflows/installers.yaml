@@ -76,7 +76,7 @@ jobs:
 
   package-linux-deb:
     if: |
-      contains(github.event.head_commit.message, 'bump version') ||
+      contains(github.event.head_commit.message, 'bump version temparary ignore for macos') ||
       contains(github.event.head_commit.message, 'build installers') ||
       contains(github.event.head_commit.message, 'build linux') ||
       contains(github.event.head_commit.message, 'build deb')
@@ -654,13 +654,13 @@ jobs:
           cp -R "build/macos/Build/Products/Release/${{ env.APP }}.app" dmg_temp/
           ln -s /Applications dmg_temp/Applications
           hdiutil create -volname "${{ env.APP }}" \
-            -srcfolder dmg_temp -ov -format UDZO "${{ env.APP }}-macos.dmg"
+            -srcfolder dmg_temp -ov -format UDZO "${{ env.APP }}-notarized-macos.dmg"
 
       - name: Sign the DMG
         if: env.HAS_DEVELOPER_ID == 'true'
         run: |
           codesign --force --timestamp \
-            --sign "$DEVELOPER_ID_APP_CERT_NAME" "${{ env.APP }}-macos.dmg"
+            --sign "$DEVELOPER_ID_APP_CERT_NAME" "${{ env.APP }}-notarized-macos.dmg"
 
       # Notarisation: submit the DMG to Apple; --wait blocks until the result is returned
       - name: Notarize DMG
@@ -678,7 +678,7 @@ jobs:
           # result, print Apple's own log listing each offending binary,
           # and fail here when the status is not Accepted.
 
-          xcrun notarytool submit "${{ env.APP }}-macos.dmg" \
+          xcrun notarytool submit "${{ env.APP }}-notarized-macos.dmg" \
             --key $RUNNER_TEMP/AuthKey.p8 \
             --key-id "$AC_API_KEY_ID" \
             --issuer "$AC_API_ISSUER_ID" \
@@ -706,15 +706,15 @@ jobs:
       - name: Staple ticket
         if: env.HAS_DEVELOPER_ID == 'true'
         run: |
-          xcrun stapler staple "${{ env.APP }}-macos.dmg"
+          xcrun stapler staple "${{ env.APP }}-notarized-macos.dmg"
           xcrun stapler staple "build/macos/Build/Products/Release/${{ env.APP }}.app" || \
             echo "::warning::Could not staple the .app - the ZIP will need an online check"
 
       - name: Verify Gatekeeper acceptance
         if: env.HAS_DEVELOPER_ID == 'true'
         run: |
-          spctl -a -t open --context context:primary-signature -vvv "${{ env.APP }}-macos.dmg" || true
-          xcrun stapler validate "${{ env.APP }}-macos.dmg"
+          spctl -a -t open --context context:primary-signature -vvv "${{ env.APP }}-notarized-macos.dmg" || true
+          xcrun stapler validate "${{ env.APP }}-notarized-macos.dmg"
 
       - name: Upload Artefact
         if: env.HAS_DEVELOPER_ID == 'true'

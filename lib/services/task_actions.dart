@@ -21,7 +21,6 @@ import 'package:todopod/pages/task_edit.dart';
 import 'package:todopod/services/app_provider.dart';
 import 'package:todopod/utils/defer_task.dart';
 import 'package:todopod/utils/escalate_task.dart';
-import 'package:todopod/widgets/app_snack_bar.dart';
 import 'package:todopod/widgets/due_date_picker_dialog.dart';
 
 /// Open the task editor for [task], save any returned changes, and persist

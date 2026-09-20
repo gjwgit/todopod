@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.0 New Secure Key Handling
 
++ Share the SnackBar helper with solidui [1.0.49 20260921 gjw]
 + Log why the token exchange fails on macOS [1.0.48 20260920 gjw]
 + Fix macOS login blocked by the keychain [1.0.47 20260920 gjw]
 + macOS: unsandbox the Release entitlements [1.0.46 20260918 tonypioneer]

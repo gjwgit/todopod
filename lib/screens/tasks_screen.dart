@@ -29,7 +29,6 @@ import 'package:todopod/screens/tasks_widgets/task_sort_button.dart';
 import 'package:todopod/screens/tasks_widgets/task_sub_sort_button.dart';
 import 'package:todopod/services/app_provider.dart';
 import 'package:todopod/services/task_actions.dart';
-import 'package:todopod/widgets/app_snack_bar.dart';
 import 'package:todopod/widgets/startup_overlay.dart';
 import 'package:todopod/widgets/task_list_item.dart';
 

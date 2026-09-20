@@ -21,7 +21,6 @@ import 'package:solidui/solidui.dart';
 import 'package:todopod/models/task.dart';
 import 'package:todopod/screens/done_widgets/done_tile.dart';
 import 'package:todopod/services/app_provider.dart';
-import 'package:todopod/widgets/app_snack_bar.dart';
 
 class DoneScreen extends StatefulWidget {
   const DoneScreen({super.key});

@@ -34,15 +34,6 @@ dependencies:
   uuid: ^4.5.3
   window_manager: ^0.5.1
 
-# 20260921 gjw TEMPORARY, remove once solidui 1.0.47 is published. The
-# SnackBar helpers this app now calls live in that release, so until it is
-# on pub.dev the only way to build, analyse or test the pair together is
-# against the working tree next door. CI cannot resolve this path.
-
-dependency_overrides:
-  solidui:
-    path: ../../anusii/solidui
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+# set -x
 
 # 20260216 gjw Compare files.
 #

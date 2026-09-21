@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# set -x
+set -x
 
 # 20260216 gjw Compare files.
 #
@@ -212,7 +212,7 @@ if [[ "${status}" == "completed" ]]; then
 	rsync -avzh ${fname} ${DEST}
 	ssh ${HOST} "cd ${FLDR}; chmod 0644 ${fname}"
 	echo  "Archive as installers/ARCHIVE/${APP}_${version}_notarized_macos.zip"
-	mv ${APP}-macos.zip ARCHIVE/${APP}_${version}_notarized_macos.zip
+	mv ${APP}-notarized-macos.zip ARCHIVE/${APP}_${version}_notarized_macos.zip
     fi
 
     echo ""

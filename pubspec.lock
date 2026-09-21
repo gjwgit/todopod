@@ -1077,18 +1077,18 @@ packages:
     dependency: transitive
     description:
       name: solid_auth
-      sha256: "70ca49095df312cec370079a4924908af20b9861fc4983e54546068f38499d0e"
+      sha256: c50e9fc8522d898ff574a60e9d6fcd706314a4e56e341181c3699a1048b52635
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.10"
+    version: "1.0.11"
   solidpod:
     dependency: "direct main"
     description:
       name: solidpod
-      sha256: c94f9f386dc74b3d77c7863592f41dea5ae83af9d18e362b08f3837e4ba46920
+      sha256: c760a9b1f788e1eb94bb7cba64ac4403dbde3fe995540db91362fbd43d00c93e
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.23"
+    version: "1.0.24"
   solidui:
     dependency: "direct main"
     description:

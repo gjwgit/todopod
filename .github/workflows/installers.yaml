@@ -328,7 +328,7 @@ jobs:
   # download rather than no macOS build at all.
   #
   # The three jobs that built with --flavor unsigned / staging / dev
-  # were deleted here: todopod has no flavors (macos/Runner.xcodeproj
+  # were deleted here: the app has no flavors (macos/Runner.xcodeproj
   # holds a single Runner scheme and no Release-<flavor> build
   # configurations), and none of their secrets were ever added to this
   # repository, so all three failed at the build step. They came across
@@ -413,7 +413,7 @@ jobs:
       # certificate signs the app, and Developer ID distribution
       # normally embeds none, so AMFI refused to launch the notarized
       # 1.0.45 build: Apple's malware check passed and then Finder said
-      # "The application todopod.app can't be opened". The array was
+      # "The application mypod.app can't be opened". The array was
       # empty in any case, granting nothing.
       #
       # 20260916 tonypioneer The last sentence of that note used to claim a

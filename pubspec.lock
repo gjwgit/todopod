@@ -1092,11 +1092,10 @@ packages:
   solidui:
     dependency: "direct main"
     description:
-      name: solidui
-      sha256: bf5168ccba25b163445c9acba1db435fd4e641f6e2a4f6b9ebcf70be2b7a451e
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.46"
+      path: "../../anusii/solidui"
+      relative: true
+    source: path
+    version: "1.0.47"
   source_span:
     dependency: transitive
     description:
@@ -1355,4 +1354,4 @@ packages:
     version: "3.1.4"
 sdks:
   dart: ">=3.12.0 <4.0.0"
-  flutter: ">=3.47.0"
+  flutter: ">=3.44.0"

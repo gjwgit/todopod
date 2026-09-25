@@ -1,7 +1,7 @@
 name: todopod
 description: "Todo Pod - Task Management with Secure and Private Storage"
 publish_to: 'none'
-version: 1.0.51+6
+version: 1.0.52+6
 
 environment:
   sdk: ^3.11.3
@@ -50,6 +50,11 @@ dev_dependencies:
   # Generates the platform launcher icons from assets/images/app_icon.png.
   # Re-run after changing the icon: dart run flutter_launcher_icons
   flutter_launcher_icons: ^0.14.3
+
+  # 20260925 gjw The parser behind flutter_markdown_plus, used directly by
+  # markdown_checkbox_test.dart to confirm the Notes checkbox scanner counts
+  # the same checkboxes the renderer draws.
+  markdown: ^7.3.0
 
 flutter:
   assets:

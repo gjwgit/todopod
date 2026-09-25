@@ -1,6 +1,6 @@
 /// TodoPod — application scaffold configuration.
 ///
-// Time-stamp: <Friday 2026-07-17 09:00:52 +1000 Graham Williams>
+// Time-stamp: <Friday 2026-09-25 22:21:41 +1000 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -122,7 +122,7 @@ class _AppScaffoldState extends State<AppScaffold> {
           [Australian Solid Community](https://solidcommunity.au) web site.
 
           ''',
-          readmeUrl: 'https://gjwgit.github.io/todopod',
+          docsUrl: 'https://gjwgit.github.io/todopod',
         ),
         themeToggle: const SolidThemeToggleConfig(enabled: true),
         appBar: SolidAppBarConfig(

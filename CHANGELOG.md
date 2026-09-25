@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.0 New Secure Key Handling
 
++ Tick off Notes checklists by tapping a box in Preview [1.0.52 20260925 gjw]
 + macOS build using DEVELOPER_ID [1.0.51 20260923 gjw]
 + Testing macos install [1.0.50 20260922 gjw]
 + Share the SnackBar helper with solidui [1.0.49 20260921 gjw]

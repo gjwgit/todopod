@@ -15,6 +15,7 @@ import 'package:emacs_text_field/emacs_text_field.dart'
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:gap/gap.dart';
 
+import 'package:todopod/utils/markdown_checkbox.dart';
 import 'package:todopod/widgets/tag_autocomplete.dart';
 
 /// The Notes section of the task editor: a section header with an
@@ -34,6 +35,17 @@ class TaskNotesField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final styleSheet = MarkdownStyleSheet.fromTheme(Theme.of(context));
+
+    // 20260925 gjw checkboxBuilder is passed only the checked state, so the
+    // tapped box is identified by its position in the build order, which the
+    // markdown builder walks in document order. The counter is reset once it
+    // reaches the number of checkboxes in the source, so a re-parse against
+    // this same closure — the builder is invoked from the markdown widget's
+    // didChangeDependencies, not from this build — starts again from zero.
+
+    final total = markdownCheckboxOffsets(notes.text).length;
+    var next = 0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,6 +61,8 @@ class TaskNotesField extends StatelessWidget {
                     '**Notes**\n\n'
                     'Additional details, links, or context for the task.\n\n'
                     'Supports **markdown** formatting.\n\n'
+                    'Write a checklist with `- [ ]` and tap a box in '
+                    '**Preview** to tick it off.\n\n'
                     '**Emacs keys:** C-a/e line · C-f/b char · C-n/p line '
                     '· M-f/b word · C-k kill · C-y yank · M-Enter bullet',
               ),
@@ -93,9 +107,29 @@ class TaskNotesField extends StatelessWidget {
                     child: MarkdownBody(
                       data: notes.text,
                       shrinkWrap: true,
-                      styleSheet: MarkdownStyleSheet.fromTheme(
-                        Theme.of(context),
-                      ),
+                      styleSheet: styleSheet,
+                      checkboxBuilder: (checked) {
+                        if (next >= total) next = 0;
+                        final index = next++;
+
+                        return GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => notes.text = toggleMarkdownCheckbox(
+                            notes.text,
+                            index,
+                          ),
+                          child: Padding(
+                            padding: styleSheet.listBulletPadding!,
+                            child: Icon(
+                              checked
+                                  ? Icons.check_box
+                                  : Icons.check_box_outline_blank,
+                              size: styleSheet.checkbox!.fontSize,
+                              color: styleSheet.checkbox!.color,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
           )

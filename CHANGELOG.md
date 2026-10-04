@@ -36,6 +36,10 @@ then please show some ❤️ and tap on the star at
 This app is authored by [Graham
 Williams](https://togaware.com/Graham.Williams.html).
 
+## 1.1 Stability
+
++ Updated to solidui 1.4.3 [1.1.0 20261005 gjw]
+
 ## 1.0 New Secure Key Handling
 
 + Tick off Notes checklists by tapping a box in Preview [1.0.52 20260925 gjw]

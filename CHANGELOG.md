@@ -38,7 +38,8 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.1 Stability
 
-+ Updated to solidui 1.4.3 [1.1.0 20261005 gjw]
++ Update to solidui 1.5.1 [1.1.1 20261010 gjw]
++ Update to solidui 1.4.3 [1.1.0 20261005 gjw]
 
 ## 1.0 New Secure Key Handling
 

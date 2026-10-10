@@ -1,6 +1,6 @@
 /// TodoPod — the primary [MaterialApp] widget.
 ///
-// Time-stamp: <Friday 2026-07-10 17:24:31 +1000 Graham Williams>
+// Time-stamp: <Saturday 2026-10-10 21:39:15 +1100 Graham Williams>
 ///
 /// Copyright (C) 2026, Togaware Pty Ltd
 ///
@@ -63,7 +63,6 @@ class App extends StatelessWidget {
       ),
 
       home: SolidLogin(
-        required: false,
         appDirectory: appDirectory,
         title: appTitle.replaceAll(' - ', '\n'),
         image: const AssetImage('assets/images/app_image.jpg'),

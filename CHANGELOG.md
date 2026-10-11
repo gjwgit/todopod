@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.1 Stability
 
++ Update to solidui 1.5.5 [1.1.2 20261012 gjw]
 + Update to solidui 1.5.1 [1.1.1 20261010 gjw]
 + Update to solidui 1.4.3 [1.1.0 20261005 gjw]
 

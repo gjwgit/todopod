@@ -20,11 +20,19 @@ import 'package:printing/printing.dart';
 
 import 'package:todopod/models/task.dart';
 
+/// A PDF theme using Noto Sans (loaded via PdfGoogleFonts) as the document
+/// default so characters beyond basic Latin (·, –, —, accents) render
+/// without the pdf package falling back to Helvetica, which has no Unicode
+/// support.
+
+Future<pw.ThemeData> notoPdfTheme() async => pw.ThemeData.withFont(
+  base: await PdfGoogleFonts.notoSansRegular(),
+  bold: await PdfGoogleFonts.notoSansBold(),
+  italic: await PdfGoogleFonts.notoSansItalic(),
+  boldItalic: await PdfGoogleFonts.notoSansBoldItalic(),
+);
+
 /// Build the raw bytes of a tasks PDF with [title] as the heading.
-///
-/// Uses Noto Sans (loaded via PdfGoogleFonts) as the document default so
-/// characters beyond basic Latin (·, –, —, accents) render without the pdf
-/// package falling back to Helvetica, which has no Unicode support.
 Future<Uint8List> buildTasksPdf({
   required List<Task> tasks,
   required String title,
@@ -35,19 +43,7 @@ Future<Uint8List> buildTasksPdf({
       '${now.month.toString().padLeft(2, '0')}/'
       '${now.year}';
 
-  final base = await PdfGoogleFonts.notoSansRegular();
-  final bold = await PdfGoogleFonts.notoSansBold();
-  final italic = await PdfGoogleFonts.notoSansItalic();
-  final boldItalic = await PdfGoogleFonts.notoSansBoldItalic();
-
-  final doc = pw.Document(
-    theme: pw.ThemeData.withFont(
-      base: base,
-      bold: bold,
-      italic: italic,
-      boldItalic: boldItalic,
-    ),
-  );
+  final doc = pw.Document(theme: await notoPdfTheme());
 
   doc.addPage(
     pw.MultiPage(

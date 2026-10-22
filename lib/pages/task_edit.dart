@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:emacs_text_field/emacs_text_field.dart'
     show attachPrimarySelection;
 import 'package:gap/gap.dart';
+import 'package:markdown_tooltip/markdown_tooltip.dart';
 import 'package:provider/provider.dart';
 import 'package:solidui/solidui.dart';
 import 'package:uuid/uuid.dart';
@@ -24,6 +25,7 @@ import 'package:todopod/pages/edit_fields/priority_due_date_row.dart';
 import 'package:todopod/pages/edit_fields/tag_list_editor.dart';
 import 'package:todopod/pages/edit_fields/task_notes_field.dart';
 import 'package:todopod/services/app_provider.dart';
+import 'package:todopod/services/print_task.dart';
 import 'package:todopod/utils/normalize_duration.dart';
 import 'package:todopod/utils/priority_from_due_date.dart';
 import 'package:todopod/widgets/tag_autocomplete.dart';
@@ -367,6 +369,24 @@ class _TaskEditState extends State<TaskEdit> with UnsavedChangesMixin {
           ),
         ],
         const Spacer(),
+        // 20261022 gjw Print what the fields show now, including unsaved
+        // edits, so the printout matches the dialog.
+
+        if (!_isNew)
+          MarkdownTooltip(
+            message: '''
+
+**Print**
+
+Preview this task as a PDF, with its notes formatted, then print it or save
+it to a file. Any unsaved edits are included.
+
+''',
+            child: IconButton(
+              icon: const Icon(Icons.print_outlined),
+              onPressed: () => printTaskAction(context, _buildTask()),
+            ),
+          ),
         IconButton(icon: const Icon(Icons.close), onPressed: _confirmDiscard),
       ],
     ),

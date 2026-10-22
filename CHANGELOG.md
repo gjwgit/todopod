@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.1 Stability
 
++ Print a task to PDF with formatted notes and preview [1.1.4 20261022 gjw]
 + Snap update for libx11 [1.1.3 20261016 gjw]
 + Update to solidui 1.5.5 [1.1.2 20261012 gjw]
 + Update to solidui 1.5.1 [1.1.1 20261010 gjw]

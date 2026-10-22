@@ -18,7 +18,6 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:gap/gap.dart';
 import 'package:markdown_tooltip/markdown_tooltip.dart';
-import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
 
 import 'package:todopod/models/task.dart';
@@ -29,6 +28,8 @@ import 'package:todopod/screens/import_widgets/import_message_banner.dart';
 import 'package:todopod/screens/import_widgets/pdf_export.dart';
 import 'package:todopod/screens/import_widgets/task_file_export.dart';
 import 'package:todopod/services/app_provider.dart';
+import 'package:todopod/utils/file_timestamp.dart';
+import 'package:todopod/widgets/pdf_preview_page.dart';
 
 class ImportScreen extends StatefulWidget {
   const ImportScreen({super.key});
@@ -67,11 +68,6 @@ class _ImportScreenState extends State<ImportScreen> {
     _viewMessage = msg;
     _viewError = error;
   });
-
-  /// Zero-padded timestamp string for filenames: YYYYMMDD_HHMM.
-  String _ts(DateTime t) =>
-      '${t.year}${t.month.toString().padLeft(2, '0')}${t.day.toString().padLeft(2, '0')}'
-      '_${t.hour.toString().padLeft(2, '0')}${t.minute.toString().padLeft(2, '0')}';
 
   @override
   Widget build(BuildContext context) {
@@ -369,7 +365,7 @@ class _ImportScreenState extends State<ImportScreen> {
       final path = await saveTasksTxt(
         tasks: tasks,
         prefix: prefix,
-        timestamp: _ts(DateTime.now()),
+        timestamp: fileTimestamp(DateTime.now()),
       );
       if (path != null) _setExportMsg('Saved to $path');
     } catch (e, st) {
@@ -397,7 +393,7 @@ class _ImportScreenState extends State<ImportScreen> {
       final path = await saveTasksJsonBackup(
         tasks: provider.tasks,
         done: provider.doneTasks,
-        timestamp: _ts(DateTime.now()),
+        timestamp: fileTimestamp(DateTime.now()),
       );
       if (path != null) _setBackupMsg('JSON saved to $path');
     } catch (e, st) {
@@ -462,38 +458,23 @@ class _ImportScreenState extends State<ImportScreen> {
       final pdfBytes = await buildTasksPdf(tasks: tasks, title: title);
       final labelPart = filterLabel.isNotEmpty ? '_$filterLabel' : '';
       final pdfName =
-          'todopod_${prefix.toLowerCase()}${labelPart}_${_ts(DateTime.now())}.pdf';
+          'todopod_${prefix.toLowerCase()}${labelPart}_${fileTimestamp(DateTime.now())}.pdf';
       if (!mounted) return;
-      // Open an on-screen preview of the actual PDF. Sharing is replaced
-      // with an explicit Save action that prompts for a filename and
-      // location; printing stays available.
+      // Open an on-screen preview of the actual PDF.
       await Navigator.of(context).push(
         MaterialPageRoute<void>(
-          builder: (_) => Scaffold(
-            appBar: AppBar(title: Text(title)),
-            body: PdfPreview(
-              build: (_) async => pdfBytes,
-              pdfFileName: pdfName,
-              canChangePageFormat: false,
-              canChangeOrientation: false,
-              canDebug: false,
-              allowSharing: false,
-              actions: [
-                PdfPreviewAction(
-                  icon: const Icon(Icons.save_alt),
-                  onPressed: (ctx, build, pageFormat) async {
-                    final bytes = await build(pageFormat);
-                    final msg = await savePdfAs(bytes, pdfName);
-                    if (msg == null || !mounted) return;
-                    if (msg.startsWith('error:')) {
-                      _setViewMsg(msg.substring(6), error: true);
-                    } else {
-                      _setViewMsg(msg);
-                    }
-                  },
-                ),
-              ],
-            ),
+          builder: (_) => PdfPreviewPage(
+            title: title,
+            fileName: pdfName,
+            buildPdf: (_) async => pdfBytes,
+            onSaveMessage: (_, msg) {
+              if (!mounted) return;
+              if (msg.startsWith('error:')) {
+                _setViewMsg(msg.substring(6), error: true);
+              } else {
+                _setViewMsg(msg);
+              }
+            },
           ),
         ),
       );

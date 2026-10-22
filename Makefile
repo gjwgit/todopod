@@ -2,7 +2,7 @@
 #
 # Generic Makefile
 #
-# Time-stamp: <Sunday 2026-09-20 13:13:38 +1000 Graham Williams>
+# Time-stamp: <Saturday 2026-10-17 09:29:12 +1100 Graham Williams>
 #
 # Copyright (c) Graham.Williams@togaware.com
 #
@@ -59,6 +59,14 @@ endif
 INC_BASE=$(HOME)/.local/share/make
 INC_BASE=support
 
+# 20261016 gjw Obfuscate release builds, so for example, the
+# scrambled Podcast Index secret in radiopod is harder to find in
+# the binary. Read by support/flutter.mk to optionally obfuscate.
+
+ifeq ($(APP),radiopod)
+  OBFUSCATE = --obfuscate --split-debug-info=build/symbols
+endif
+
 # Specific Makefiles will be loaded if they are found in
 # INC_BASE. Sometimes the INC_BASE is shared by multiple local
 # Makefiles and we want to skip specific makes. Simply define the
@@ -90,6 +98,7 @@ $(APP):
     tgz	     Upload the installer to $(REPO)
   apk	     Upload the installer to $(REPO)
   snapstore  Publish the $(VER) snap to the Snap Store stable channel
+  upload_android  Build the $(VER) bundle and send it to Play internal testing
 
 endef
 export HELP
@@ -169,15 +178,44 @@ sinstall:
 # and archived by `make ginstall`, so run that first. Requires a prior
 # `snapcraft login`.
 
+#
+# 20261008 gjw Skip the upload when the stable channel already carries
+# this version, reporting the revision it is published as.
+
 SNAP_FILE = installers/ARCHIVE/$(APP)_$(VER)_amd64.snap
+SNAP_STABLE = snapcraft status $(APP) | awk '$$3 == "stable" { print $$4, $$5 }'
 
 .PHONY: snapstore
 snapstore:
-	@if [ ! -f $(SNAP_FILE) ]; then \
+	@set -- $$($(SNAP_STABLE)); \
+	if [ "$$1" = "$(VER)" ]; then \
+	  echo "Snap Store $(APP) stable already at version $$1, revision $$2."; \
+	  exit 0; \
+	fi; \
+	if [ ! -f $(SNAP_FILE) ]; then \
 	  echo "Error: $(SNAP_FILE) not found. Run 'make ginstall' first."; \
 	  exit 1; \
-	fi
-	snapcraft upload --release=stable $(SNAP_FILE)
+	fi; \
+	snapcraft upload --release=stable $(SNAP_FILE) || exit 1; \
+	set -- $$($(SNAP_STABLE)); \
+	echo "Snap Store $(APP) stable: version $$1, revision $$2"
+	@echo ''
+
+# 20261018 gjw The Play counterpart of upload_ios: send the bundle to
+# the internal testing track, Play's TestFlight. The bundle is built and
+# signed HERE, as signing is local by design, so this reuses `make
+# appbundle` (which also copies it to $(REPO) and moves it to ARCHIVE)
+# unless this version is already archived. support/play_upload.py needs
+# the service account key in $$PLAY_SERVICE_ACCOUNT or
+# ~/.config/radiopod/play-service-account.json, never in the repository,
+# and says so if Play already has this build number.
+
+AAB_FILE = installers/ARCHIVE/$(APP)-$(VER).aab
+
+.PHONY: upload_android
+upload_android:
+	@if [ ! -f $(AAB_FILE) ]; then $(MAKE) appbundle || exit 1; fi
+	python3 support/play_upload.py $(AAB_FILE)
 	@echo ''
 
 # 20250110 gjw A ginstall of the github built bundles, and the locally

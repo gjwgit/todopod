@@ -29,7 +29,6 @@ Future<String?> saveTasksTxt({
   final fileUri = await FilePicker.saveFile(
     dialogTitle: 'Save $prefix.txt',
     fileName: '${prefix}_$timestamp.txt',
-    type: FileType.any,
     bytes: utf8.encode(tasks.map((t) => t.toTodoTxt()).join('\n')),
   );
   if (fileUri == null) return null;
@@ -51,8 +50,6 @@ Future<String?> saveTasksJsonBackup({
   final fileUri = await FilePicker.saveFile(
     dialogTitle: 'Save JSON File',
     fileName: 'todopod_backup_$timestamp.json',
-    type: FileType.custom,
-    allowedExtensions: ['json'],
     bytes: utf8.encode(const JsonEncoder.withIndent('  ').convert(bundle)),
   );
   if (fileUri == null) return null;

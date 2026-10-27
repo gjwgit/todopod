@@ -108,8 +108,6 @@ Future<String?> savePdfAs(List<int> bytes, String defaultName) async {
     final fileUri = await FilePicker.saveFile(
       dialogTitle: 'Save PDF',
       fileName: defaultName,
-      type: FileType.custom,
-      allowedExtensions: ['pdf'],
       bytes: Uint8List.fromList(bytes),
     );
     if (fileUri == null) return null; // user cancelled

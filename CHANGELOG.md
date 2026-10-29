@@ -38,6 +38,7 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.1 Stability
 
++ Update solidui 1.5.15 better secret key cach handling [1.1.6 20261030 gjw]
 + Spell check Notes with right-click suggestions [1.1.5 20261028 gjw]
 + Print a task to PDF with formatted notes and preview [1.1.4 20261022 gjw]
 + Snap update for libx11 [1.1.3 20261016 gjw]

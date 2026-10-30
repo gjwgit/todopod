@@ -21,6 +21,10 @@ then please show some ❤️ and tap on the star at
 This app is authored by [Graham
 Williams](https://togaware.com/Graham.Williams.html).
 
+## 1.2 Migrate to using Copier for Templates
+
++ Move to copier [1.2.0 20261031 gjw]
+
 ## 1.1 Stability
 
 + Update solidui 1.5.15 better secret key cach handling [1.1.6 20261030 gjw]

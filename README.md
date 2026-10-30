@@ -46,8 +46,7 @@ AU](https://solidcommunity.au) repository:
 + **Web**
   [solidcommunity](https://todopod.solidcommunity.au/);
 + **Android**
-  [apk](https://solidcommunity.au/installers/todopod.apk) or
-  [aab](https://solidcommunity.au/installers/todopod.aab);
+  [apk](https://solidcommunity.au/installers/todopod.apk);
 
 + **GNU/Linux**
   [deb](https://solidcommunity.au/installers/todopod_amd64.deb) or

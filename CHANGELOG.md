@@ -4,24 +4,9 @@ Noted below are the high level changes for the app.  Each update
 includes a short user-oriented description, version number, date, and
 developer.
 
-You can run the app in your
-[**browser**](https://todopod.solidcommunity.au) or else download and
-install locally the latest version from the [Solid Community
-AU](https://solidcommunity.au) or directly:
-
-+ **Android** as
-[apk](https://solidcommunity.au/installers/todopod.apk) or
-[aab](https://solidcommunity.au/installers/todopod.aab);
-+ **GNU/Linux** as
-[deb](https://solidcommunity.au/installers/todopod_amd64.deb) or
-[snap](https://solidcommunity.au/installers/todopod_amd64.snap) or
-[zip](https://solidcommunity.au/installers/todopod-linux.zip);
-+ **macOS** as
-[dmg](https://solidcommunity.au/installers/todopod-macos.dmg) or
-[zip](https://solidcommunity.au/installers/todopod-macos.zip);
-+ **Windows** as
-[exe](https://solidcommunity.au/installers/todopod-windows-inno.exe)
-or [zip](https://solidcommunity.au/installers/todopod-windows.zip).
+See the [Install
+Guide](https://gjwgit.github.io/todopod/INSTALL.html) for
+installation instructions on any platform.
 
 Contributions are welcome. Visit
 [github](https://github.com/gjwgit/todopod) to submit an issue or, even

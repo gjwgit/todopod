@@ -78,7 +78,7 @@ endif
 	@echo '******************** BUILD AND INSTALL FOR WEB'
 	cp web/index.html web/index.html.bak
 	perl -pi -e 's|^  <base href=.*$$|  <base href="/$*/">|' web/index.html
-	flutter build web --release --no-wasm-dry-run
+	flutter build web $(DART_DEFINES) --release --no-wasm-dry-run
 	mv web/index.html.bak web/index.html
 	ssh solidcommunity.au 'if [ ! -e $(DEST:$(APP)=$*) ]; then echo mkdir /$(DEST:$(APP)=$*); fi'
 	rsync -azvh build/web/ solidcommunity.au:$(DEST:$(APP)=$*) --exclude '*~' --exclude '*.bak'

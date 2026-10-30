@@ -1,6 +1,6 @@
 <!-- markdownlint-disable MD013 -->
 
-# Todo Pod Installers
+# TodoPod Installers
 
 Flutter supports multiple platform targets. Flutter based apps can run
 native on Android, iOS, Linux, MacOS, and Windows, as well as directly
@@ -129,7 +129,7 @@ app. The app should run without the warning next time.
 ## Web -- No Installation Required
 
 No installer is required for a browser based experience of
-Todopod. Simply visit
+TodoPod. Simply visit
 [https://todopod.solidcommunity.au](https://todopod.solidcommunity.au).
 
 Also, your Web browser will provide an option in its menus to install

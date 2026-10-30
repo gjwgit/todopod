@@ -11,6 +11,10 @@
 APP=$(basename "$(dirname "$(pwd)")")
 REP=$(git remote get-url origin | sed -E 's#.*[/:]([^/]+)/[^/]+(\.git)?$#\1#')
 
+# 20261030 gjw The installer host and folder are the app's install.host
+# and install.folder in .copier-answers.yml, rendered here by the
+# gjwgit/fluttertmpl Copier template.
+
 HOST=solidcommunity.au
 FLDR=/var/www/html/web/installers/
 DEST=${HOST}:${FLDR}
@@ -135,6 +139,66 @@ if [[ "${status}" == "completed" ]]; then
     fi
 
     echo ""
+
+    # 20261028 gjw The Flatpak is now built by the workflow too.
+    # Archived as <app>_<version>_amd64.flatpak beside the deb.
+
+    echo '******************** UPLOAD LINUX FLATPAK'
+
+    TARGET="${APP}_amd64.flatpak"
+
+    artifactId=$(gh api -H "Accept: application/vnd.github+json" /repos/${REP}/${APP}/actions/artifacts \
+		    --jq '.artifacts[] | select(.name | endswith("-linux-flatpak")) | .id' | head -n 1)
+    if [[ -z "${artifactId}" ]]; then
+	echo "No artifact found."
+    else
+	echo "artifact id: $artifactId"
+	gh api -H "Accept: application/vnd.github+json" repos/${REP}/${APP}/actions/artifacts/${artifactId}/zip > artifact.zip
+	unzip -o artifact.zip
+	fname=$(unzip -l artifact.zip | awk 'NR==4 {print $4}')
+	touch ${fname} # Timestamp with current date/time
+	rm -f artifact.zip
+	echo  "Installing as ${DEST}${TARGET}"
+	rsync -avzh ${fname} ${DEST}${TARGET}
+	ssh ${HOST} "cd ${FLDR}; chmod 0644 ${TARGET}"
+	echo  "Archive as installers/ARCHIVE/${APP}_${version}_amd64.flatpak"
+	mv -f ${fname} ARCHIVE/${APP}_${version}_amd64.flatpak
+    fi
+
+    echo ""
+
+    # 20261028 gjw The apk and aab are now built and signed by the
+    # workflow. Archived as <app>-<version>.apk/.aab, the names `make
+    # upload_android` looks for.
+
+    for ext in apk aab; do
+
+	echo "******************** UPLOAD ANDROID ${ext^^}"
+
+	TARGET="${APP}.${ext}"
+
+	artifactId=$(gh api -H "Accept: application/vnd.github+json" /repos/${REP}/${APP}/actions/artifacts \
+			--jq ".artifacts[] | select(.name | endswith(\"-android-${ext}\")) | .id" | head -n 1)
+
+	if [[ -z "${artifactId}" ]]; then
+	    echo "No artifact found."
+	else
+	    echo "artifact id: $artifactId"
+	    gh api -H "Accept: application/vnd.github+json" repos/${REP}/${APP}/actions/artifacts/${artifactId}/zip > artifact.zip
+	    unzip -o artifact.zip
+	    fname=$(unzip -l artifact.zip | awk 'NR==4 {print $4}')
+	    touch ${fname} # Timestamp with current date/time
+	    rm -f artifact.zip
+	    echo  "Installing as ${DEST}${TARGET}"
+	    rsync -avzh ${fname} ${DEST}${TARGET}
+	    ssh ${HOST} "cd ${FLDR}; chmod 0644 ${TARGET}"
+	    echo  "Archive as installers/ARCHIVE/${APP}-${version}.${ext}"
+	    mv -f ${fname} ARCHIVE/${APP}-${version}.${ext}
+	fi
+
+	echo ""
+
+    done
 
     echo '******************** UPLOAD LINUX ZIP'
 
@@ -399,6 +463,15 @@ if [[ "${status}" == "completed" ]]; then
 	ssh ${HOST} "cd ${FLDR}; chmod 0644 ${fname}"
 	echo  "Archive as installers/ARCHIVE/${APP}_${version}_windows_inno.exe"
 	mv ${fname} ARCHIVE/${APP}_${version}_windows_inno.exe
+
+	# 20261030 gjw A winget manifest pins the installer's SHA256, so
+	# it needs a URL whose file never changes. Keep each version on
+	# the server under its archive name, beside the latest above.
+
+	VTARGET="${APP}_${version}_windows_inno.exe"
+	echo  "Installing as ${DEST}${VTARGET}"
+	rsync -avzh ARCHIVE/${VTARGET} ${DEST}${VTARGET}
+	ssh ${HOST} "cd ${FLDR}; chmod 0644 ${VTARGET}"
     fi
 
     echo ""

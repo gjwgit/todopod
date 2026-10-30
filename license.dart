@@ -1,4 +1,4 @@
-/// Privacy-First To Do List Manager
+/// Privacy preserving to do list manager
 ///
 // Time-stamp: <Monday 2026-09-21 17:03:18 +1000 Graham Williams>
 ///

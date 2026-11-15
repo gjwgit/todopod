@@ -21,6 +21,7 @@ import 'package:solidui/solidui.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:todopod/models/task.dart';
+import 'package:todopod/pages/edit_fields/edit_actions.dart';
 import 'package:todopod/pages/edit_fields/priority_due_date_row.dart';
 import 'package:todopod/pages/edit_fields/tag_list_editor.dart';
 import 'package:todopod/pages/edit_fields/task_notes_field.dart';
@@ -82,6 +83,10 @@ class _TaskEditState extends State<TaskEdit> with UnsavedChangesMixin {
 
   bool _focusNewProject = false;
   bool _focusNewContext = false;
+
+  /// True while a save is on its way to the Pod; see [_save].
+
+  bool _saving = false;
 
   bool get _isNew => widget.task == null;
 
@@ -210,7 +215,12 @@ class _TaskEditState extends State<TaskEdit> with UnsavedChangesMixin {
   /// and report whether the write actually reached the Pod.
   ///
   /// Awaited so a window close can wait for the Pod write to complete.
+  ///
+  /// 20261116 gjw Show the busy animation on the Save button while the write
+  /// is under way, since a Pod write can take a noticeable moment, and
+  /// disable the buttons so a second tap cannot save twice.
   Future<bool> _save() async {
+    setState(() => _saving = true);
     try {
       await widget.onSave?.call(_buildTask());
 
@@ -219,6 +229,8 @@ class _TaskEditState extends State<TaskEdit> with UnsavedChangesMixin {
       SolidWriteFailures.report('Failed saving the task.\n\n$e');
 
       return false;
+    } finally {
+      if (mounted) setState(() => _saving = false);
     }
   }
 
@@ -228,7 +240,7 @@ class _TaskEditState extends State<TaskEdit> with UnsavedChangesMixin {
   /// Only closes once the write has landed: popping over a failed write loses
   /// the task the user asked to keep.
   Future<void> _saveAndClose() async {
-    if (!await _save()) return;
+    if (_saving || !await _save()) return;
     if (mounted) Navigator.of(context).pop();
   }
 
@@ -342,7 +354,12 @@ class _TaskEditState extends State<TaskEdit> with UnsavedChangesMixin {
           children: [
             _buildHeader(context),
             _buildForm(context),
-            _buildActions(context),
+            EditActions(
+              saveLabel: _isNew ? 'Add Task' : 'Save',
+              onSave: _canSave && !_saving ? _saveAndClose : null,
+              onCancel: _saving ? null : _confirmDiscard,
+              saving: _saving,
+            ),
           ],
         ),
       ),
@@ -510,23 +527,4 @@ it to a file. Any unsaved edits are included.
       ),
     );
   }
-
-  Widget _buildActions(BuildContext context) => Column(
-    children: [
-      const Divider(height: 1),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-        child: Row(
-          children: [
-            TextButton(onPressed: _confirmDiscard, child: const Text('Cancel')),
-            const Spacer(),
-            FilledButton(
-              onPressed: _canSave ? _saveAndClose : null,
-              child: Text(_isNew ? 'Add Task' : 'Save'),
-            ),
-          ],
-        ),
-      ),
-    ],
-  );
 }

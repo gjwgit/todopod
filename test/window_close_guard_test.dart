@@ -108,13 +108,20 @@ void main() {
       ..then((_) => resolved = true);
     await tester.pumpAndSettle();
 
+    // 20261116 gjw Pump for a fixed time rather than settle: the busy
+    // animation runs for as long as the write is in flight, so it never
+    // settles until the write completes.
+
     await tester.tap(find.text('Save'));
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 1));
 
     // The Pod write is still in flight, so the guard must NOT have resolved
     // — otherwise the caller would destroy the window and lose the task.
     expect(resolved, isFalse);
     expect(written, isFalse);
+
+    // And the editor shows that it is busy saving.
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
     podWrite.complete();
     await tester.pumpAndSettle();

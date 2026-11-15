@@ -23,6 +23,8 @@ Williams](https://togaware.com/Graham.Williams.html).
 
 ## 1.2 Migrate to using Copier for Templates
 
++ Busy animation on Save while the task is saving [1.2.1 20261116 gjw]
+
 + Move to copier [1.2.0 20261031 gjw]
 
 ## 1.1 Stability

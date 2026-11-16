@@ -1,7 +1,7 @@
 name: todopod
 description: "Todo Pod - Task Management with Secure and Private Storage"
 publish_to: 'none'
-version: 1.2.1+15
+version: 1.2.2+16
 
 environment:
   sdk: ^3.11.3
@@ -56,6 +56,15 @@ dev_dependencies:
   # Generates the platform launcher icons from assets/images/app_icon.png.
   # Re-run after changing the icon: dart run flutter_launcher_icons
   flutter_launcher_icons: ^0.14.3
+
+# 20261116 gjw shared_preferences_android 2.5.5 hangs an Android release
+# build at start-up: R8 strips SharedPreferencesApiRegistrar.getAll, which
+# the plugin looks up through JNI, and the first read throws
+# NoSuchMethodError. 2.5.4 still kept it. Remove this once a later release
+# fixes it.
+
+dependency_overrides:
+  shared_preferences_android: 2.5.4
 
 flutter:
   assets:
